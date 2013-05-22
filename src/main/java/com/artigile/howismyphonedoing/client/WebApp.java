@@ -1,5 +1,7 @@
 package com.artigile.howismyphonedoing.client;
 
+import com.artigile.howismyphonedoing.client.rpc.GreetingRpcService;
+import com.artigile.howismyphonedoing.client.rpc.GreetingRpcServiceAsync;
 import com.artigile.howismyphonedoing.shared.FieldVerifier;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -32,7 +34,7 @@ public class WebApp implements EntryPoint {
   /**
    * Create a remote service proxy to talk to the server-side Greeting service.
    */
-  private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
+  private final GreetingRpcServiceAsync greetingService = GWT.create(GreetingRpcService.class);
 
   private final Messages messages = GWT.create(Messages.class);
 

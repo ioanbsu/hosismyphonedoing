@@ -1,5 +1,7 @@
 package com.artigile.howismyphonedoing.client;
 
+import com.artigile.howismyphonedoing.client.rpc.GreetingRpcService;
+import com.artigile.howismyphonedoing.client.rpc.GreetingRpcServiceAsync;
 import com.artigile.howismyphonedoing.shared.FieldVerifier;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -39,11 +41,11 @@ public class GwtTestWebApp extends GWTTestCase {
 
   /**
    * This test will send a request to the server using the greetServer method in
-   * GreetingService and verify the response.
+   * GreetingRpcService and verify the response.
    */
   public void testGreetingService() {
     // Create the service that we will test.
-    GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
+      GreetingRpcServiceAsync greetingService = GWT.create(GreetingRpcService.class);
     ServiceDefTarget target = (ServiceDefTarget) greetingService;
     target.setServiceEntryPoint(GWT.getModuleBaseURL() + "WebApp/greet");
 
