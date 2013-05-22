@@ -1,10 +1,14 @@
 package com.artigile.howismyphonedoing.server.rpc;
 
 import com.artigile.howismyphonedoing.client.rpc.GreetingRpcService;
+import com.artigile.howismyphonedoing.server.entity.TestEntity;
+import com.artigile.howismyphonedoing.server.service.PersistenceFactory;
 import com.artigile.howismyphonedoing.shared.FieldVerifier;
-import org.gwtwidgets.server.spring.GWTSpringController;
 import org.gwtwidgets.server.spring.ServletUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.jdo.PersistenceManager;
 
 /**
  * The server side implementation of the RPC service.
@@ -13,7 +17,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class GreetingRpcServiceImpl implements GreetingRpcService {
 
+    @Autowired
+    private PersistenceFactory persistenceFactory;
+
     public String greetServer(String input) throws IllegalArgumentException {
+        PersistenceManager persistenceManager = persistenceFactory.get().getPersistenceManager();
+        TestEntity testEntity = new TestEntity();
+        testEntity.setId(23L);
+        testEntity.setValue("adsfsdfg");
+        persistenceManager.makePersistent(testEntity);
+        persistenceManager.close();
+
+        persistenceManager = persistenceFactory.get().getPersistenceManager();
+        TestEntity fromDb = (TestEntity) persistenceManager.getObjectById(23);
+        System.out.println(fromDb.getValue());
         // Verify that the input is valid.
         if (!FieldVerifier.isValidName(input)) {
             // If the input is not valid, throw an IllegalArgumentException back to
