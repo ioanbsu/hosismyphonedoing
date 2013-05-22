@@ -30,6 +30,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gwt.compileModule>com.artigile.howismyphonedoing.WebApp</gwt.compileModule>
         <draftCompile>false</draftCompile>
+        <appEngineSdk>/usr/local/appengine-java-sdk-1.8.0</appEngineSdk>
     </properties>
 
     <dependencies>
@@ -95,6 +96,7 @@
                     <i18nMessagesBundle>com.artigile.howismyphonedoing.client.Messages</i18nMessagesBundle>
                     <module>${gwt.compileModule}</module>
                     <draftCompile>${draftCompile}</draftCompile>
+                    <appEngineHome>${appEngineSdk}</appEngineHome>
                 </configuration>
             </plugin>
 

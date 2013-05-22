@@ -15,6 +15,12 @@
           <root url="file://$MODULE_DIR$/src/main/resources" />
         </sourceRoots>
       </configuration>
+      <facet type="google-app-engine" name="Google App Engine">
+        <configuration>
+          <sdk-home-path>/usr/local/appengine-java-sdk-1.8.0</sdk-home-path>
+          <persistence-api>JPA2</persistence-api>
+        </configuration>
+      </facet>
     </facet>
     <facet type="gwt" name="GWT">
       <configuration>
