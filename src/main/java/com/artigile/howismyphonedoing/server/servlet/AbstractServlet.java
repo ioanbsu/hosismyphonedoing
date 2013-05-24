@@ -1,5 +1,6 @@
 package com.artigile.howismyphonedoing.server.servlet;
 
+import net.zschech.gwt.comet.server.CometSession;
 import org.springframework.web.servlet.mvc.Controller;
 
 /**
@@ -9,5 +10,7 @@ import org.springframework.web.servlet.mvc.Controller;
  */
 public abstract class AbstractServlet implements Controller{
     static final String ATTRIBUTE_STATUS = "status";
+
+    public static CometSession cometSession;
 
 }
