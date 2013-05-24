@@ -1,14 +1,13 @@
 package com.artigile.howismyphonedoing.server.rpc;
 
 import com.artigile.howismyphonedoing.client.rpc.GreetingRpcService;
-import com.artigile.howismyphonedoing.server.entity.TestEntity;
-import com.artigile.howismyphonedoing.server.service.PersistenceFactory;
 import com.artigile.howismyphonedoing.shared.FieldVerifier;
+import com.google.appengine.api.datastore.*;
 import org.gwtwidgets.server.spring.ServletUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.jdo.PersistenceManager;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The server side implementation of the RPC service.
@@ -17,20 +16,31 @@ import javax.jdo.PersistenceManager;
 @Service
 public class GreetingRpcServiceImpl implements GreetingRpcService {
 
-    @Autowired
-    private PersistenceFactory persistenceFactory;
 
     public String greetServer(String input) throws IllegalArgumentException {
-        PersistenceManager persistenceManager = persistenceFactory.get().getPersistenceManager();
-        TestEntity testEntity = new TestEntity();
-        testEntity.setId(23L);
-        testEntity.setValue("adsfsdfg");
-        persistenceManager.makePersistent(testEntity);
-        persistenceManager.close();
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query.Filter filter=new Query.FilterPredicate("firstName", Query.FilterOperator.EQUAL, "Antonio");
+        Query q=new Query("Test").setFilter(filter);
+        List<Entity> entityList=datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 
-        persistenceManager = persistenceFactory.get().getPersistenceManager();
-        TestEntity fromDb = (TestEntity) persistenceManager.getObjectById(23);
-        System.out.println(fromDb.getValue());
+        Entity testEntity = new Entity("Test", 33);
+        testEntity.setProperty("firstName", "Antonio");
+        testEntity.setProperty("lastName", "Salieri");
+
+        Key key = testEntity.getKey();
+        Date hireDate = new Date();
+        testEntity.setProperty("hireDate", hireDate);
+        datastore.beginTransaction();
+        datastore.put(testEntity);
+        datastore.getCurrentTransaction().commit();
+
+        try {
+            Entity fromDb = datastore.get(key);
+            System.out.println(fromDb);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+
         // Verify that the input is valid.
         if (!FieldVerifier.isValidName(input)) {
             // If the input is not valid, throw an IllegalArgumentException back to

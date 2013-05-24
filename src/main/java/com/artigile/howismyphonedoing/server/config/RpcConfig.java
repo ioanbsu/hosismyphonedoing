@@ -21,6 +21,8 @@ public class RpcConfig extends GenericWebApplicationContext {
         SimpleUrlHandlerMapping simpleUrlHandlerMapping = new SimpleUrlHandlerMapping();
         Properties mappings = new Properties();
         mappings.put("/mainHowIsMyPhoneDoing", "mainHowIsMyPhoneDoingServiceExporter");
+        mappings.put("/register", "registerDeviceServlet");
+        mappings.put("/sendAllPhones", "sendAllMessageServlet");
         simpleUrlHandlerMapping.setMappings(mappings);
         return simpleUrlHandlerMapping;
     }

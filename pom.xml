@@ -30,15 +30,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gwt.compileModule>com.artigile.howismyphonedoing.WebApp</gwt.compileModule>
         <draftCompile>false</draftCompile>
-        <appEngineSdk>/usr/local/appengine-java-sdk-1.8.0</appEngineSdk>
+        <appEngineSdk>/usr/local/appengine-java-sdk-${appengine-version}</appEngineSdk>
         <spring.version>3.2.1.RELEASE</spring.version>
         <junit.version>4.10</junit.version>
         <validation-api.version>1.0.0.GA</validation-api.version>
         <jdo-api.version>3.0.1</jdo-api.version>
-        <datanucleus-core.version>3.2.3</datanucleus-core.version>
-        <datanucleus-api-jdo.version>3.2.2</datanucleus-api-jdo.version>
-        <datanucleus-enhancer.version>3.1.1</datanucleus-enhancer.version>
-        <datanucleus-rdbms.version>3.2.2</datanucleus-rdbms.version>
+        <appengine-version>1.8.0</appengine-version>
     </properties>
 
     <dependencies>
@@ -56,31 +53,17 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.jdo</groupId>
-            <artifactId>jdo-api</artifactId>
-            <version>${jdo-api.version}</version>
+        	<groupId>com.google.appengine</groupId>
+        	<artifactId>appengine-api-1.0-sdk</artifactId>
+        	<version>${appengine-version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.datanucleus</groupId>
-            <artifactId>datanucleus-core</artifactId>
-            <version>${datanucleus-core.version}</version>
+        	<groupId>com.googlecode.json-simple</groupId>
+        	<artifactId>json-simple</artifactId>
+        	<version>1.1.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.datanucleus</groupId>
-            <artifactId>datanucleus-api-jdo</artifactId>
-            <version>${datanucleus-api-jdo.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.datanucleus</groupId>
-            <artifactId>datanucleus-enhancer</artifactId>
-            <version>${datanucleus-enhancer.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.datanucleus</groupId>
-            <artifactId>datanucleus-rdbms</artifactId>
-            <version>${datanucleus-rdbms.version}</version>
-        </dependency>
+
 
         <dependency>
             <groupId>junit</groupId>
@@ -188,15 +171,7 @@
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>1.8.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>enhance</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <version>${appengine-version}</version>
             </plugin>
         </plugins>
     </build>
