@@ -1,13 +1,14 @@
 package com.artigile.howismyphonedoing.server.rpc;
 
 import com.artigile.howismyphonedoing.client.rpc.GreetingRpcService;
-import com.artigile.howismyphonedoing.shared.FieldVerifier;
-import com.google.appengine.api.datastore.*;
+import com.artigile.howismyphonedoing.server.gcmserver.Message;
+import com.artigile.howismyphonedoing.server.service.MessagingService;
+import com.artigile.howismyphonedoing.server.service.cloudutil.PhoneDatastore;
 import org.gwtwidgets.server.spring.ServletUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.io.IOException;
 
 /**
  * The server side implementation of the RPC service.
@@ -16,9 +17,11 @@ import java.util.List;
 @Service
 public class GreetingRpcServiceImpl implements GreetingRpcService {
 
+    @Autowired
+    private MessagingService messagingService;
 
     public String greetServer(String input) throws IllegalArgumentException {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+   /*     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query.Filter filter=new Query.FilterPredicate("firstName", Query.FilterOperator.EQUAL, "Antonio");
         Query q=new Query("Test").setFilter(filter);
         List<Entity> entityList=datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
@@ -49,7 +52,14 @@ public class GreetingRpcServiceImpl implements GreetingRpcService {
                     "Name must be at least 4 characters long");
         }
 
+*/
 
+        Message message = new Message.Builder().addData("mydata", input).build();
+        try {
+            messagingService.sendMessage(PhoneDatastore.getDevices(), message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         String serverInfo = ServletUtils.getRequest().getSession().getServletContext().getServerInfo();
         String userAgent = "not implemented yet.";//getThreadLocalRequest().getHeader("User-Agent");
 

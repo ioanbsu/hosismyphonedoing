@@ -31,7 +31,7 @@ public class RegisterDeviceServlet extends AbstractServlet {
 
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String regId = getParameter(request, PARAMETER_REG_ID);
+        String regId = phoneId;//getParameter(request, PARAMETER_REG_ID);
         PhoneDatastore.register(regId);
         setSuccess(response);
 
