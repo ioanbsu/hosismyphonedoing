@@ -1,0 +1,36 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    >
+    <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
+    <ui:style>
+        .mainPanelStyle {
+            padding: 40px;
+        }
+
+
+    </ui:style>
+
+    <g:DialogBox ui:field="showSignInWithGoogle" glassEnabled="true" modal="true">
+        <g:FlowPanel styleName="{style.mainPanelStyle}">
+            <g:Label text="{msg.please_sign_in_with_google}"/>
+            <g:HTMLPanel>
+                <div id="signinButton">
+                    <span class="g-signin"
+                          data-scope="https://www.googleapis.com/auth/plus.login"
+                          data-clientid="983271462651.apps.googleusercontent.com"
+                          data-redirecturi="postmessage"
+                          data-accesstype="offline"
+                          data-cookiepolicy="single_host_origin"
+                          data-approvalprompt="force"
+                          data-callback="signInCallback"
+                          data-height="tall"
+                          data-width="wide">
+                    </span>
+                </div>
+                <div id="result"></div>
+            </g:HTMLPanel>
+            <g:Button text="hide" ui:field="hideWindow"/>
+        </g:FlowPanel>
+    </g:DialogBox>
+
+</ui:UiBinder>

@@ -3,12 +3,14 @@ package com.artigile.howismyphonedoing.client;
 import com.google.gwt.user.client.Window;
 import net.zschech.gwt.comet.client.CometListener;
 
+import javax.inject.Singleton;
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author IoaN, 5/23/13 9:58 PM
  */
+@Singleton
 public class CometListenerImpl implements CometListener {
 
 

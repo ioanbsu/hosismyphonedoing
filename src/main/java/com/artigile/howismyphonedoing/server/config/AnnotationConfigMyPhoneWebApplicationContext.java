@@ -1,7 +1,6 @@
 package com.artigile.howismyphonedoing.server.config;
 
-import com.artigile.howismyphonedoing.client.rpc.GreetingRpcService;
-import org.gwtwidgets.server.spring.GWTRPCServiceExporter;
+import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,12 +18,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @PropertySource(value = {"classpath:application.properties"})
 public class AnnotationConfigMyPhoneWebApplicationContext {
 
-
     @Bean
-    public GWTRPCServiceExporter mainHowIsMyPhoneDoingServiceExporter(GreetingRpcService creetingRpcService) {
-        GWTRPCServiceExporter invoiceAppServiceExporter = new GWTRPCServiceExporter();
-        invoiceAppServiceExporter.setService(creetingRpcService);
-        return invoiceAppServiceExporter;
+    public AnnotationAwareAspectJAutoProxyCreator annotationAwareAspectJAutoProxyCreator() {
+        return new AnnotationAwareAspectJAutoProxyCreator();
     }
+
 
 }
