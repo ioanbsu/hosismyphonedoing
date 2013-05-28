@@ -1,7 +1,7 @@
 package com.artigile.howismyphonedoing.server.servlet;
 
 import com.artigile.howismyphonedoing.server.gcmserver.*;
-import com.artigile.howismyphonedoing.server.service.cloudutil.ApiKeyResolver;
+import com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver;
 import com.artigile.howismyphonedoing.server.service.cloudutil.PhoneDatastore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,12 +30,12 @@ public class SendAllMessageServlet extends AbstractServlet {
     private static final Executor threadPool = Executors.newFixedThreadPool(5);
     protected final Logger logger = Logger.getLogger(getClass().getName());
     @Autowired
-    private ApiKeyResolver apiKeyResolver;
+    private KeysResolver apiKeyResolver;
     private Sender sender;
 
     @PostConstruct
     private void init() {
-        sender = new Sender(apiKeyResolver.getKey());
+        sender = new Sender(apiKeyResolver.getPhoneApiKey());
     }
 
     @Override

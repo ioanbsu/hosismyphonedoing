@@ -13,6 +13,8 @@
             <g:FlowPanel>
                 <g:Label>Hello World here!!!</g:Label>
                 <g:Button text="Log out" ui:field="logoutButton"/>
+                <g:Button text="send message" ui:field="sendTextToPhone"/>
+                <g:TextBox ui:field="textToSend"/>
             </g:FlowPanel>
         </g:center>
 

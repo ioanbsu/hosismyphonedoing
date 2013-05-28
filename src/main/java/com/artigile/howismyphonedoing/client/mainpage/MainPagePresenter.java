@@ -2,6 +2,7 @@ package com.artigile.howismyphonedoing.client.mainpage;
 
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcServiceAsync;
+import com.artigile.howismyphonedoing.client.rpc.GreetingRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.widget.SigninWithGooglePlusWindow;
 import com.artigile.howismyphonedoing.shared.entity.GooglePlusAuthenticatedUser;
 import com.google.gwt.user.client.Window;
@@ -18,6 +19,8 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
 
     @Inject
     private AuthRpcServiceAsync authRpcService;
+    @Inject
+    private GreetingRpcServiceAsync greetingRpcServiceAsync;
     @Inject
     private SigninWithGooglePlusWindow signinWithGooglePlusWindow;
 
@@ -53,13 +56,18 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
     }
 
     public void logout() {
-         authRpcService.logout(new AsyncCallbackImpl<Void>(){
-             @Override
-             public void failure(Throwable caught) {
-                 Window.alert("Log out failed, please try refreshing the page and do logout again.");
-             }
-         });
-       }
+        authRpcService.logout(new AsyncCallbackImpl<Void>() {
+            @Override
+            public void failure(Throwable caught) {
+                Window.alert("Log out failed, please try refreshing the page and do logout again.");
+            }
+        });
+    }
+
+    public void sendTextToPhone(String text) {
+        greetingRpcServiceAsync.greetServer(text, new AsyncCallbackImpl<String>() {
+        });
+    }
 
     public native void exportStaticMethod(MainPagePresenter thiz) /*-{
         var _this = this;

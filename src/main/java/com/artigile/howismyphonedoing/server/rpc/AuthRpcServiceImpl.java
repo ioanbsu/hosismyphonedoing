@@ -3,6 +3,7 @@ package com.artigile.howismyphonedoing.server.rpc;
 import com.artigile.howismyphonedoing.client.exception.UserNotLoggedInException;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcService;
 import com.artigile.howismyphonedoing.server.service.SecurityAspect;
+import com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver;
 import com.artigile.howismyphonedoing.shared.entity.GooglePlusAuthenticatedUser;
 import com.google.api.client.auth.oauth2.TokenResponseException;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
@@ -17,6 +18,7 @@ import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.PeopleFeed;
 import com.google.gson.Gson;
 import org.gwtwidgets.server.spring.ServletUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,16 +42,16 @@ public class AuthRpcServiceImpl implements AuthRpcService {
      * Gson object to serialize JSON responses to requests to this servlet.
      */
     private static final Gson GSON = new Gson();
-    private static final String CLIENT_ID = "REPLACE";
-    private static final String CLIENT_SECRET = "REPLACE";
     /**
      * Optionally replace this with your application's name.
      */
     private static final String APPLICATION_NAME = "How Is My Phone Doing";
+    @Autowired
+    private KeysResolver keysResolver;
 
     @Override
     public String userIsInSession() throws UserNotLoggedInException {
-            return "ersponse!";
+        return "ersponse!";
     }
 
     @Override
@@ -63,16 +65,17 @@ public class AuthRpcServiceImpl implements AuthRpcService {
             response.setStatus(401);
             return GSON.toJson("Invalid state parameter.");
         }*/
+
         try {
             // Upgrade the authorization code into an access and refresh token.
             GoogleTokenResponse tokenResponse =
                     new GoogleAuthorizationCodeTokenRequest(TRANSPORT, JSON_FACTORY,
-                            CLIENT_ID, CLIENT_SECRET, googlePlusAuthenticatedUser.getCode(), "postmessage").execute();
+                            keysResolver.getClientId(), keysResolver.clientSecret, googlePlusAuthenticatedUser.getCode(), "postmessage").execute();
             // Create a credential representation of the token data.
             GoogleCredential credential = new GoogleCredential.Builder()
                     .setJsonFactory(JSON_FACTORY)
                     .setTransport(TRANSPORT)
-                    .setClientSecrets(CLIENT_ID, CLIENT_SECRET).build()
+                    .setClientSecrets(keysResolver.getClientId(), keysResolver.getClientSecret()).build()
                     .setFromTokenResponse(tokenResponse);
 
             // Check that the token is valid.
@@ -91,7 +94,7 @@ public class AuthRpcServiceImpl implements AuthRpcService {
                 return GSON.toJson("Token's user ID doesn't match given user ID.");
             }*/
             // Make sure the token we got is for our app.
-            if (!tokenInfo.getIssuedTo().equals(CLIENT_ID)) {
+            if (!tokenInfo.getIssuedTo().equals(keysResolver.getClientId())) {
                 response.setStatus(401);
                 return GSON.toJson("Token's client ID does not match app's.");
             }

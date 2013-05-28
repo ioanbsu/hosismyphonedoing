@@ -7,6 +7,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.mvp4g.client.view.ReverseViewInterface;
 
 import javax.inject.Inject;
@@ -25,6 +26,10 @@ public class MainPageView extends Composite implements ReverseViewInterface<Main
     private MainPagePresenter mainPagePresenter;
     @UiField
     Button logoutButton;
+    @UiField
+    Button sendTextToPhone;
+    @UiField
+    TextBox textToSend;
 
     @Inject
     public MainPageView(Binder binder) {
@@ -44,5 +49,10 @@ public class MainPageView extends Composite implements ReverseViewInterface<Main
     @UiHandler("logoutButton")
     void logOutButtonClickHandler(ClickEvent clickEvent){
         mainPagePresenter.logout();
+    }
+
+    @UiHandler("sendTextToPhone")
+    void sendTextToPhoneButtonClickHandler(ClickEvent clickEvent){
+        mainPagePresenter.sendTextToPhone(textToSend.getText());
     }
 }

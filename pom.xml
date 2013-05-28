@@ -49,6 +49,10 @@
         <gwt-comet.version>1.2.5</gwt-comet.version>
         <json-simple.version>1.1.1</json-simple.version>
         <aspectjrt.version>1.7.2</aspectjrt.version>
+
+        <maven.google.api.client.id>REPLACE!!!</maven.google.api.client.id>
+        <maven.google.api.client.secret>REPLACE!!!</maven.google.api.client.secret>
+        <maven.phone.api.key>REPLACE!!!</maven.phone.api.key>
     </properties>
 
     <dependencies>
@@ -179,6 +183,12 @@
         <!-- Generate compiled stuff in the folder used for developing mode -->
         <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
 
             <!-- GWT Maven Plugin -->

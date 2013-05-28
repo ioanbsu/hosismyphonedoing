@@ -1,7 +1,7 @@
 package com.artigile.howismyphonedoing.server.service;
 
 import com.artigile.howismyphonedoing.server.gcmserver.*;
-import com.artigile.howismyphonedoing.server.service.cloudutil.ApiKeyResolver;
+import com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver;
 import com.artigile.howismyphonedoing.server.service.cloudutil.PhoneDatastore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,10 +32,10 @@ public class MessagingServiceImpl implements MessagingService {
 
 
     @Autowired
-    private ApiKeyResolver apiKeyResolver;
+    private KeysResolver apiKeyResolver;
       @PostConstruct
       private void init() {
-          sender = new Sender(apiKeyResolver.getKey());
+          sender = new Sender(apiKeyResolver.getPhoneApiKey());
       }
 
     @Override

@@ -30,7 +30,7 @@ public class GreetingRpcServiceImpl implements GreetingRpcService {
         testEntity.setProperty("firstName", "Antonio");
         testEntity.setProperty("lastName", "Salieri");
 
-        Key key = testEntity.getKey();
+        Key key = testEntity.getPhoneApiKey();
         Date hireDate = new Date();
         testEntity.setProperty("hireDate", hireDate);
         datastore.beginTransaction();
