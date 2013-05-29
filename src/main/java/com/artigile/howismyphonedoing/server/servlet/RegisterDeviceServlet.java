@@ -1,17 +1,16 @@
 package com.artigile.howismyphonedoing.server.servlet;
 
+import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.service.TestService;
+import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
 import com.artigile.howismyphonedoing.server.service.cloudutil.PhoneDatastore;
-import com.google.appengine.repackaged.com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
 import java.util.logging.Logger;
 
 /**
@@ -25,46 +24,36 @@ public class RegisterDeviceServlet extends AbstractServlet {
     // change to true to allow GET calls
     static final boolean DEBUG = true;
     private static final String PARAMETER_REG_ID = "regId";
+    private static final String USER_EMAIL_ID = "userEmail";
     protected final Logger logger = Logger.getLogger(getClass().getName());
     @Autowired
     private TestService testService;
+    @Autowired
+    private UserAndDeviceService userAndDeviceService;
     private String phoneId = "APA91bE1gYlPjxFqDx692-oFLvG9jlQ0CN_g-Shp3yHqGDtr0jeDWEb3sMkEMUoaquVAKK5LNNm2wOvKhFLUPYNDtTYj8xnwTh0UzODr7Ff6csX_Ewb0dKox439k25YXtlPgJomko77ES5NWvbk9-aX3T0Lr9cKpMFM-Dn4POsL4d0amTHFgZjE";
 
     @PostConstruct
     public void init() {
         //for testing only registering the device ID.
         String regId = phoneId;//getParameter(request, PARAMETER_REG_ID);
+        String userEmail = "ioanbsu1@gmail.com";//getParameter(request, USER_EMAIL_ID);
+        UserDevice userDevice = new UserDevice();
+        userDevice.setRegisteredId(regId);
+        userAndDeviceService.createOrUpdateUserDevice(userEmail, userDevice);
         PhoneDatastore.register(regId);
     }
 
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String regId = phoneId;//getParameter(request, PARAMETER_REG_ID);
+        String userEmail = "ioanbsu1@gmail.com";//getParameter(request, USER_EMAIL_ID);
+        UserDevice userDevice = new UserDevice();
+        userDevice.setRegisteredId(regId);
+        userAndDeviceService.createOrUpdateUserDevice(userEmail, userDevice);
         PhoneDatastore.register(regId);
         setSuccess(response);
-
         System.out.println(testService);
         return null;
-    }
-
-    protected String getParameter(HttpServletRequest req, String parameter)
-            throws ServletException {
-        String value = req.getParameter(parameter);
-        if (Strings.isNullOrEmpty(value)) {
-            if (DEBUG) {
-                StringBuilder parameters = new StringBuilder();
-                @SuppressWarnings("unchecked")
-                Enumeration<String> names = req.getParameterNames();
-                while (names.hasMoreElements()) {
-                    String name = names.nextElement();
-                    String param = req.getParameter(name);
-                    parameters.append(name).append("=").append(param).append("\n");
-                }
-                logger.fine("parameters: " + parameters);
-            }
-            throw new ServletException("Parameter " + parameter + " not found");
-        }
-        return value.trim();
     }
 
     protected void setSuccess(HttpServletResponse resp) {

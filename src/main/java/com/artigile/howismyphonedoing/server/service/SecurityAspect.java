@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 @Scope(value = WebApplicationContext.SCOPE_SESSION)
 public class SecurityAspect {
     public static final String SESSION_USER_ATTR_NAME = "googlePlusLoggedInUser";
+    public static final String USER_IN_SESSION_EMAIL = "userInSessionEmail";
 
     @Before("execution (* com.artigile.howismyphonedoing*..rpc..*(..)) && !execution(* com.artigile.howismyphonedoing.server.rpc.AuthRpcServiceImpl.validateGooglePlusCallback(..))")
     public void checkRemoteConnection(JoinPoint joinPoint) throws UserNotLoggedInException {

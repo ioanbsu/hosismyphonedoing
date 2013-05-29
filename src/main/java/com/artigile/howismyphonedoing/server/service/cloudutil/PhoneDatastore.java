@@ -16,6 +16,7 @@ import java.util.logging.Logger;
  * This class is thread-safe but not persistent (it will lost the data when the
  * app is restarted) - it is meant just as an example.
  */
+@Deprecated
 public final class PhoneDatastore {
 
     private static final List<String> regIds = new ArrayList<String>();

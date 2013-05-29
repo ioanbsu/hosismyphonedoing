@@ -2,7 +2,9 @@ package com.artigile.howismyphonedoing.server.rpc;
 
 import com.artigile.howismyphonedoing.client.exception.UserNotLoggedInException;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcService;
+import com.artigile.howismyphonedoing.server.entity.User;
 import com.artigile.howismyphonedoing.server.service.SecurityAspect;
+import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
 import com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver;
 import com.artigile.howismyphonedoing.shared.entity.GooglePlusAuthenticatedUser;
 import com.google.api.client.auth.oauth2.TokenResponseException;
@@ -29,7 +31,7 @@ import java.io.IOException;
  * @author IoaN, 5/26/13 10:44 AM
  */
 @Service
-public class AuthRpcServiceImpl implements AuthRpcService {
+public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcService {
     /**
      * Default HTTP transport to use to make HTTP requests.
      */
@@ -48,6 +50,9 @@ public class AuthRpcServiceImpl implements AuthRpcService {
     private static final String APPLICATION_NAME = "How Is My Phone Doing";
     @Autowired
     private KeysResolver keysResolver;
+
+    @Autowired
+    private UserAndDeviceService userAndDeviceService;
 
     @Override
     public String userIsInSession() throws UserNotLoggedInException {
@@ -101,13 +106,11 @@ public class AuthRpcServiceImpl implements AuthRpcService {
             // Store the token in the session for later use.
             request.getSession().setAttribute("token", tokenResponse.toString());
             request.getSession().setAttribute(SecurityAspect.SESSION_USER_ATTR_NAME, googlePlusAuthenticatedUser);
-             //APA91bE1gYlPjxFqDx692-oFLvG9jlQ0CN_g-Shp3yHqGDtr0jeDWEb3sMkEMUoaquVAKK5LNNm2wOvKhFLUPYNDtTYj8xnwTh0UzODr7Ff6csX_Ewb0dKox439k25YXtlPgJomko77ES5NWvbk9-aX3T0Lr9cKpMFM-Dn4POsL4d0amTHFgZjE
-            Plus service = new Plus.Builder(TRANSPORT, JSON_FACTORY, credential)
-                    .setApplicationName(APPLICATION_NAME)
-                    .build();
-            // Get a list of people that this user has shared with this app.
-            PeopleFeed people = service.people().list("me", "visible").execute();
-            String str = GSON.toJson(people);
+            request.getSession().setAttribute(SecurityAspect.USER_IN_SESSION_EMAIL, tokenInfo.getEmail());
+            User user =new User();
+            user.setEmail(tokenInfo.getEmail());
+            userAndDeviceService.createOrUpdateUser(user);
+
             return GSON.toJson("Successfully connected user.");
         } catch (TokenResponseException e) {
             response.setStatus(500);
