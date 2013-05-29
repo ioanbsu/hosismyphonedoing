@@ -2,7 +2,7 @@ package com.artigile.howismyphonedoing.server.rpc;
 
 import com.artigile.howismyphonedoing.client.exception.UserNotLoggedInException;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcService;
-import com.artigile.howismyphonedoing.server.entity.User;
+import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.service.SecurityAspect;
 import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
 import com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver;
@@ -16,8 +16,6 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Tokeninfo;
-import com.google.api.services.plus.Plus;
-import com.google.api.services.plus.model.PeopleFeed;
 import com.google.gson.Gson;
 import org.gwtwidgets.server.spring.ServletUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +48,6 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
     private static final String APPLICATION_NAME = "How Is My Phone Doing";
     @Autowired
     private KeysResolver keysResolver;
-
     @Autowired
     private UserAndDeviceService userAndDeviceService;
 
@@ -107,10 +104,6 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
             request.getSession().setAttribute("token", tokenResponse.toString());
             request.getSession().setAttribute(SecurityAspect.SESSION_USER_ATTR_NAME, googlePlusAuthenticatedUser);
             request.getSession().setAttribute(SecurityAspect.USER_IN_SESSION_EMAIL, tokenInfo.getEmail());
-            User user =new User();
-            user.setEmail(tokenInfo.getEmail());
-            userAndDeviceService.createOrUpdateUser(user);
-
             return GSON.toJson("Successfully connected user.");
         } catch (TokenResponseException e) {
             response.setStatus(500);

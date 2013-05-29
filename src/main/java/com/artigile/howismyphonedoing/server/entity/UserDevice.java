@@ -4,6 +4,7 @@ package com.artigile.howismyphonedoing.server.entity;
  * @author IoaN, 5/28/13 9:25 PM
  */
 public class UserDevice {
+    private String userEmail;
 
     private String registeredId;
 
@@ -35,6 +36,14 @@ public class UserDevice {
         this.deviceModel = deviceModel;
     }
 
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -43,12 +52,15 @@ public class UserDevice {
         UserDevice that = (UserDevice) o;
 
         if (registeredId != null ? !registeredId.equals(that.registeredId) : that.registeredId != null) return false;
+        if (userEmail != null ? !userEmail.equals(that.userEmail) : that.userEmail != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return registeredId != null ? registeredId.hashCode() : 0;
+        int result = userEmail != null ? userEmail.hashCode() : 0;
+        result = 31 * result + (registeredId != null ? registeredId.hashCode() : 0);
+        return result;
     }
 }

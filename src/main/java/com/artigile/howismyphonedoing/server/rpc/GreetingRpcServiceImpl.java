@@ -1,7 +1,7 @@
 package com.artigile.howismyphonedoing.server.rpc;
 
 import com.artigile.howismyphonedoing.client.rpc.GreetingRpcService;
-import com.artigile.howismyphonedoing.server.entity.User;
+import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.gcmserver.Message;
 import com.artigile.howismyphonedoing.server.service.MessagingService;
 import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * The server side implementation of the RPC service.
@@ -56,13 +57,13 @@ public class GreetingRpcServiceImpl extends AbstractRpcService implements Greeti
         }
 
 */
-        User user = userAndDeviceService.getUserByEmail(getUserEmailFromSession());
-        if (user == null || user.getUserDevices() == null) {
+        Set<UserDevice> userDevice = userAndDeviceService.getDevices(getUserEmailFromSession());
+        if (userDevice.isEmpty()) {
             return "message was not sent";
         }
         Message message = new Message.Builder().addData("mydata", input).build();
         try {
-            messagingService.sendMessage(user.getUserDevices(), message);
+            messagingService.sendMessage(userDevice, message);
         } catch (IOException e) {
             e.printStackTrace();
         }

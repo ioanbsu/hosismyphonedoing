@@ -3,7 +3,6 @@ package com.artigile.howismyphonedoing.server.service;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.gcmserver.*;
 import com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver;
-import com.artigile.howismyphonedoing.server.service.cloudutil.PhoneDatastore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +29,6 @@ public class MessagingServiceImpl implements MessagingService {
     private Sender sender;
     @Autowired
     private KeysResolver apiKeyResolver;
-
     @Autowired
     private UserAndDeviceService userAndDeviceService;
 
@@ -102,14 +100,14 @@ public class MessagingServiceImpl implements MessagingService {
                         if (canonicalRegId != null) {
                             // same device has more than on registration id: update it
                             logger.info("canonicalRegId " + canonicalRegId);
-                            PhoneDatastore.updateRegistration(regId, canonicalRegId);
+                            userAndDeviceService.updateRegistration(regId, canonicalRegId);
                         }
                     } else {
                         String error = result.getErrorCodeName();
                         if (error.equals(Constants.ERROR_NOT_REGISTERED)) {
                             // application has been removed from device - unregister it
                             logger.info("Unregistered device: " + regId);
-                            PhoneDatastore.unregister(regId);
+                            userAndDeviceService.unregister(regId);
                         } else {
                             logger.severe("Error sending message to " + regId + ": " + error);
                         }

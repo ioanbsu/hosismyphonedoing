@@ -1,18 +1,19 @@
 package com.artigile.howismyphonedoing.server.service;
 
-import com.artigile.howismyphonedoing.server.entity.User;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
+
+import java.util.Set;
 
 /**
  * @author IoaN, 5/28/13 9:27 PM
  */
 public interface UserAndDeviceService {
 
-    void createOrUpdateUser(User user);
+    void register(UserDevice userDevice);
 
-    void createOrUpdateUserDevice(String userEmail, UserDevice userDevice);
+    void unregister(String registeredDeviceId);
 
-    void removeUserDevice(String userEmail, UserDevice userDevice);
+    void updateRegistration(String oldId, String newId);
 
-    User getUserByEmail(String userEmail);
+    Set<UserDevice> getDevices(String userEmail);
 }

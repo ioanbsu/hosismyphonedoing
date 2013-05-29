@@ -3,7 +3,6 @@ package com.artigile.howismyphonedoing.server.servlet;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.service.TestService;
 import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
-import com.artigile.howismyphonedoing.server.service.cloudutil.PhoneDatastore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
@@ -39,8 +38,8 @@ public class RegisterDeviceServlet extends AbstractServlet {
         String userEmail = "ioanbsu1@gmail.com";//getParameter(request, USER_EMAIL_ID);
         UserDevice userDevice = new UserDevice();
         userDevice.setRegisteredId(regId);
-        userAndDeviceService.createOrUpdateUserDevice(userEmail, userDevice);
-        PhoneDatastore.register(regId);
+        userDevice.setUserEmail(userEmail);
+        userAndDeviceService.register(userDevice);
     }
 
     @Override
@@ -49,8 +48,7 @@ public class RegisterDeviceServlet extends AbstractServlet {
         String userEmail = "ioanbsu1@gmail.com";//getParameter(request, USER_EMAIL_ID);
         UserDevice userDevice = new UserDevice();
         userDevice.setRegisteredId(regId);
-        userAndDeviceService.createOrUpdateUserDevice(userEmail, userDevice);
-        PhoneDatastore.register(regId);
+        userAndDeviceService.register(userDevice);
         setSuccess(response);
         System.out.println(testService);
         return null;
