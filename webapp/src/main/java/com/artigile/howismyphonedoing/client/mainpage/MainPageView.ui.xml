@@ -14,7 +14,9 @@
                 <g:Label>Hello World here!!!</g:Label>
                 <g:Button text="Log out" ui:field="logoutButton"/>
                 <g:Button text="send message" ui:field="sendTextToPhone"/>
+                <g:Button text="getMyPhoneInfo" ui:field="phoneInfoButton"/>
                 <g:TextBox ui:field="textToSend"/>
+                <g:Label ui:field="phoneInfo"/>
             </g:FlowPanel>
         </g:center>
 

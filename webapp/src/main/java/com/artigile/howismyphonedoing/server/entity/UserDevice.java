@@ -1,5 +1,7 @@
 package com.artigile.howismyphonedoing.server.entity;
 
+import com.artigile.howismyphonedoing.api.model.PhoneModel;
+
 /**
  * @author IoaN, 5/28/13 9:25 PM
  */
@@ -7,10 +9,7 @@ public class UserDevice {
     private String userEmail;
 
     private String registeredId;
-
-    private String deviceName;
-
-    private String deviceModel;
+    private PhoneModel phoneModel;
 
     public String getRegisteredId() {
         return registeredId;
@@ -20,20 +19,12 @@ public class UserDevice {
         this.registeredId = registeredId;
     }
 
-    public String getDeviceName() {
-        return deviceName;
+    public PhoneModel getPhoneModel() {
+        return phoneModel;
     }
 
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
-    }
-
-    public String getDeviceModel() {
-        return deviceModel;
-    }
-
-    public void setDeviceModel(String deviceModel) {
-        this.deviceModel = deviceModel;
+    public void setPhoneModel(PhoneModel phoneModel) {
+        this.phoneModel = phoneModel;
     }
 
     public String getUserEmail() {

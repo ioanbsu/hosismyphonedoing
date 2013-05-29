@@ -69,6 +69,15 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
         });
     }
 
+    public void getPhonesInfo() {
+        greetingRpcServiceAsync.getPhoneInfo(new AsyncCallbackImpl<String>() {
+            @Override
+            public void success(String result) {
+                view.setPhoneInfo(result);
+            }
+        });
+    }
+
     public native void exportStaticMethod(MainPagePresenter thiz) /*-{
         var _this = this;
 
@@ -76,6 +85,4 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
             _this.@com.artigile.howismyphonedoing.client.mainpage.MainPagePresenter::onGooglePlusCallbackEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(code, accessToken, idToken, error);
         }
     }-*/;
-
-
 }

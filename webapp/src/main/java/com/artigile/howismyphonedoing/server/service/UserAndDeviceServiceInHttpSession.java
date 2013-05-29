@@ -16,6 +16,7 @@ public class UserAndDeviceServiceInHttpSession implements UserAndDeviceService {
 
     @Override
     public void register(UserDevice userDevice) {
+        usersMap.remove(userDevice);
         usersMap.add(userDevice);
     }
 

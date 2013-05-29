@@ -11,16 +11,23 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.artigile.android</groupId>
     <artifactId>checkmyphone</artifactId>
-    <version>1.2-SNAPSHOT</version>
     <properties>
         <android.version>4.2.2_r2</android.version>
     </properties>
 
     <packaging>apk</packaging>
-    <name>Google Places API</name>
+    <name>Hos Is My Phone Doing Android</name>
 
 
     <dependencies>
+        <dependency>
+            <groupId>com.artigile.howismyphonedoing</groupId>
+            <artifactId>communicationapi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
         <dependency>
             <groupId>android</groupId>
             <artifactId>android</artifactId>

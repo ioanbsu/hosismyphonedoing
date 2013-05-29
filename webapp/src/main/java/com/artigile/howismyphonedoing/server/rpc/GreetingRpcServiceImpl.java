@@ -5,6 +5,7 @@ import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.gcmserver.Message;
 import com.artigile.howismyphonedoing.server.service.MessagingService;
 import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
+import com.google.gson.Gson;
 import org.gwtwidgets.server.spring.ServletUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,6 +77,15 @@ public class GreetingRpcServiceImpl extends AbstractRpcService implements Greeti
 
         return "Hello, " + input + "!<br><br>I am running " + serverInfo
                 + ".<br><br>It looks like you are using:<br>" + userAgent;
+    }
+
+    @Override
+    public String getPhoneInfo() {
+        Set<UserDevice> userDevice = userAndDeviceService.getDevices(getUserEmailFromSession());
+        for (UserDevice device : userDevice) {
+            return new Gson().toJson(device.getPhoneModel());
+        }
+        return "no phones found";
     }
 
     /**

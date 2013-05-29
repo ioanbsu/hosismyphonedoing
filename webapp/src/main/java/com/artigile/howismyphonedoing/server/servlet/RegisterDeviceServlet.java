@@ -1,8 +1,10 @@
 package com.artigile.howismyphonedoing.server.servlet;
 
+import com.artigile.howismyphonedoing.api.model.PhoneModel;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.service.TestService;
 import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
@@ -46,8 +48,13 @@ public class RegisterDeviceServlet extends AbstractServlet {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String regId = phoneId;//getParameter(request, PARAMETER_REG_ID);
         String userEmail = "ioanbsu1@gmail.com";//getParameter(request, USER_EMAIL_ID);
+        String deviceInfo=request.getParameter("phoneInfo");
+        Gson gson=new Gson();
+        PhoneModel phoneModel=gson.getAdapter(PhoneModel.class).fromJson(deviceInfo);
         UserDevice userDevice = new UserDevice();
+        userDevice.setUserEmail(userEmail);
         userDevice.setRegisteredId(regId);
+        userDevice.setPhoneModel(phoneModel);
         userAndDeviceService.register(userDevice);
         setSuccess(response);
         System.out.println(testService);
