@@ -2,7 +2,6 @@ package com.artigile.howismyphonedoing.server.rpc;
 
 import com.artigile.howismyphonedoing.client.exception.UserNotLoggedInException;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcService;
-import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.service.SecurityAspect;
 import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
 import com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver;

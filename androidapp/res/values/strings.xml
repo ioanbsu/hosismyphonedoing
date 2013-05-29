@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">How is my phone doing?</string>
+    <string name="unregister">Unregister</string>
+    <string name="sample_menu_item">clickMe</string>
+    <string name="already_registered">Device had been already registered</string>
+    <string name="server_registering">registering server</string>
+    <string name="server_registered">server had been registered</string>
+    <string name="server_register_error">server registration error</string>
+    <string name="server_unregistered">server unregistered</string>
+    <string name="server_unregister_error">server unregistered</string>
+    <string name="error_config">configuration is incorrect</string>
+    <string name="gcm_registered">GCM registered</string>
+    <string name="gcm_unregistered">GCM unregistered</string>
+    <string name="gcm_message">GCM message</string>
+    <string name="gcm_deleted">GCM deleted</string>
+    <string name="gcm_error">GCM error</string>
+    <string name="gcm_recoverable_error">GCM recoverable error</string>
+    <string name="register">register</string>
+
+</resources>

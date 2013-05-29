@@ -4,7 +4,6 @@ import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.gcmserver.Message;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 /**
