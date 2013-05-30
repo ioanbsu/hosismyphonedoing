@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpSession;
+import java.io.Serializable;
 
 /**
  * @author IoaN, 5/27/13 8:21 PM
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpSession;
 @Aspect
 @Component
 @Scope(value = WebApplicationContext.SCOPE_SESSION)
-public class SecurityAspect {
+public class SecurityAspect implements Serializable{
     public static final String SESSION_USER_ATTR_NAME = "googlePlusLoggedInUser";
     public static final String USER_IN_SESSION_EMAIL = "userInSessionEmail";
 

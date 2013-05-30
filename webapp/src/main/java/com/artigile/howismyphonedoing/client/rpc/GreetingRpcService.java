@@ -8,7 +8,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("../remoteService/mainHowIsMyPhoneDoing")
 public interface GreetingRpcService extends RemoteService {
-  String greetServer(String name) throws IllegalArgumentException;
+  String sendSimpleTextMessage(String name) throws IllegalArgumentException;
 
     String getPhoneInfo();
 }

@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.os.Build;
-import android.util.JsonWriter;
 import android.util.Log;
 import com.artigile.checkmyphone.util.GCMRegistrar;
 import com.artigile.howismyphonedoing.api.model.PhoneModel;
@@ -38,11 +37,8 @@ public final class ServerUtilities {
         Log.i(TAG, "registering device (regId = " + regId + ")");
         String serverUrl = SERVER_URL + "/register";
         Account[] accounts = AccountManager.get(context).getAccountsByType("com.google");
-        PhoneModel phoneModel = buildPhoneModel();
-        Gson gson=new Gson();
         Map<String, String> params = new HashMap<String, String>();
         params.put("userEmail", accounts[0].name);
-        params.put("phoneInfo", gson.toJson(phoneModel));
         params.put("regId", regId);
         long backoff = BACKOFF_MILLI_SECONDS + random.nextInt(1000);
         // Once GCM returns a registration id, we need to register it in the
@@ -84,33 +80,6 @@ public final class ServerUtilities {
         displayMessage(context, message);
     }
 
-    private static PhoneModel buildPhoneModel() {
-        PhoneModel phoneModel = new PhoneModel();
-        phoneModel.setBoard(Build.BOARD);
-        phoneModel.setModel(Build.MODEL);
-        phoneModel.setBootLoader(Build.BOOTLOADER);
-        phoneModel.setBrand(Build.BRAND);
-        phoneModel.setCpuAbi(Build.CPU_ABI);
-        phoneModel.setCpuAbi2(Build.CPU_ABI2);
-        phoneModel.setDevice(Build.DEVICE);
-        phoneModel.setDisplay(Build.DISPLAY);
-        phoneModel.setFingerprint(Build.FINGERPRINT);
-        phoneModel.setHardware(Build.HARDWARE);
-        phoneModel.setHost(Build.HOST);
-        phoneModel.setId(Build.ID);
-        phoneModel.setManufacturer(Build.MANUFACTURER);
-        phoneModel.setModel(Build.MODEL);
-        phoneModel.setProduct(Build.PRODUCT);
-        phoneModel.setSerial(Build.SERIAL);
-        phoneModel.setTags(Build.TAGS);
-        phoneModel.setTime(Build.TIME);
-        phoneModel.setType(Build.TYPE);
-        phoneModel.setUnknown(Build.UNKNOWN);
-        phoneModel.setUser(Build.USER);
-        phoneModel.setRadioVersion(Build.getRadioVersion());
-        return phoneModel;
-    }
-
     /**
      * Unregister this account/device pair within the server.
      */
@@ -143,7 +112,7 @@ public final class ServerUtilities {
      * @param params   request parameters.
      * @throws IOException propagated from POST.
      */
-    private static void post(String endpoint, Map<String, String> params)
+    public static void post(String endpoint, Map<String, String> params)
             throws IOException {
         URL url;
         try {
@@ -183,6 +152,8 @@ public final class ServerUtilities {
             if (status != 200) {
                 throw new IOException("Post failed with error code " + status);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             if (conn != null) {
                 conn.disconnect();

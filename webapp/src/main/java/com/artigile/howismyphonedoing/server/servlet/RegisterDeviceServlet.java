@@ -1,15 +1,18 @@
 package com.artigile.howismyphonedoing.server.servlet;
 
+import com.artigile.howismyphonedoing.api.EventType;
 import com.artigile.howismyphonedoing.api.model.PhoneModel;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.service.TestService;
 import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
+import com.google.appengine.api.channel.ChannelMessage;
+import com.google.appengine.api.channel.ChannelService;
+import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.logging.Logger;
@@ -33,31 +36,22 @@ public class RegisterDeviceServlet extends AbstractServlet {
     private UserAndDeviceService userAndDeviceService;
     private String phoneId = "APA91bE1gYlPjxFqDx692-oFLvG9jlQ0CN_g-Shp3yHqGDtr0jeDWEb3sMkEMUoaquVAKK5LNNm2wOvKhFLUPYNDtTYj8xnwTh0UzODr7Ff6csX_Ewb0dKox439k25YXtlPgJomko77ES5NWvbk9-aX3T0Lr9cKpMFM-Dn4POsL4d0amTHFgZjE";
 
-    @PostConstruct
-    public void init() {
-        //for testing only registering the device ID.
-        String regId = phoneId;//getParameter(request, PARAMETER_REG_ID);
-        String userEmail = "ioanbsu1@gmail.com";//getParameter(request, USER_EMAIL_ID);
-        UserDevice userDevice = new UserDevice();
-        userDevice.setRegisteredId(regId);
-        userDevice.setUserEmail(userEmail);
-        userAndDeviceService.register(userDevice);
-    }
-
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String regId = phoneId;//getParameter(request, PARAMETER_REG_ID);
+        String eventType = request.getParameter(EventType.TYPE);
         String userEmail = "ioanbsu1@gmail.com";//getParameter(request, USER_EMAIL_ID);
-        String deviceInfo=request.getParameter("phoneInfo");
-        Gson gson=new Gson();
-        PhoneModel phoneModel=gson.getAdapter(PhoneModel.class).fromJson(deviceInfo);
-        UserDevice userDevice = new UserDevice();
-        userDevice.setUserEmail(userEmail);
-        userDevice.setRegisteredId(regId);
-        userDevice.setPhoneModel(phoneModel);
-        userAndDeviceService.register(userDevice);
-        setSuccess(response);
-        System.out.println(testService);
+        if (EventType.PHONE_INFO.equals(eventType)) {
+            String deviceInfo = request.getParameter("phoneInfo");
+            ChannelService channelService = ChannelServiceFactory.getChannelService();
+            channelService.sendMessage(new ChannelMessage(userEmail, deviceInfo));
+        } else {
+            String regId = phoneId;//getParameter(request, PARAMETER_REG_ID);
+            UserDevice userDevice = new UserDevice();
+            userDevice.setUserEmail(userEmail);
+            userDevice.setRegisteredId(regId);
+            userAndDeviceService.register(userDevice);
+            setSuccess(response);
+        }
         return null;
     }
 

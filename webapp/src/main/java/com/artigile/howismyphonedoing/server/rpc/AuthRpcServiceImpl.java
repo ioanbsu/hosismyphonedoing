@@ -15,6 +15,8 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Tokeninfo;
+import com.google.appengine.api.channel.ChannelService;
+import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.gson.Gson;
 import org.gwtwidgets.server.spring.ServletUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +105,7 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
             request.getSession().setAttribute("token", tokenResponse.toString());
             request.getSession().setAttribute(SecurityAspect.SESSION_USER_ATTR_NAME, googlePlusAuthenticatedUser);
             request.getSession().setAttribute(SecurityAspect.USER_IN_SESSION_EMAIL, tokenInfo.getEmail());
-            return GSON.toJson("Successfully connected user.");
+            return initServerGaeChanel(tokenInfo.getEmail());
         } catch (TokenResponseException e) {
             response.setStatus(500);
             return GSON.toJson("Failed to upgrade the authorization code.");
@@ -113,6 +115,11 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
                     e.getMessage());
         }
 
+    }
+
+    private String initServerGaeChanel(String email) {
+        ChannelService channelService = ChannelServiceFactory.getChannelService();
+        return channelService.createChannel(email);
     }
 
     @Override

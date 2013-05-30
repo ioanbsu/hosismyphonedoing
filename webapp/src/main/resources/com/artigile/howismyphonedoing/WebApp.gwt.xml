@@ -19,6 +19,7 @@
     <inherits name="net.zschech.gwt.comet.Comet"/>
     <inherits name="com.google.gwt.inject.Inject"/>
     <inherits name='com.mvp4g.Mvp4gModule'/>
+    <inherits name='com.google.gwt.appengine.channel.Channel'/>
     <!-- Specify the app entry point class.                         -->
     <entry-point class='com.artigile.howismyphonedoing.client.WebApp'/>
 

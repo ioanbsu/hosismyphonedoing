@@ -1,11 +1,11 @@
 package com.artigile.howismyphonedoing.server.rpc;
 
+import com.artigile.howismyphonedoing.api.EventType;
 import com.artigile.howismyphonedoing.client.rpc.GreetingRpcService;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.gcmserver.Message;
 import com.artigile.howismyphonedoing.server.service.MessagingService;
 import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
-import com.google.gson.Gson;
 import org.gwtwidgets.server.spring.ServletUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class GreetingRpcServiceImpl extends AbstractRpcService implements Greeti
     @Autowired
     private MessagingService messagingService;
 
-    public String greetServer(String input) throws IllegalArgumentException {
+    public String sendSimpleTextMessage(String input) throws IllegalArgumentException {
    /*     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query.Filter filter=new Query.FilterPredicate("firstName", Query.FilterOperator.EQUAL, "Antonio");
         Query q=new Query("Test").setFilter(filter);
@@ -81,11 +81,18 @@ public class GreetingRpcServiceImpl extends AbstractRpcService implements Greeti
 
     @Override
     public String getPhoneInfo() {
+        Message message = new Message.Builder().addData(EventType.TYPE, EventType.PHONE_INFO).build();
+
         Set<UserDevice> userDevice = userAndDeviceService.getDevices(getUserEmailFromSession());
         for (UserDevice device : userDevice) {
-            return new Gson().toJson(device.getPhoneModel());
+            try {
+                messagingService.sendMessage(userDevice, message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return "message sent";
         }
-        return "no phones found";
+        return "message sent";
     }
 
     /**

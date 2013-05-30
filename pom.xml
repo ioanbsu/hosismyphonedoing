@@ -84,6 +84,7 @@
         <guava.version>14.0</guava.version>
         <google-play-services.version>7</google-play-services.version>
         <jukito.version>1.1</jukito.version>
+        <gwt-gae-channel.version>2.0.0</gwt-gae-channel.version>
     </properties>
 
     <dependencyManagement>
@@ -204,6 +205,11 @@
                 <artifactId>google-play-services</artifactId>
                 <version>${google-play-services.version}</version>
                 <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>com.google.appengine</groupId>
+                <artifactId>gwt-gae-channel</artifactId>
+                <version>${gwt-gae-channel.version}</version>
             </dependency>
 
             <dependency>
