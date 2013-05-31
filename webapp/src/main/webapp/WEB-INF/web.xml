@@ -35,23 +35,11 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <servlet>
-        <servlet-name>cometServlet</servlet-name>
-        <servlet-class>com.artigile.howismyphonedoing.server.servlet.InstantMessagingServlet</servlet-class>
-    </servlet>
-
 
     <servlet-mapping>
         <servlet-name>remoteService</servlet-name>
         <url-pattern>/remoteService/*</url-pattern>
     </servlet-mapping>
-
-
-    <servlet-mapping>
-        <servlet-name>cometServlet</servlet-name>
-        <url-pattern>/cometServlet/*</url-pattern>
-    </servlet-mapping>
-
 
     <!-- Default page to serve -->
     <welcome-file-list>

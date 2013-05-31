@@ -24,7 +24,6 @@ public class RpcConfig extends GenericWebApplicationContext {
         mappings.put("/mainHowIsMyPhoneDoing", "mainHowIsMyPhoneDoingServiceExporter");
         mappings.put("/authService", "authServiceExporter");
         mappings.put("/register", "registerDeviceServlet");
-        mappings.put("/testComet", "testCometServlet");
         simpleUrlHandlerMapping.setMappings(mappings);
         return simpleUrlHandlerMapping;
     }

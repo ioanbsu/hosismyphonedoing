@@ -70,10 +70,6 @@
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.zschech</groupId>
-            <artifactId>gwt-comet</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
         </dependency>
