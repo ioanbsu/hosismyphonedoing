@@ -2,8 +2,11 @@
 <module>
   <!-- Inherit our applications main module.                      -->
   <inherits name='com.artigile.howismyphonedoing.WebApp' />
+  <inherits name="com.google.gwt.inject.Inject"/>
+  <inherits name='com.mvp4g.Mvp4gModule'/>
+  <inherits name='com.google.gwt.appengine.channel.Channel'/>
 
   <!-- Specify the path to any remote services.                   -->
-  <servlet path="/WebApp/greet" class="com.artigile.howismyphonedoing.server.rpc.GreetingRpcServiceImpl" />
+  <!--<servlet path="/WebApp/greet" class="com.artigile.howismyphonedoing.server.rpc.GreetingRpcServiceImpl" />-->
 
 </module>

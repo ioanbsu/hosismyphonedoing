@@ -1,6 +1,5 @@
 package com.artigile.checkmyphone;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.artigile.checkmyphone.util.GCMRegistrar;
+import roboguice.activity.RoboActivity;
+
+import javax.inject.Singleton;
 
 import static com.artigile.checkmyphone.CommonUtilities.*;
 
@@ -21,7 +24,8 @@ import static com.artigile.checkmyphone.CommonUtilities.*;
  * Date: 5/20/13
  * Time: 3:47 PM
  */
-public class DemoActivity extends Activity {
+@Singleton
+public class DemoActivity extends RoboActivity {
 
     private final BroadcastReceiver mHandleMessageReceiver =
             new BroadcastReceiver() {
@@ -46,6 +50,10 @@ public class DemoActivity extends Activity {
         GCMRegistrar.checkManifest(this);
         setContentView(R.layout.main);
         mDisplay = (TextView) findViewById(R.id.display);
+//        registerPhoneIfNecessary();
+    }
+
+    private void registerPhoneIfNecessary() {
         registerReceiver(mHandleMessageReceiver,
                 new IntentFilter(DISPLAY_MESSAGE_ACTION));
         final String regId = GCMRegistrar.getRegistrationId(this);
@@ -121,7 +129,15 @@ public class DemoActivity extends Activity {
     }
 
     public void registerDevice(View v) {
-        GCMRegistrar.register(this,SENDER_ID);
+        GCMRegistrar.register(this, SENDER_ID);
+    }
+
+    public void testButton(View v) {
+        Context context = getApplicationContext();
+        CharSequence text = "Button clicked";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     @Override

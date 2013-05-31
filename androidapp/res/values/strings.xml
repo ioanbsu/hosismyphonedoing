@@ -17,5 +17,6 @@
     <string name="gcm_error">GCM error</string>
     <string name="gcm_recoverable_error">GCM recoverable error</string>
     <string name="register">register</string>
+    <string name="test">Test Button</string>
 
 </resources>
