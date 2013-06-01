@@ -1,5 +1,7 @@
 package com.artigile.checkmyphone;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -86,6 +88,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             Map<String, String> params = new HashMap<String, String>();
             params.put(CommonContants.MESSAGE_EVENT_TYPE, EventType.PHONE_INFO.toString());
             params.put("phoneInfo", gson.toJson(phoneModel));
+            params.put(CommonContants.USER_EMAIL,getUserEmail(context));
             try {
                 webServerUtilities.post(serverUrl, params);
             } catch (IOException e) {
@@ -106,6 +109,12 @@ public class GCMIntentService extends GCMBaseIntentService {
             // notifies user
             generateNotification(context, message);
         }
+    }
+
+
+    private String getUserEmail(Context context) {
+        Account[] accounts = AccountManager.get(context).getAccountsByType("com.google");
+        return accounts[0].name;
     }
 
     @Override

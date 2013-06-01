@@ -22,7 +22,13 @@ public class UserAndDeviceServiceInHttpSession implements UserAndDeviceService {
 
     @Override
     public void unregister(String registeredDeviceId) {
-        usersMap.remove(registeredDeviceId);
+        Set<UserDevice> newUserMap = new HashSet<>();
+        for (UserDevice userDevice : usersMap) {
+            if (!registeredDeviceId.equals(userDevice.getRegisteredId())) {
+                newUserMap.add(userDevice);
+            }
+        }
+        usersMap = newUserMap;
     }
 
     @Override
