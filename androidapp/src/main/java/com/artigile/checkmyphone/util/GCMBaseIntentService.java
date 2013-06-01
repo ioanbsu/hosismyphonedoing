@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.Log;
+import roboguice.service.RoboIntentService;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +26,7 @@ import static com.artigile.checkmyphone.util.GCMConstants.*;
  * <p>
  * Subclasses must provide a public no-arg constructor.
  */
-public abstract class GCMBaseIntentService extends IntentService {
+public abstract class GCMBaseIntentService extends RoboIntentService{
 
     /**
      * Old TAG used for logging. Marked as deprecated since it should have
@@ -35,7 +36,7 @@ public abstract class GCMBaseIntentService extends IntentService {
     public static final String TAG = "GCMBaseIntentService";
 
     private final GCMLogger mLogger = new GCMLogger("GCMBaseIntentService",
-            "[" + getClass().getName() + "]: ");
+            "[GCMBaseIntentService]: ");
 
     // wakelock
     private static final String WAKELOCK_KEY = "GCM_LIB";

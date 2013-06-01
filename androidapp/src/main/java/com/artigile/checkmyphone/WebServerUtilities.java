@@ -3,12 +3,12 @@ package com.artigile.checkmyphone;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
 import com.artigile.checkmyphone.util.GCMRegistrar;
-import com.artigile.howismyphonedoing.api.model.PhoneModel;
-import com.google.gson.Gson;
+import com.artigile.howismyphonedoing.api.CommonContants;
+import com.artigile.howismyphonedoing.api.RegistrarionType;
 
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -24,22 +24,24 @@ import static com.artigile.checkmyphone.CommonUtilities.*;
 /**
  * Helper class used to communicate with the demo server.
  */
-public final class ServerUtilities {
+@Singleton
+public final class WebServerUtilities {
 
     private static final int MAX_ATTEMPTS = 5;
     private static final int BACKOFF_MILLI_SECONDS = 2000;
     private static final Random random = new Random();
+    private static final String serverUrl = SERVER_URL + "/register";
 
     /**
      * Register this account/device pair within the server.
      */
-    static void register(final Context context, final String regId) {
+    public void register(final Context context, final String regId) {
         Log.i(TAG, "registering device (regId = " + regId + ")");
-        String serverUrl = SERVER_URL + "/register";
-        Account[] accounts = AccountManager.get(context).getAccountsByType("com.google");
+        String userEmail = getUserEmail(context);
         Map<String, String> params = new HashMap<String, String>();
-        params.put("userEmail", accounts[0].name);
-        params.put("regId", regId);
+        params.put(CommonContants.REGISTRATION_ACTION_TYPE, RegistrarionType.REGISTER.toString());
+        params.put(CommonContants.USER_EMAIL, userEmail);
+        params.put(CommonContants.REG_ID, regId);
         long backoff = BACKOFF_MILLI_SECONDS + random.nextInt(1000);
         // Once GCM returns a registration id, we need to register it in the
         // demo server. As the server might be down, we will retry it a couple
@@ -80,14 +82,21 @@ public final class ServerUtilities {
         displayMessage(context, message);
     }
 
+    private String getUserEmail(Context context) {
+        Account[] accounts = AccountManager.get(context).getAccountsByType("com.google");
+        return accounts[0].name;
+    }
+
     /**
      * Unregister this account/device pair within the server.
      */
-    static void unregister(final Context context, final String regId) {
+    public void unregister(final Context context, final String regId) {
         Log.i(TAG, "unregistering device (regId = " + regId + ")");
-        String serverUrl = SERVER_URL + "/unregister";
         Map<String, String> params = new HashMap<String, String>();
-        params.put("regId", regId);
+        String userEmail = getUserEmail(context);
+        params.put(CommonContants.REGISTRATION_ACTION_TYPE, RegistrarionType.UNREGISTER.toString());
+        params.put(CommonContants.USER_EMAIL, userEmail);
+        params.put(CommonContants.REG_ID, regId);
         try {
             post(serverUrl, params);
             GCMRegistrar.setRegisteredOnServer(context, false);
@@ -112,7 +121,7 @@ public final class ServerUtilities {
      * @param params   request parameters.
      * @throws IOException propagated from POST.
      */
-    public static void post(String endpoint, Map<String, String> params)
+    public void post(String endpoint, Map<String, String> params)
             throws IOException {
         URL url;
         try {

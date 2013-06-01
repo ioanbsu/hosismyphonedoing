@@ -11,6 +11,8 @@ public class UserDevice {
     private String registeredId;
     private PhoneModel phoneModel;
 
+
+
     public String getRegisteredId() {
         return registeredId;
     }

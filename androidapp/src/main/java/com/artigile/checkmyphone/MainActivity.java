@@ -14,7 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.artigile.checkmyphone.util.GCMRegistrar;
 import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectView;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import static com.artigile.checkmyphone.CommonUtilities.*;
@@ -25,18 +27,20 @@ import static com.artigile.checkmyphone.CommonUtilities.*;
  * Time: 3:47 PM
  */
 @Singleton
-public class DemoActivity extends RoboActivity {
+public class MainActivity extends RoboActivity {
 
-    private final BroadcastReceiver mHandleMessageReceiver =
-            new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
-                    mDisplay.append(newMessage + "\n");
-                }
-            };
+    private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
+            mDisplay.append(newMessage + "\n");
+        }
+    };
+    @InjectView(value = R.id.display)
     TextView mDisplay;
     AsyncTask<Void, Void, Void> mRegisterTask;
+    @Inject
+    private WebServerUtilities webServerUtilities;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,44 +53,7 @@ public class DemoActivity extends RoboActivity {
         // while developing the app, then uncomment it when it's ready.
         GCMRegistrar.checkManifest(this);
         setContentView(R.layout.main);
-        mDisplay = (TextView) findViewById(R.id.display);
-//        registerPhoneIfNecessary();
-    }
-
-    private void registerPhoneIfNecessary() {
-        registerReceiver(mHandleMessageReceiver,
-                new IntentFilter(DISPLAY_MESSAGE_ACTION));
-        final String regId = GCMRegistrar.getRegistrationId(this);
-        if (regId.equals("")) {
-            // Automatically registers application on startup.
-            GCMRegistrar.register(this, SENDER_ID);
-        } else {
-            // Device is already registered on GCM, check server.
-            if (GCMRegistrar.isRegisteredOnServer(this)) {
-                // Skips registration.
-                mDisplay.append(getString(R.string.already_registered) + "\n");
-            } else {
-                // Try to register again, but not in the UI thread.
-                // It's also necessary to cancel the thread onDestroy(),
-                // hence the use of AsyncTask instead of a raw thread.
-                final Context context = this;
-                mRegisterTask = new AsyncTask<Void, Void, Void>() {
-
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        ServerUtilities.register(context, regId);
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void result) {
-                        mRegisterTask = null;
-                    }
-
-                };
-                mRegisterTask.execute(null, null, null);
-            }
-        }
+        registerPhoneIfNecessary();
     }
 
     @Override
@@ -152,8 +119,42 @@ public class DemoActivity extends RoboActivity {
 
     private void checkNotNull(Object reference, String name) {
         if (reference == null) {
-            throw new NullPointerException(
-                    getString(R.string.error_config, name));
+            throw new NullPointerException(getString(R.string.error_config, name));
+        }
+    }
+
+    private void registerPhoneIfNecessary() {
+        registerReceiver(mHandleMessageReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));
+        final String regId = GCMRegistrar.getRegistrationId(this);
+        if (regId.equals("")) {
+            // Automatically registers application on startup.
+            GCMRegistrar.register(this, SENDER_ID);
+        } else {
+            // Device is already registered on GCM, check server.
+            if (GCMRegistrar.isRegisteredOnServer(this)) {
+                // Skips registration.
+                mDisplay.append(getString(R.string.already_registered) + "\n");
+            } else {
+                // Try to register again, but not in the UI thread.
+                // It's also necessary to cancel the thread onDestroy(),
+                // hence the use of AsyncTask instead of a raw thread.
+                final Context context = this;
+                mRegisterTask = new AsyncTask<Void, Void, Void>() {
+
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        webServerUtilities.register(context, regId);
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void result) {
+                        mRegisterTask = null;
+                    }
+
+                };
+                mRegisterTask.execute(null, null, null);
+            }
         }
     }
 

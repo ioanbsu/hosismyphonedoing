@@ -1,14 +1,14 @@
 package com.artigile.howismyphonedoing.server.servlet;
 
+import com.artigile.howismyphonedoing.api.CommonContants;
 import com.artigile.howismyphonedoing.api.EventType;
-import com.artigile.howismyphonedoing.api.model.PhoneModel;
+import com.artigile.howismyphonedoing.api.RegistrarionType;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.service.TestService;
 import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,8 +27,6 @@ public class RegisterDeviceServlet extends AbstractServlet {
 
     // change to true to allow GET calls
     static final boolean DEBUG = true;
-    private static final String PARAMETER_REG_ID = "regId";
-    private static final String USER_EMAIL_ID = "userEmail";
     protected final Logger logger = Logger.getLogger(getClass().getName());
     @Autowired
     private TestService testService;
@@ -38,19 +36,28 @@ public class RegisterDeviceServlet extends AbstractServlet {
 
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String eventType = request.getParameter(EventType.TYPE);
-        String userEmail = "ioanbsu1@gmail.com";//getParameter(request, USER_EMAIL_ID);
-        if (EventType.PHONE_INFO.equals(eventType)) {
-            String deviceInfo = request.getParameter("phoneInfo");
-            ChannelService channelService = ChannelServiceFactory.getChannelService();
-            channelService.sendMessage(new ChannelMessage(userEmail, deviceInfo));
-        } else {
-            String regId = phoneId;//getParameter(request, PARAMETER_REG_ID);
+        String userEmail = request.getParameter(CommonContants.USER_EMAIL);
+        String regId = request.getParameter(CommonContants.REG_ID);
+
+        if (RegistrarionType.REGISTER.of(request.getParameter(CommonContants.REGISTRATION_ACTION_TYPE))) {
+            logger.info("Registering new device: " + regId);
             UserDevice userDevice = new UserDevice();
             userDevice.setUserEmail(userEmail);
             userDevice.setRegisteredId(regId);
             userAndDeviceService.register(userDevice);
             setSuccess(response);
+        }
+        if (RegistrarionType.UNREGISTER.of(request.getParameter(CommonContants.REGISTRATION_ACTION_TYPE))) {
+            logger.info("Unregistering device: " + regId);
+            userAndDeviceService.unregister(regId);
+            setSuccess(response);
+        }
+        String eventType = request.getParameter(CommonContants.MESSAGE_EVENT_TYPE);
+        if (EventType.PHONE_INFO.of(eventType)) {
+            logger.info("Parsing info about phone.");
+            String deviceInfo = request.getParameter("phoneInfo");
+            ChannelService channelService = ChannelServiceFactory.getChannelService();
+            channelService.sendMessage(new ChannelMessage(userEmail, deviceInfo));
         }
         return null;
     }

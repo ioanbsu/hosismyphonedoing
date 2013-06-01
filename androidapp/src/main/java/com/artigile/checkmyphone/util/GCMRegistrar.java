@@ -6,8 +6,6 @@ package com.artigile.checkmyphone.util;
  * Time: 9:40 AM
  */
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -27,7 +25,7 @@ import java.util.Set;
 
 /**
  * Utilities for device registration.
- * <p>
+ * <p/>
  * <strong>Note:</strong> this class uses a private {@link android.content.SharedPreferences}
  * object to keep track of the registration token.
  */
@@ -40,7 +38,6 @@ public final class GCMRegistrar {
     // NOTE: cannot use TimeUnit.DAYS because it's not available on API Level 8
     public static final long DEFAULT_ON_SERVER_LIFESPAN_MS =
             1000 * 3600 * 24 * 7;
-
     private static final String TAG = "GCMRegistrar";
     private static final String BACKOFF_MS = "backoff_ms";
     private static final String GSF_PACKAGE = "com.google.android.gsf";
@@ -53,28 +50,29 @@ public final class GCMRegistrar {
             "onServerExpirationTime";
     private static final String PROPERTY_ON_SERVER_LIFESPAN =
             "onServerLifeSpan";
-
     /**
      * {@link GCMBroadcastReceiver} instance used to handle the retry intent.
-     *
-     * <p>
+     * <p/>
+     * <p/>
      * This instance cannot be the same as the one defined in the manifest
      * because it needs a different permission.
      */
     // guarded by GCMRegistrar.class
     private static GCMBroadcastReceiver sRetryReceiver;
-
     // guarded by GCMRegistrar.class
     private static Context sRetryReceiverContext;
     // guarded by GCMRegistrar.class
     private static String sRetryReceiverClassName;
-
     // guarded by GCMRegistrar.class
     private static PendingIntent sAppPendingIntent;
 
+    private GCMRegistrar() {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Checks if the device has the proper dependencies installed.
-     * <p>
+     * <p/>
      * This method should be called when the application starts to verify that
      * the device supports GCM.
      *
@@ -98,23 +96,23 @@ public final class GCMRegistrar {
 
     /**
      * Checks that the application manifest is properly configured.
-     * <p>
+     * <p/>
      * A proper configuration means:
      * <ol>
-     *    <li>It creates a custom permission called
-     *      {@code PACKAGE_NAME.permission.C2D_MESSAGE}.
-     *    <li>It defines at least one {@link android.content.BroadcastReceiver} with category
-     *      {@code PACKAGE_NAME}.
-     *    <li>The {@link android.content.BroadcastReceiver}(s) uses the
-     *      {@value GCMConstants#PERMISSION_GCM_INTENTS}
-     *      permission.
-     *    <li>The {@link android.content.BroadcastReceiver}(s) handles the 2 GCM intents
-     *      ({@value GCMConstants#INTENT_FROM_GCM_MESSAGE}
-     *      and
-     *      {@value GCMConstants#INTENT_FROM_GCM_REGISTRATION_CALLBACK}).
+     * <li>It creates a custom permission called
+     * {@code PACKAGE_NAME.permission.C2D_MESSAGE}.
+     * <li>It defines at least one {@link android.content.BroadcastReceiver} with category
+     * {@code PACKAGE_NAME}.
+     * <li>The {@link android.content.BroadcastReceiver}(s) uses the
+     * {@value GCMConstants#PERMISSION_GCM_INTENTS}
+     * permission.
+     * <li>The {@link android.content.BroadcastReceiver}(s) handles the 2 GCM intents
+     * ({@value GCMConstants#INTENT_FROM_GCM_MESSAGE}
+     * and
+     * {@value GCMConstants#INTENT_FROM_GCM_REGISTRATION_CALLBACK}).
      * </ol>
      * ...where {@code PACKAGE_NAME} is the application package.
-     * <p>
+     * <p/>
      * This method should be used during development time to verify that the
      * manifest is properly set up, but it doesn't need to be called once the
      * application is deployed to the users' devices.
@@ -168,7 +166,7 @@ public final class GCMRegistrar {
     }
 
     private static void checkReceiver(Context context,
-            Set<String> allowedReceivers, String action) {
+                                      Set<String> allowedReceivers, String action) {
         PackageManager pm = context.getPackageManager();
         String packageName = context.getPackageName();
         Intent intent = new Intent(action);
@@ -194,17 +192,17 @@ public final class GCMRegistrar {
 
     /**
      * Initiate messaging registration for the current application.
-     * <p>
+     * <p/>
      * The result will be returned as an
      * {@link GCMConstants#INTENT_FROM_GCM_REGISTRATION_CALLBACK} intent with
      * either a {@link GCMConstants#EXTRA_REGISTRATION_ID} or
      * {@link GCMConstants#EXTRA_ERROR}.
      *
-     * @param context application context.
+     * @param context   application context.
      * @param senderIds Google Project ID of the accounts authorized to send
-     *    messages to this application.
+     *                  messages to this application.
      * @throws IllegalStateException if device does not have all GCM
-     *             dependencies installed.
+     *                               dependencies installed.
      */
     public static void register(Context context, String... senderIds) {
         GCMRegistrar.resetBackoff(context);
@@ -223,7 +221,7 @@ public final class GCMRegistrar {
 
     /**
      * Unregister the application.
-     * <p>
+     * <p/>
      * The result will be returned as an
      * {@link GCMConstants#INTENT_FROM_GCM_REGISTRATION_CALLBACK} intent with an
      * {@link GCMConstants#EXTRA_UNREGISTERED} extra.
@@ -254,8 +252,8 @@ public final class GCMRegistrar {
 
     /**
      * Clear internal resources.
-     *
-     * <p>
+     * <p/>
+     * <p/>
      * This method should be called by the main activity's {@code onDestroy()}
      * method.
      */
@@ -276,7 +274,7 @@ public final class GCMRegistrar {
     }
 
     private synchronized static void setPackageNameExtra(Context context,
-            Intent intent) {
+                                                         Intent intent) {
         if (sAppPendingIntent == null) {
             log(context, Log.VERBOSE,
                     "Creating pending intent to get package name");
@@ -323,7 +321,7 @@ public final class GCMRegistrar {
      * Sets the name of the retry receiver class.
      */
     static synchronized void setRetryReceiverClassName(Context context,
-            String className) {
+                                                       String className) {
         log(context, Log.VERBOSE,
                 "Setting the name of retry receiver class to %s", className);
         sRetryReceiverClassName = className;
@@ -331,7 +329,7 @@ public final class GCMRegistrar {
 
     /**
      * Gets the current registration id for application on GCM service.
-     * <p>
+     * <p/>
      * If result is empty, the registration has failed.
      *
      * @return registration id, or empty string if the registration is not
@@ -363,7 +361,7 @@ public final class GCMRegistrar {
 
     /**
      * Clears the registration id in the persistence store.
-     *
+     * <p/>
      * <p>As a side-effect, it also expires the registeredOnServer property.
      *
      * @param context application's context.
@@ -378,7 +376,7 @@ public final class GCMRegistrar {
      * Sets the registration id in the persistence store.
      *
      * @param context application's context.
-     * @param regId registration id
+     * @param regId   registration id
      */
     static String setRegistrationId(Context context, String regId) {
         final SharedPreferences prefs = getGCMPreferences(context);
@@ -403,7 +401,7 @@ public final class GCMRegistrar {
     }
 
     private static void setRegisteredOnServer(Context context, Boolean flag,
-            long expirationTime) {
+                                              long expirationTime) {
         final SharedPreferences prefs = getGCMPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         if (flag != null) {
@@ -423,7 +421,7 @@ public final class GCMRegistrar {
     /**
      * Checks whether the device was successfully registered in the server side,
      * as set by {@link #setRegisteredOnServer(Context, boolean)}.
-     *
+     * <p/>
      * <p>To avoid the scenario where the device sends the registration to the
      * server but the server loses it, this flag has an expiration date, which
      * is {@link #DEFAULT_ON_SERVER_LIFESPAN_MS} by default (but can be changed
@@ -451,7 +449,7 @@ public final class GCMRegistrar {
      * property is valid.
      *
      * @return value set by {@link #setRegisteredOnServer(Context, boolean)} or
-     *      {@link #DEFAULT_ON_SERVER_LIFESPAN_MS} if not set.
+     *         {@link #DEFAULT_ON_SERVER_LIFESPAN_MS} if not set.
      */
     public static long getRegisterOnServerLifespan(Context context) {
         final SharedPreferences prefs = getGCMPreferences(context);
@@ -465,7 +463,7 @@ public final class GCMRegistrar {
      * flag is valid.
      */
     public static void setRegisterOnServerLifespan(Context context,
-            long lifespan) {
+                                                   long lifespan) {
         final SharedPreferences prefs = getGCMPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong(PROPERTY_ON_SERVER_LIFESPAN, lifespan);
@@ -488,7 +486,7 @@ public final class GCMRegistrar {
 
     /**
      * Resets the backoff counter.
-     * <p>
+     * <p/>
      * This method should be called after a GCM call succeeds.
      *
      * @param context application's context.
@@ -511,7 +509,7 @@ public final class GCMRegistrar {
 
     /**
      * Sets the backoff counter.
-     * <p>
+     * <p/>
      * This method should be called after a GCM call fails, passing an
      * exponential value.
      *
@@ -532,21 +530,17 @@ public final class GCMRegistrar {
     /**
      * Logs a message on logcat.
      *
-     * @param context application's context.
+     * @param context  application's context.
      * @param priority logging priority
      * @param template message's template
-     * @param args list of arguments
+     * @param args     list of arguments
      */
     private static void log(Context context, int priority, String template,
-            Object... args) {
+                            Object... args) {
         if (Log.isLoggable(TAG, priority)) {
             String message = String.format(template, args);
             Log.println(priority, TAG, "[" + context.getPackageName() + "]: "
                     + message);
         }
-    }
-
-    private GCMRegistrar() {
-        throw new UnsupportedOperationException();
     }
 }

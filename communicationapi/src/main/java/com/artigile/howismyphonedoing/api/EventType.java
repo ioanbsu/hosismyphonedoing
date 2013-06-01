@@ -5,8 +5,13 @@ package com.artigile.howismyphonedoing.api;
  * Date: 5/29/13
  * Time: 5:22 PM
  */
-public class EventType {
+public enum EventType {
+    PHONE_INFO,;
 
-    public static final String TYPE="type";
-    public static final String PHONE_INFO="phoneInfo";
+    public boolean of(String stringValue) {
+        if(stringValue==null){
+            return false;
+        }
+        return EventType.valueOf(stringValue) == this;
+    }
 }

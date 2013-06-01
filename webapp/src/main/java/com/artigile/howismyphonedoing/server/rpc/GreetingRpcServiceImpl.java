@@ -1,5 +1,6 @@
 package com.artigile.howismyphonedoing.server.rpc;
 
+import com.artigile.howismyphonedoing.api.CommonContants;
 import com.artigile.howismyphonedoing.api.EventType;
 import com.artigile.howismyphonedoing.client.rpc.GreetingRpcService;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
@@ -81,7 +82,7 @@ public class GreetingRpcServiceImpl extends AbstractRpcService implements Greeti
 
     @Override
     public String getPhoneInfo() {
-        Message message = new Message.Builder().addData(EventType.TYPE, EventType.PHONE_INFO).build();
+        Message message = new Message.Builder().addData(CommonContants.MESSAGE_EVENT_TYPE, EventType.PHONE_INFO.toString()).build();
 
         Set<UserDevice> userDevice = userAndDeviceService.getDevices(getUserEmailFromSession());
         for (UserDevice device : userDevice) {
