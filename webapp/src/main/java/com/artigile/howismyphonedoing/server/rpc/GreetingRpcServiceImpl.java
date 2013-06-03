@@ -6,7 +6,7 @@ import com.artigile.howismyphonedoing.client.rpc.GreetingRpcService;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.gcmserver.Message;
 import com.artigile.howismyphonedoing.server.service.MessagingService;
-import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
+import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import org.gwtwidgets.server.spring.ServletUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.Set;
 public class GreetingRpcServiceImpl extends AbstractRpcService implements GreetingRpcService {
 
     @Autowired
-    private UserAndDeviceService userAndDeviceService;
+    private UserAndDeviceDao userAndDeviceDao;
     @Autowired
     private MessagingService messagingService;
 
@@ -59,7 +59,7 @@ public class GreetingRpcServiceImpl extends AbstractRpcService implements Greeti
         }
 
 */
-        Set<UserDevice> userDevice = userAndDeviceService.getDevices(getUserEmailFromSession());
+        Set<UserDevice> userDevice = userAndDeviceDao.getDevices(getUserEmailFromSession());
         if (userDevice.isEmpty()) {
             return "message was not sent";
         }
@@ -84,7 +84,7 @@ public class GreetingRpcServiceImpl extends AbstractRpcService implements Greeti
     public String getPhoneInfo() {
         Message message = new Message.Builder().addData(CommonContants.MESSAGE_EVENT_TYPE, EventType.PHONE_INFO.toString()).build();
 
-        Set<UserDevice> userDevice = userAndDeviceService.getDevices(getUserEmailFromSession());
+        Set<UserDevice> userDevice = userAndDeviceDao.getDevices(getUserEmailFromSession());
         for (UserDevice device : userDevice) {
             try {
                 messagingService.sendMessage(userDevice, message);

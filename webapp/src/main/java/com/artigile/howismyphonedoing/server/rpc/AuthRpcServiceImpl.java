@@ -3,7 +3,7 @@ package com.artigile.howismyphonedoing.server.rpc;
 import com.artigile.howismyphonedoing.client.exception.UserNotLoggedInException;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcService;
 import com.artigile.howismyphonedoing.server.service.SecurityAspect;
-import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
+import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver;
 import com.artigile.howismyphonedoing.shared.entity.GooglePlusAuthenticatedUser;
 import com.google.api.client.auth.oauth2.TokenResponseException;
@@ -31,6 +31,7 @@ import java.io.IOException;
  */
 @Service
 public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcService {
+
     /**
      * Default HTTP transport to use to make HTTP requests.
      */
@@ -50,7 +51,7 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
     @Autowired
     private KeysResolver keysResolver;
     @Autowired
-    private UserAndDeviceService userAndDeviceService;
+    private UserAndDeviceDao userAndDeviceDao;
 
     @Override
     public String userIsInSession() throws UserNotLoggedInException {

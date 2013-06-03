@@ -2,14 +2,18 @@ package com.artigile.howismyphonedoing.server.entity;
 
 import com.artigile.howismyphonedoing.api.model.PhoneModel;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author IoaN, 5/28/13 9:25 PM
  */
+@Entity
 public class UserDevice {
-    private String userEmail;
-
+    @Id
     private String registeredId;
-    private PhoneModel phoneModel;
+
+    private String userEmail;
 
 
 
@@ -19,14 +23,6 @@ public class UserDevice {
 
     public void setRegisteredId(String registeredId) {
         this.registeredId = registeredId;
-    }
-
-    public PhoneModel getPhoneModel() {
-        return phoneModel;
-    }
-
-    public void setPhoneModel(PhoneModel phoneModel) {
-        this.phoneModel = phoneModel;
     }
 
     public String getUserEmail() {

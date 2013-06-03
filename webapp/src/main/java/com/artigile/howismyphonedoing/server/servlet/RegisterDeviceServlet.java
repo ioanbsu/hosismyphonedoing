@@ -5,7 +5,7 @@ import com.artigile.howismyphonedoing.api.EventType;
 import com.artigile.howismyphonedoing.api.RegistrarionType;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.service.TestService;
-import com.artigile.howismyphonedoing.server.service.UserAndDeviceService;
+import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
@@ -31,7 +31,7 @@ public class RegisterDeviceServlet extends AbstractServlet {
     @Autowired
     private TestService testService;
     @Autowired
-    private UserAndDeviceService userAndDeviceService;
+    private UserAndDeviceDao userAndDeviceDao;
     private String phoneId = "APA91bE1gYlPjxFqDx692-oFLvG9jlQ0CN_g-Shp3yHqGDtr0jeDWEb3sMkEMUoaquVAKK5LNNm2wOvKhFLUPYNDtTYj8xnwTh0UzODr7Ff6csX_Ewb0dKox439k25YXtlPgJomko77ES5NWvbk9-aX3T0Lr9cKpMFM-Dn4POsL4d0amTHFgZjE";
 
     @Override
@@ -44,12 +44,12 @@ public class RegisterDeviceServlet extends AbstractServlet {
             UserDevice userDevice = new UserDevice();
             userDevice.setUserEmail(userEmail);
             userDevice.setRegisteredId(regId);
-            userAndDeviceService.register(userDevice);
+            userAndDeviceDao.register(userDevice);
             setSuccess(response);
         }
         if (RegistrarionType.UNREGISTER.of(request.getParameter(CommonContants.REGISTRATION_ACTION_TYPE))) {
             logger.info("Unregistering device: " + regId);
-            userAndDeviceService.unregister(regId);
+            userAndDeviceDao.unregister(regId);
             setSuccess(response);
         }
         String eventType = request.getParameter(CommonContants.MESSAGE_EVENT_TYPE);

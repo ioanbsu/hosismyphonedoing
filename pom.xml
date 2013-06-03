@@ -36,6 +36,7 @@
             <layout>default</layout>
         </repository>
 
+
     </repositories>
     <profiles>
         <profile>
@@ -63,9 +64,9 @@
         <gwt.compileModule>com.artigile.howismyphonedoing.WebApp</gwt.compileModule>
         <draftCompile>false</draftCompile>
         <appEngineSdk>/usr/local/appengine-java-sdk-${appengine-version}</appEngineSdk>
-        <spring.version>3.2.1.RELEASE</spring.version>
+        <spring.version>3.2.3.RELEASE</spring.version>
         <junit.version>4.10</junit.version>
-        <validation-api.version>1.0.0.GA</validation-api.version>
+        <validation-api.version>1.1.0.Final</validation-api.version>
         <jdo-api.version>3.0.1</jdo-api.version>
         <appengine-version>1.8.0</appengine-version>
         <gin.version>2.0.0</gin.version>
@@ -84,6 +85,10 @@
         <google-play-services.version>7</google-play-services.version>
         <jukito.version>1.1</jukito.version>
         <gwt-gae-channel.version>2.0.0</gwt-gae-channel.version>
+        <datanucleus.jpa.version>3.1.1</datanucleus.jpa.version>
+        <datanucleus-appengine.version>2.1.1</datanucleus-appengine.version>
+        <geronimo-jpa_2.0_spec.version>1.1</geronimo-jpa_2.0_spec.version>
+        <hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
     </properties>
 
     <dependencyManagement>
@@ -205,6 +210,43 @@
                 <artifactId>gwt-gae-channel</artifactId>
                 <version>${gwt-gae-channel.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.datanucleus</groupId>
+                <artifactId>datanucleus-api-jpa</artifactId>
+                <version>${datanucleus.jpa.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.datanucleus</groupId>
+                <artifactId>datanucleus-core</artifactId>
+                <version>${datanucleus.jpa.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.appengine.orm</groupId>
+                <artifactId>datanucleus-appengine</artifactId>
+                <version>${datanucleus-appengine.version}</version>
+                <!-- Need to exclude the enhancer since it interfere with the enhancer plugin. -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.datanucleus</groupId>
+                        <artifactId>datanucleus-enhancer</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+           <!-- <dependency>
+                <groupId>javax.jdo</groupId>
+                <artifactId>jdo-api</artifactId>
+                <version>${jdo-api.version}</version>
+            </dependency>-->
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-jpa_2.0_spec</artifactId>
+                <version>${geronimo-jpa_2.0_spec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>net.sf.gwt-widget</groupId>
@@ -227,6 +269,11 @@
                 <artifactId>spring-web</artifactId>
                 <version>${spring.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.jukito</groupId>
@@ -235,10 +282,26 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.appengine</groupId>
+                <artifactId>appengine-testing</artifactId>
+                <version>${appengine-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.appengine</groupId>
+                <artifactId>appengine-api-stubs</artifactId>
+                <version>${appengine-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
