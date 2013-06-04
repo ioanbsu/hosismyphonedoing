@@ -1,12 +1,12 @@
 package com.artigile.howismyphonedoing.server.rpc;
 
 import com.artigile.howismyphonedoing.api.CommonContants;
-import com.artigile.howismyphonedoing.api.EventType;
+import com.artigile.howismyphonedoing.api.MessageType;
 import com.artigile.howismyphonedoing.client.rpc.GreetingRpcService;
+import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.gcmserver.Message;
 import com.artigile.howismyphonedoing.server.service.MessagingService;
-import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import org.gwtwidgets.server.spring.ServletUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,16 +82,13 @@ public class GreetingRpcServiceImpl extends AbstractRpcService implements Greeti
 
     @Override
     public String getPhoneInfo() {
-        Message message = new Message.Builder().addData(CommonContants.MESSAGE_EVENT_TYPE, EventType.PHONE_INFO.toString()).build();
+        Message message = new Message.Builder().addData(CommonContants.MESSAGE_EVENT_TYPE, MessageType.PHONE_INFO.toString()).build();
 
         Set<UserDevice> userDevice = userAndDeviceDao.getDevices(getUserEmailFromSession());
-        for (UserDevice device : userDevice) {
-            try {
-                messagingService.sendMessage(userDevice, message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return "message sent";
+        try {
+            messagingService.sendMessage(userDevice, message);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return "message sent";
     }

@@ -40,7 +40,7 @@ public class MainActivity extends RoboActivity {
     TextView mDisplay;
     AsyncTask<Void, Void, Void> mRegisterTask;
     @Inject
-    private WebServerUtilities webServerUtilities;
+    private DeviceRegistrationService deviceRegistrationService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,7 +143,7 @@ public class MainActivity extends RoboActivity {
 
                     @Override
                     protected Void doInBackground(Void... params) {
-                        webServerUtilities.register(context, regId);
+                        deviceRegistrationService.register(context, regId);
                         return null;
                     }
 
