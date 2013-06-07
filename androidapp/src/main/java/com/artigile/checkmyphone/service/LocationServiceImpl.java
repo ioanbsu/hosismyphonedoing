@@ -17,6 +17,7 @@ import java.util.TimerTask;
 @Singleton
 public class LocationServiceImpl implements LocationService {
     private static final int TWO_MINUTES = 1000 * 60 * 2;
+    private static final int MINIMUM_ALLOWED_ACCURACY = 45;
     @Inject
     private Context context;
     private Location bestLocation;
@@ -57,9 +58,11 @@ public class LocationServiceImpl implements LocationService {
                     bestLocation = newLocation;
                 }
                 locationReadyListener.onLocationReady(bestLocation);
-                locationManager.removeUpdates(this);
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                if (bestLocation.getAccuracy() < 20) {
+                if (LocationManager.NETWORK_PROVIDER.equals(newLocation.getProvider())) {
+                    locationManager.removeUpdates(this);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                }
+                if (bestLocation.getAccuracy() < MINIMUM_ALLOWED_ACCURACY) {
                     stopImprovingLocation();
                 }
             }

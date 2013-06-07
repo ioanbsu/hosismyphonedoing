@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import com.artigile.checkmyphone.MainActivity;
@@ -12,6 +13,7 @@ import com.artigile.checkmyphone.R;
 import com.artigile.checkmyphone.TextToSpeechService;
 import com.artigile.howismyphonedoing.api.AndroidMessageProcessor;
 import com.artigile.howismyphonedoing.api.MessageType;
+import com.artigile.howismyphonedoing.api.model.PhoneLocationModel;
 import com.artigile.howismyphonedoing.api.model.PhoneModel;
 import com.google.gson.Gson;
 
@@ -34,6 +36,8 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     private Context context;
     @Inject
     private TextToSpeechService textToSpeechService;
+    @Inject
+    private LocationService locationService;
 
     private static PhoneModel buildPhoneModel() {
         PhoneModel phoneModel = new PhoneModel();
@@ -63,35 +67,55 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     }
 
     @Override
-    public String processMessage(MessageType messageType, String message) {
-        if (messageType == MessageType.PHONE_INFO) {
-            PhoneModel phoneModel = buildPhoneModel();
-            Gson gson = new Gson();
-            try {
-                messageSender.processMessage( MessageType.PHONE_INFO, gson.toJson(phoneModel));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }else if(messageType == MessageType.NOTIFY_PHONE){
-            try {
-                String messageStr= (String) messageType.getValue(message);
+    public String processMessage(final MessageType messageType, String message) {
+        try {
+            if (messageType == MessageType.PHONE_INFO) {
+                PhoneModel phoneModel = buildPhoneModel();
+                Gson gson = new Gson();
+                messageSender.processMessage(MessageType.PHONE_INFO, gson.toJson(phoneModel));
+            } else if (messageType == MessageType.NOTIFY_PHONE) {
+                String messageStr = (String) messageType.getValue(message);
                 textToSpeechService.talk(messageStr);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            displayMessage(context, message);
-            TextToSpeech textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-                @Override
-                public void onInit(int status) {
+            } else if (messageType == MessageType.GET_PHONE_LOCATION) {
+                locationService.getLocation(new LocationServiceImpl.LocationReadyListener() {
+                    @Override
+                    public void onLocationReady(Location location) {
+                        PhoneLocationModel phoneLocationModel = new PhoneLocationModel();
+                        phoneLocationModel.setAccuracy(location.getAccuracy());
+                        phoneLocationModel.setAltitude(location.getAltitude());
+                        phoneLocationModel.setBearing(location.getBearing());
+                        phoneLocationModel.setElapsedRealtimeNanos(location.getElapsedRealtimeNanos());
+                        phoneLocationModel.setHasAccuracy(location.hasAccuracy());
+                        phoneLocationModel.setHasAltitude(location.hasAltitude());
+                        phoneLocationModel.setHasSpeed(location.hasSpeed());
+                        phoneLocationModel.setProvider(location.getProvider());
+                        phoneLocationModel.setTime(location.getTime());
+                        phoneLocationModel.setLatitude(location.getLatitude());
+                        phoneLocationModel.setLongitude(location.getLongitude());
+                        phoneLocationModel.setSpeed(location.getSpeed());
+                        phoneLocationModel.setHasBearing(location.hasBearing());
+                        try {
+                            messageSender.processMessage(messageType, messageType.convertModelToString(phoneLocationModel));
+                        } catch (IOException e) {
 
-                }
-            });
-            textToSpeech.speak(message, TextToSpeech.QUEUE_FLUSH, null);
-            textToSpeech.speak(message, TextToSpeech.QUEUE_ADD, null);
-            // notifies user
-            generateNotification(context, message);
+                        }
+                    }
+                });
+            } else {
+                displayMessage(context, message);
+                TextToSpeech textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+                    @Override
+                    public void onInit(int status) {
+
+                    }
+                });
+                textToSpeech.speak(message, TextToSpeech.QUEUE_FLUSH, null);
+                textToSpeech.speak(message, TextToSpeech.QUEUE_ADD, null);
+                // notifies user
+                generateNotification(context, message);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return "message had been successfully sent";
     }

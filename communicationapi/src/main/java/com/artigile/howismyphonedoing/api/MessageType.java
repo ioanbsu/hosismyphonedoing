@@ -33,6 +33,12 @@ public enum MessageType {
         public Serializable getValue(String serializedString) throws IOException {
             return serializedString;
         }
+    },
+    GET_PHONE_LOCATION {
+        @Override
+        public Serializable getValue(String serializedString) throws IOException {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
+        }
     };
 
     public boolean of(String stringValue) {
@@ -43,4 +49,9 @@ public enum MessageType {
     }
 
     public abstract Serializable getValue(String serializedString) throws IOException;
+
+    public String convertModelToString(Serializable object) {
+        return new Gson().toJson(object);
+
+    }
 }

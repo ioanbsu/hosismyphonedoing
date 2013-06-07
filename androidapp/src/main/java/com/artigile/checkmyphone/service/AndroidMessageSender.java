@@ -48,7 +48,7 @@ public class AndroidMessageSender implements AndroidMessageProcessor<String> {
      * @param params request parameters.
      * @throws java.io.IOException propagated from POST.
      */
-    public String post(Map<String, String> params)
+    private String post(Map<String, String> params)
             throws IOException {
         URL url;
         try {
