@@ -1,7 +1,7 @@
 package com.artigile.howismyphonedoing.server.rpc;
 
-import com.artigile.howismyphonedoing.api.MessageType;
-import com.artigile.howismyphonedoing.api.model.PhoneModel;
+import com.artigile.howismyphonedoing.api.model.DeviceModel;
+import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcService;
 import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
@@ -37,7 +37,15 @@ public class MessageRpcServiceImpl extends AbstractRpcService implements Message
     @Override
     public String getPhoneInfo() {
         Set<UserDevice> userDevice = userAndDeviceDao.getDevices(getUserEmailFromSession());
-        messageSender.processMessage(userDevice, MessageType.PHONE_INFO, new Gson().toJson(new PhoneModel()));
-        return "message sent";
+        messageSender.processMessage(userDevice, MessageType.DEVICE_INFO, new Gson().toJson(new DeviceModel()));
+        return "message sent for getting phone info";
     }
+
+    @Override
+    public String getPhoneLocation() {
+        Set<UserDevice> userDevice = userAndDeviceDao.getDevices(getUserEmailFromSession());
+        messageSender.processMessage(userDevice, MessageType.GET_DEVICE_LOCATION, new Gson().toJson(new DeviceModel()));
+        return "message sent to get phone location";
+    }
+
 }

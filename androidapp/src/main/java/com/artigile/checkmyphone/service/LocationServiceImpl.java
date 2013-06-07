@@ -2,9 +2,13 @@ package com.artigile.checkmyphone.service;
 
 import android.content.Context;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -16,133 +20,111 @@ import java.util.TimerTask;
  */
 @Singleton
 public class LocationServiceImpl implements LocationService {
-    private static final int TWO_MINUTES = 1000 * 60 * 2;
-    private static final int MINIMUM_ALLOWED_ACCURACY = 45;
+
+    public static final String TAG = "LocationServiceImpl";
+    private static final int THREE_MINUTES = 1000 * 60 * 3;
+    private static final int TWENTY_SECONDS_INTERVAL = 1000 * 10;
     @Inject
     private Context context;
-    private Location bestLocation;
-    private Timer locationDetectTimeoutTimer = new Timer();
-    private LocationManager locationManager;
+    private LocationClientCallbacksListener locationClientCallbacksListener = new LocationClientCallbacksListener();
+    private LocationClient locationClient;
     private LocationListener locationListener;
+    private LocationListener internalLocationListener;
+    private boolean doneRequestingBestAvailableLocation = true;
 
     @Override
-    public void getLocation(final LocationReadyListener locationReadyListener) {
-        // Acquire a reference to the system Location Manager
-        if (locationManager == null) {
-            locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        } else {
-            //stopping location timers and manager before starting new location improvements.
-            stopImprovingLocation();
-        }
-        // Define a listener that responds to location updates
-        if (locationListener == null) {
-            locationListener = getLocationListener(locationReadyListener);
-        }
-        // Register the listener with the Location Manager to receive location updates
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        locationDetectTimeoutTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                locationManager.removeUpdates(locationListener);
-                locationDetectTimeoutTimer.cancel();
+    public void getLocation(LocationListener locationListener) {
+        this.locationListener = locationListener;
+        internalLocationListener = getNewInternalLocationListener();
+        if (doneRequestingBestAvailableLocation) {
+            if (locationClient == null) {
+                init();
+            } else {
+                locationClient.disconnect();
             }
+            requestLocationUpdates();
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    stopRequestingLocationUpdates();
+                }
+            }, THREE_MINUTES);
+        }
 
-        }, TWO_MINUTES);
     }
 
-    private LocationListener getLocationListener(final LocationReadyListener locationReadyListener) {
+    private void init() {
+        if (locationClient == null) {
+            locationClient = new LocationClient(context, locationClientCallbacksListener, locationClientCallbacksListener);
+            connectToLocationClient();
+        }
+    }
+
+    private void connectToLocationClient() {
+        Log.v(TAG, "Location Client connect");
+        if (!(locationClient.isConnected() || locationClient.isConnecting())) {
+            locationClient.connect();
+        }
+    }
+
+    private void requestLocationUpdates() {
+        doneRequestingBestAvailableLocation = false;
+        if (locationClient.isConnected() && locationClient.isConnectionCallbacksRegistered(locationClientCallbacksListener)) {
+            // Request for location updates
+            LocationRequest request = LocationRequest.create()
+                    .setInterval(TWENTY_SECONDS_INTERVAL)
+                    .setExpirationDuration(THREE_MINUTES)
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            locationClient.requestLocationUpdates(request, internalLocationListener);
+        } else {
+            connectToLocationClient();
+        }
+    }
+
+    private LocationListener getNewInternalLocationListener() {
         return new LocationListener() {
-            public void onLocationChanged(Location newLocation) {
-                // Called when a new location is found by the network location provider.
-                if (isBetterLocation(newLocation, bestLocation)) {
-                    bestLocation = newLocation;
+            @Override
+            public void onLocationChanged(Location location) {
+                if (location.getAccuracy() < 30) {
+                    if (locationClient.isConnected()) {
+                        stopRequestingLocationUpdates();
+                    }
                 }
-                locationReadyListener.onLocationReady(bestLocation);
-                if (LocationManager.NETWORK_PROVIDER.equals(newLocation.getProvider())) {
-                    locationManager.removeUpdates(this);
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                }
-                if (bestLocation.getAccuracy() < MINIMUM_ALLOWED_ACCURACY) {
-                    stopImprovingLocation();
-                }
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
+                locationListener.onLocationChanged(location);
             }
         };
     }
 
-    private void stopImprovingLocation() {
-        locationManager.removeUpdates(locationListener);
-        locationDetectTimeoutTimer.cancel();
-        locationDetectTimeoutTimer = new Timer();
+    private void stopRequestingLocationUpdates() {
+        Log.v(TAG, "Accuracy is very precise ");
+
+        locationClient.disconnect();
+        doneRequestingBestAvailableLocation = true;
     }
 
-    /**
-     * Determines whether one Location reading is better than the current Location fix
-     *
-     * @param location            The new Location that you want to evaluate
-     * @param currentBestLocation The current Location fix, to which you want to compare the new one
-     */
-    protected boolean isBetterLocation(Location location, Location currentBestLocation) {
-        if (currentBestLocation == null) {
-            // A new location is always better than no location
-            return true;
+    private class LocationClientCallbacksListener implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
+
+        @Override
+        public void onConnected(Bundle connectionHint) {
+            Log.v(TAG, "Location Client connected");
+            // Display last location
+            Location location = locationClient.getLastLocation();
+            if (location != null) {
+                internalLocationListener.onLocationChanged(location);
+            }
+            requestLocationUpdates();
         }
 
-        // Check whether the new location fix is newer or older
-        long timeDelta = location.getTime() - currentBestLocation.getTime();
-        boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
-        boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
-        boolean isNewer = timeDelta > 0;
-
-        // If it's been more than two minutes since the current location, use the new location
-        // because the user has likely moved
-        if (isSignificantlyNewer) {
-            return true;
-            // If the new location is more than two minutes older, it must be worse
-        } else if (isSignificantlyOlder) {
-            return false;
+        @Override
+        public void onDisconnected() {
+            Log.v(TAG, "Disconnected");
         }
 
-        // Check whether the new location fix is more or less accurate
-        int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
-        boolean isLessAccurate = accuracyDelta > 0;
-        boolean isMoreAccurate = accuracyDelta < 0;
-        boolean isSignificantlyLessAccurate = accuracyDelta > 200;
-
-        // Check if the old and new location are from the same provider
-        boolean isFromSameProvider = isSameProvider(location.getProvider(),
-                currentBestLocation.getProvider());
-
-        // Determine location quality using a combination of timeliness and accuracy
-        if (isMoreAccurate) {
-            return true;
-        } else if (isNewer && !isLessAccurate) {
-            return true;
-        } else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
-            return true;
+        @Override
+        public void onConnectionFailed(ConnectionResult connectionResult) {
+            Log.v(TAG, "Connection Failed");
         }
-        return false;
     }
 
-    /**
-     * Checks whether two providers are the same
-     */
-    private boolean isSameProvider(String provider1, String provider2) {
-        if (provider1 == null) {
-            return provider2 == null;
-        }
-        return provider1.equals(provider2);
-    }
 
-    public static interface LocationReadyListener {
-        void onLocationReady(Location location);
-    }
 }

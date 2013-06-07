@@ -1,5 +1,7 @@
 package com.artigile.howismyphonedoing.api;
 
+import com.artigile.howismyphonedoing.api.model.MessageType;
+
 /**
  * User: ioanbsu
  * Date: 5/31/13

@@ -1,7 +1,9 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui"
-    >
-    <ui:style>
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+<ui:style>.mapStyle {
+        width: 1000px;
+        height: 500px;
+    }
 
 
     </ui:style>
@@ -15,8 +17,11 @@
                 <g:Button text="Log out" ui:field="logoutButton"/>
                 <g:Button text="send message" ui:field="sendTextToPhone"/>
                 <g:Button text="getMyPhoneInfo" ui:field="phoneInfoButton"/>
+                <g:Button text="Get Phone Location" ui:field="phoneLocation"/>
                 <g:TextBox ui:field="textToSend"/>
                 <g:Label ui:field="phoneInfo"/>
+                <g:SimplePanel ui:field="mapContainer" styleName="{style.mapStyle}"/>
+
             </g:FlowPanel>
         </g:center>
 

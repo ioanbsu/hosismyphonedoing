@@ -1,12 +1,17 @@
 package com.artigile.howismyphonedoing.client.mainpage;
 
+import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
+import com.artigile.howismyphonedoing.client.service.HowIsMyPhoneDoingFactory;
 import com.artigile.howismyphonedoing.client.widget.SigninWithGooglePlusWindow;
 import com.artigile.howismyphonedoing.shared.entity.GooglePlusAuthenticatedUser;
 import com.google.gwt.appengine.channel.client.*;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.SerializationStreamFactory;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
 
@@ -27,6 +32,9 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
     private SigninWithGooglePlusWindow signinWithGooglePlusWindow;
     @Inject
     private ChannelFactory channelFactory;
+    @Inject
+    private HowIsMyPhoneDoingFactory howIsMyPhoneDoingFactory;
+    private SerializationStreamFactory pushServiceStreamFactory;
 
     public void onGooglePlusCallbackEvent(String code, String accessToken, String clientId, String error) {
         GooglePlusAuthenticatedUser googlePlusAuthenticatedUser = new GooglePlusAuthenticatedUser();
@@ -54,8 +62,10 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
             }
 
             @Override
-            public void onMessage(String message) {
-                view.setPhoneInfo("MESSAGE FROM CHANNEL!!!" + message);
+            public void onMessage(String encodedData) {
+                view.setPhoneInfo("MESSAGE FROM CHANNEL!!!" + encodedData);
+                AutoBean<IDeviceLocationModel> bean = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IDeviceLocationModel.class, encodedData);
+                view.showMarker(bean.as());
             }
 
             @Override
@@ -108,6 +118,15 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
 
     public void getPhonesInfo() {
         messageRpcServiceAsync.getPhoneInfo(new AsyncCallbackImpl<String>() {
+            @Override
+            public void success(String result) {
+                view.setPhoneInfo(result);
+            }
+        });
+    }
+
+    public void getPhoneLocation() {
+        messageRpcServiceAsync.getPhoneLocation(new AsyncCallbackImpl<String>() {
             @Override
             public void success(String result) {
                 view.setPhoneInfo(result);

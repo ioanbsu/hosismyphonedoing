@@ -1,7 +1,7 @@
 package com.artigile.howismyphonedoing.server.servlet;
 
 import com.artigile.howismyphonedoing.api.CommonContants;
-import com.artigile.howismyphonedoing.api.MessageType;
+import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.server.service.WebApMessageReceiver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

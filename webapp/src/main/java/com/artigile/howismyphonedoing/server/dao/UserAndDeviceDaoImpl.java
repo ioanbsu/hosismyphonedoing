@@ -43,11 +43,13 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
     }
 
     @Override
-    public void updateRegistration(String oldId, String newId) {
+    public void updateRegistration(String oldDeviceRegistrationId, String newDeviceRegistrationId) {
         PersistenceManager pm = pmfInstance.getPersistenceManager();
         try {
-            UserDevice userDevice = pm.getObjectById(UserDevice.class, oldId);
-            userDevice.setUuid(newId);
+            Query query = pm.newQuery(UserDevice.class, "deviceCloudRegistrationId == deviceCloudRegistrationIdParam");
+            query.declareParameters("String deviceCloudRegistrationIdParam");
+            UserDevice userDevice = (UserDevice) query.execute(oldDeviceRegistrationId);
+            userDevice.setUuid(newDeviceRegistrationId);
             pm.makePersistent(userDevice);
         } finally {
             pm.close();

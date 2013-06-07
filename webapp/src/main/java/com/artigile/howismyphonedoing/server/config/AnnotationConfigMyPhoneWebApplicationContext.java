@@ -1,5 +1,7 @@
 package com.artigile.howismyphonedoing.server.config;
 
+import com.artigile.howismyphonedoing.api.MessageParser;
+import com.artigile.howismyphonedoing.api.MessageParserImpl;
 import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -21,6 +23,11 @@ public class AnnotationConfigMyPhoneWebApplicationContext {
     @Bean
     public AnnotationAwareAspectJAutoProxyCreator annotationAwareAspectJAutoProxyCreator() {
         return new AnnotationAwareAspectJAutoProxyCreator();
+    }
+
+    @Bean
+    public MessageParser messageParser() {
+        return new MessageParserImpl();
     }
 
 

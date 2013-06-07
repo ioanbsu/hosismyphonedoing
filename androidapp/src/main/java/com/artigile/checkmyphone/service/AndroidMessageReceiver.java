@@ -8,13 +8,16 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import com.artigile.checkmyphone.MainActivity;
 import com.artigile.checkmyphone.R;
 import com.artigile.checkmyphone.TextToSpeechService;
 import com.artigile.howismyphonedoing.api.AndroidMessageProcessor;
-import com.artigile.howismyphonedoing.api.MessageType;
-import com.artigile.howismyphonedoing.api.model.PhoneLocationModel;
-import com.artigile.howismyphonedoing.api.model.PhoneModel;
+import com.artigile.howismyphonedoing.api.MessageParser;
+import com.artigile.howismyphonedoing.api.model.DeviceLocationModel;
+import com.artigile.howismyphonedoing.api.model.DeviceModel;
+import com.artigile.howismyphonedoing.api.model.MessageType;
+import com.google.android.gms.location.LocationListener;
 import com.google.gson.Gson;
 
 import javax.inject.Inject;
@@ -38,64 +41,68 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     private TextToSpeechService textToSpeechService;
     @Inject
     private LocationService locationService;
+    @Inject
+    private MessageParser messageParser;
+    private String TAG = "AndroidMessageReceiver";
 
-    private static PhoneModel buildPhoneModel() {
-        PhoneModel phoneModel = new PhoneModel();
-        phoneModel.setBoard(Build.BOARD);
-        phoneModel.setModel(Build.MODEL);
-        phoneModel.setBootLoader(Build.BOOTLOADER);
-        phoneModel.setBrand(Build.BRAND);
-        phoneModel.setCpuAbi(Build.CPU_ABI);
-        phoneModel.setCpuAbi2(Build.CPU_ABI2);
-        phoneModel.setDevice(Build.DEVICE);
-        phoneModel.setDisplay(Build.DISPLAY);
-        phoneModel.setFingerprint(Build.FINGERPRINT);
-        phoneModel.setHardware(Build.HARDWARE);
-        phoneModel.setHost(Build.HOST);
-        phoneModel.setId(Build.ID);
-        phoneModel.setManufacturer(Build.MANUFACTURER);
-        phoneModel.setModel(Build.MODEL);
-        phoneModel.setProduct(Build.PRODUCT);
-        phoneModel.setSerial(Build.SERIAL);
-        phoneModel.setTags(Build.TAGS);
-        phoneModel.setTime(Build.TIME);
-        phoneModel.setType(Build.TYPE);
-        phoneModel.setUnknown(Build.UNKNOWN);
-        phoneModel.setUser(Build.USER);
-        phoneModel.setRadioVersion(Build.getRadioVersion());
-        return phoneModel;
+    private static DeviceModel buildPhoneModel() {
+        DeviceModel deviceModel = new DeviceModel();
+        deviceModel.setBoard(Build.BOARD);
+        deviceModel.setModel(Build.MODEL);
+        deviceModel.setBootLoader(Build.BOOTLOADER);
+        deviceModel.setBrand(Build.BRAND);
+        deviceModel.setCpuAbi(Build.CPU_ABI);
+        deviceModel.setCpuAbi2(Build.CPU_ABI2);
+        deviceModel.setDevice(Build.DEVICE);
+        deviceModel.setDisplay(Build.DISPLAY);
+        deviceModel.setFingerprint(Build.FINGERPRINT);
+        deviceModel.setHardware(Build.HARDWARE);
+        deviceModel.setHost(Build.HOST);
+        deviceModel.setId(Build.ID);
+        deviceModel.setManufacturer(Build.MANUFACTURER);
+        deviceModel.setModel(Build.MODEL);
+        deviceModel.setProduct(Build.PRODUCT);
+        deviceModel.setSerial(Build.SERIAL);
+        deviceModel.setTags(Build.TAGS);
+        deviceModel.setTime(Build.TIME);
+        deviceModel.setType(Build.TYPE);
+        deviceModel.setUnknown(Build.UNKNOWN);
+        deviceModel.setUser(Build.USER);
+        deviceModel.setRadioVersion(Build.getRadioVersion());
+        return deviceModel;
     }
 
     @Override
     public String processMessage(final MessageType messageType, String message) {
         try {
-            if (messageType == MessageType.PHONE_INFO) {
-                PhoneModel phoneModel = buildPhoneModel();
+            if (messageType == MessageType.DEVICE_INFO) {
+                DeviceModel deviceModel = buildPhoneModel();
                 Gson gson = new Gson();
-                messageSender.processMessage(MessageType.PHONE_INFO, gson.toJson(phoneModel));
+                messageSender.processMessage(MessageType.DEVICE_INFO, gson.toJson(deviceModel));
             } else if (messageType == MessageType.NOTIFY_PHONE) {
-                String messageStr = (String) messageType.getValue(message);
+                String messageStr = (String) messageParser.parse(messageType, message);
                 textToSpeechService.talk(messageStr);
-            } else if (messageType == MessageType.GET_PHONE_LOCATION) {
-                locationService.getLocation(new LocationServiceImpl.LocationReadyListener() {
+            } else if (messageType == MessageType.GET_DEVICE_LOCATION) {
+                Log.v(TAG, "got request to return phone location.");
+                locationService.getLocation(new LocationListener() {
                     @Override
-                    public void onLocationReady(Location location) {
-                        PhoneLocationModel phoneLocationModel = new PhoneLocationModel();
-                        phoneLocationModel.setAccuracy(location.getAccuracy());
-                        phoneLocationModel.setAltitude(location.getAltitude());
-                        phoneLocationModel.setBearing(location.getBearing());
-                        phoneLocationModel.setElapsedRealtimeNanos(location.getElapsedRealtimeNanos());
-                        phoneLocationModel.setHasAccuracy(location.hasAccuracy());
-                        phoneLocationModel.setHasAltitude(location.hasAltitude());
-                        phoneLocationModel.setHasSpeed(location.hasSpeed());
-                        phoneLocationModel.setProvider(location.getProvider());
-                        phoneLocationModel.setTime(location.getTime());
-                        phoneLocationModel.setLatitude(location.getLatitude());
-                        phoneLocationModel.setLongitude(location.getLongitude());
-                        phoneLocationModel.setSpeed(location.getSpeed());
-                        phoneLocationModel.setHasBearing(location.hasBearing());
+                    public void onLocationChanged(Location location) {
+                        DeviceLocationModel deviceLocationModel = new DeviceLocationModel();
+                        deviceLocationModel.setAccuracy(location.getAccuracy());
+                        deviceLocationModel.setAltitude(location.getAltitude());
+                        deviceLocationModel.setBearing(location.getBearing());
+                        deviceLocationModel.setElapsedRealtimeNanos(location.getElapsedRealtimeNanos());
+                        deviceLocationModel.setHasAccuracy(location.hasAccuracy());
+                        deviceLocationModel.setHasAltitude(location.hasAltitude());
+                        deviceLocationModel.setHasSpeed(location.hasSpeed());
+                        deviceLocationModel.setProvider(location.getProvider());
+                        deviceLocationModel.setTime(location.getTime());
+                        deviceLocationModel.setLatitude(location.getLatitude());
+                        deviceLocationModel.setLongitude(location.getLongitude());
+                        deviceLocationModel.setSpeed(location.getSpeed());
+                        deviceLocationModel.setHasBearing(location.hasBearing());
                         try {
-                            messageSender.processMessage(messageType, messageType.convertModelToString(phoneLocationModel));
+                            messageSender.processMessage(messageType, messageParser.serialize(deviceLocationModel));
                         } catch (IOException e) {
 
                         }

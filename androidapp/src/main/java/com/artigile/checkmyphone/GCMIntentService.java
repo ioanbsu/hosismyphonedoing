@@ -8,7 +8,7 @@ import com.artigile.checkmyphone.service.AndroidMessageSender;
 import com.artigile.checkmyphone.service.DeviceRegistrationServiceImpl;
 import com.artigile.checkmyphone.util.GCMBaseIntentService;
 import com.artigile.howismyphonedoing.api.CommonContants;
-import com.artigile.howismyphonedoing.api.MessageType;
+import com.artigile.howismyphonedoing.api.model.MessageType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

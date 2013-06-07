@@ -1,5 +1,6 @@
 package com.artigile.checkmyphone.service;
 
+import com.google.android.gms.location.LocationListener;
 import com.google.inject.ImplementedBy;
 
 /**
@@ -7,5 +8,5 @@ import com.google.inject.ImplementedBy;
  */
 @ImplementedBy(LocationServiceImpl.class)
 public interface LocationService {
-    void getLocation(LocationServiceImpl.LocationReadyListener locationReadyListener);
+    void getLocation(LocationListener locationListener);
 }

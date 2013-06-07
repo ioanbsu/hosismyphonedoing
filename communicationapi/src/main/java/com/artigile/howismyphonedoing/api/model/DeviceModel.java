@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Date: 5/29/13
  * Time: 11:57 AM
  */
-public class PhoneModel implements Serializable{
+public class DeviceModel implements Serializable{
     private String board;
     private String bootLoader;
     private String brand;

@@ -24,6 +24,10 @@
             <artifactId>communicationapi</artifactId>
         </dependency>
         <dependency>
+          <groupId>com.google.gwt.google-apis</groupId>
+          <artifactId>gwt-maps</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-servlet</artifactId>
             <scope>runtime</scope>

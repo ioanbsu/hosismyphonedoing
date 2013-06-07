@@ -3,10 +3,11 @@ package com.artigile.checkmyphone.service;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import com.artigile.howismyphonedoing.api.AndroidMessageProcessor;
 import com.artigile.howismyphonedoing.api.CommonContants;
-import com.artigile.howismyphonedoing.api.MessageType;
+import com.artigile.howismyphonedoing.api.model.MessageType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -50,53 +51,63 @@ public class AndroidMessageSender implements AndroidMessageProcessor<String> {
      */
     private String post(Map<String, String> params)
             throws IOException {
-        URL url;
-        try {
-            url = new URL(serverUrl);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("invalid url: " + serverUrl);
-        }
-        StringBuilder bodyBuilder = new StringBuilder();
-        Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
-        // constructs the POST body using the parameters
-        while (iterator.hasNext()) {
-            Map.Entry<String, String> param = iterator.next();
-            bodyBuilder.append(param.getKey()).append('=')
-                    .append(param.getValue());
-            if (iterator.hasNext()) {
-                bodyBuilder.append('&');
+        AsyncTask<Map<String, String>, Void, String> asyncSendResponseToWebServer = new AsyncTask<Map<String, String>, Void, String>() {
+            @Override
+            protected String doInBackground(Map<String, String>... paramsArray) {
+                for (Map<String, String> params : paramsArray) {
+                    URL url;
+                    try {
+                        url = new URL(serverUrl);
+                    } catch (MalformedURLException e) {
+                        throw new IllegalArgumentException("invalid url: " + serverUrl);
+                    }
+                    StringBuilder bodyBuilder = new StringBuilder();
+                    Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
+                    // constructs the POST body using the parameters
+                    while (iterator.hasNext()) {
+                        Map.Entry<String, String> param = iterator.next();
+                        bodyBuilder.append(param.getKey()).append('=')
+                                .append(param.getValue());
+                        if (iterator.hasNext()) {
+                            bodyBuilder.append('&');
+                        }
+                    }
+                    String body = bodyBuilder.toString();
+                    Log.v(TAG, "Posting '" + body + "' to " + url);
+                    byte[] bytes = body.getBytes();
+                    HttpURLConnection conn = null;
+                    try {
+                        conn = (HttpURLConnection) url.openConnection();
+                        conn.setDoOutput(true);
+                        conn.setUseCaches(false);
+                        conn.setFixedLengthStreamingMode(bytes.length);
+                        conn.setRequestMethod("POST");
+                        conn.setRequestProperty("Content-Type",
+                                "application/x-www-form-urlencoded;charset=UTF-8");
+                        // post the request
+                        OutputStream out = conn.getOutputStream();
+                        out.write(bytes);
+                        out.close();
+                        // handle the response
+                        int status = conn.getResponseCode();
+                        if (status != 200) {
+                            throw new IOException("Post failed with error code " + status);
+                        }
+                        return status + "";
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return "Message failed to be sent.";
+                    } finally {
+                        if (conn != null) {
+                            conn.disconnect();
+                        }
+                    }
+                }
+                return "no messages were sent";
             }
-        }
-        String body = bodyBuilder.toString();
-        Log.v(TAG, "Posting '" + body + "' to " + url);
-        byte[] bytes = body.getBytes();
-        HttpURLConnection conn = null;
-        try {
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setUseCaches(false);
-            conn.setFixedLengthStreamingMode(bytes.length);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded;charset=UTF-8");
-            // post the request
-            OutputStream out = conn.getOutputStream();
-            out.write(bytes);
-            out.close();
-            // handle the response
-            int status = conn.getResponseCode();
-            if (status != 200) {
-                throw new IOException("Post failed with error code " + status);
-            }
-            return status + "";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Message failed to be sent.";
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
+        };
+        asyncSendResponseToWebServer.execute(params);
+        return "message sent asynchronously";
     }
 
     private String getUserEmail(Context context) {

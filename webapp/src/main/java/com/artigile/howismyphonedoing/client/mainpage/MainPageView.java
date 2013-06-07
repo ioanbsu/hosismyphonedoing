@@ -1,10 +1,12 @@
 package com.artigile.howismyphonedoing.client.mainpage;
 
+import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
+import com.google.maps.gwt.client.*;
 import com.mvp4g.client.view.ReverseViewInterface;
 
 import javax.inject.Inject;
@@ -27,11 +29,25 @@ public class MainPageView extends Composite implements ReverseViewInterface<Main
     Button phoneInfoButton;
     @UiField
     Label phoneInfo;
+    @UiField
+    Button phoneLocation;
+    @UiField
+    SimplePanel mapContainer;
+    GoogleMap map;
     private MainPagePresenter mainPagePresenter;
+    private Marker marker;
+    private Circle circle;
 
     @Inject
     public MainPageView(Binder binder) {
         initWidget(binder.createAndBindUi(this));
+        MapOptions mapOptions = MapOptions.create();
+        mapOptions.setCenter(LatLng.create(-25.363882, 131.044922));
+        mapOptions.setZoom(18.0);
+        mapOptions.setMapTypeId(MapTypeId.SATELLITE);
+
+        map = GoogleMap.create(mapContainer.getElement(), mapOptions);
+        map.setTilt(45);
     }
 
     @Override
@@ -59,8 +75,42 @@ public class MainPageView extends Composite implements ReverseViewInterface<Main
         mainPagePresenter.getPhonesInfo();
     }
 
+    @UiHandler("phoneLocation")
+    void getPhoneLocationHandler(ClickEvent event) {
+        mainPagePresenter.getPhoneLocation();
+    }
+
     public void setPhoneInfo(String result) {
         phoneInfo.setText(result);
+    }
+
+    public void showMarker(IDeviceLocationModel deviceLocationModel) {
+        if (marker != null) {
+            marker.setMap((GoogleMap)null);
+        }
+        MarkerOptions newMarkerOpts = MarkerOptions.create();
+        LatLng myLatLng = LatLng.create(deviceLocationModel.getLatitude(), deviceLocationModel.getLongitude());
+        newMarkerOpts.setPosition(myLatLng);
+        newMarkerOpts.setMap(map);
+        newMarkerOpts.setTitle("Hello World!");
+        marker = Marker.create(newMarkerOpts);
+        map.setCenter(myLatLng);
+
+
+        if (circle != null) {
+            circle.setMap(null);
+        }
+        CircleOptions populationOptions = CircleOptions.create();
+        populationOptions.setStrokeColor("#0000ff");
+        populationOptions.setStrokeOpacity(0.8);
+        populationOptions.setStrokeWeight(2);
+        populationOptions.setFillColor("#0000bb");
+        populationOptions.setFillOpacity(0.35);
+        populationOptions.setMap(map);
+        populationOptions.setCenter(myLatLng);
+        populationOptions.setRadius(deviceLocationModel.getAccuracy());
+        circle = Circle.create(populationOptions);
+
     }
 
 

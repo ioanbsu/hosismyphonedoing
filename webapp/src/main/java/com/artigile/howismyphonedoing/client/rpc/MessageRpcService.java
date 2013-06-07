@@ -11,4 +11,7 @@ public interface MessageRpcService extends RemoteService {
   String sendSimpleTextMessage(String name) throws IllegalArgumentException;
 
     String getPhoneInfo();
+
+    String getPhoneLocation();
+
 }

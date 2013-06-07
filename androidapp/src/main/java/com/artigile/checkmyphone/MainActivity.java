@@ -1,5 +1,6 @@
 package com.artigile.checkmyphone;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,8 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.artigile.checkmyphone.service.DeviceRegistrationServiceImpl;
 import com.artigile.checkmyphone.service.LocationService;
-import com.artigile.checkmyphone.service.LocationServiceImpl;
 import com.artigile.checkmyphone.util.GCMRegistrar;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationListener;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
@@ -53,6 +56,7 @@ public class MainActivity extends RoboActivity implements
     private TextToSpeechService textToSpeechService;
     @Inject
     private LocationService locationService;
+    private Dialog errorDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,10 +122,11 @@ public class MainActivity extends RoboActivity implements
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
-        locationService.getLocation(new LocationServiceImpl.LocationReadyListener() {
+        mDisplay.setText("Request for location update sent");
+        locationService.getLocation(new LocationListener() {
             @Override
-            public void onLocationReady(Location location) {
-                mDisplay.append(location.getLatitude() + " " + location.getLongitude() + " " + location.getAccuracy() + "\n");
+            public void onLocationChanged(Location location) {
+                mDisplay.setText(location.getLatitude() + " " + location.getLongitude() + " " + location.getAccuracy());
             }
         });
     }
@@ -188,4 +193,22 @@ public class MainActivity extends RoboActivity implements
             Log.e("TTS", "Initilization Failed!");
         }
     }
+
+    private void checkGooglePlayServiceAvailability(int requestCode) {
+        // Query for the status of Google Play services on the device
+        int statusCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
+
+        if (statusCode == ConnectionResult.SUCCESS) {
+//			init();
+        } else {
+            if (GooglePlayServicesUtil.isUserRecoverableError(statusCode)) {
+                errorDialog = GooglePlayServicesUtil.getErrorDialog(statusCode, this, requestCode);
+                errorDialog.show();
+            } else {
+                // Handle unrecoverable error
+            }
+        }
+    }
+
+
 }

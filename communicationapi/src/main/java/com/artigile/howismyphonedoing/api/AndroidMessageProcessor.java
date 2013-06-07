@@ -1,5 +1,7 @@
 package com.artigile.howismyphonedoing.api;
 
+import com.artigile.howismyphonedoing.api.model.MessageType;
+
 import java.io.IOException;
 
 /**
