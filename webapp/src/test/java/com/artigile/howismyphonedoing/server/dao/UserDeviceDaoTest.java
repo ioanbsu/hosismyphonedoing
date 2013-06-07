@@ -61,15 +61,15 @@ public class UserDeviceDaoTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void test() {
         UserDevice userDevice1 = new UserDevice();
-        userDevice1.setRegisteredId("asdasdas1");
+        userDevice1.setUuid("asdasdas1");
         userDevice1.setUserEmail("ioan@gmail.com");
 
         UserDevice userDevice2 = new UserDevice();
-        userDevice2.setRegisteredId("asdasdas2");
+        userDevice2.setUuid("asdasdas2");
         userDevice2.setUserEmail("ioan@gmail.com");
 
         UserDevice userDevice3 = new UserDevice();
-        userDevice3.setRegisteredId("asdasdas3");
+        userDevice3.setUuid("asdasdas3");
         userDevice3.setUserEmail("ioan1@gmail.com");
         userAndDeviceDao.register(userDevice1);
         userAndDeviceDao.register(userDevice2);
@@ -80,12 +80,12 @@ public class UserDeviceDaoTest extends AbstractJUnit4SpringContextTests {
         assertEquals(2, userDevicesList.size());
         Iterator<UserDevice> usersDevicesIterator = userDevicesList.iterator();
 
-        UserDevice foundUser1 = usersDevicesIterator.next();
         UserDevice foundUser2 = usersDevicesIterator.next();
+        UserDevice foundUser1 = usersDevicesIterator.next();
         assertEquals("ioan@gmail.com", foundUser1.getUserEmail());
-        assertEquals("asdasdas1", foundUser1.getRegisteredId());
+        assertEquals("asdasdas1", foundUser1.getUuid());
         assertEquals("ioan@gmail.com", foundUser1.getUserEmail());
-        assertEquals("asdasdas2", foundUser2.getRegisteredId());
+        assertEquals("asdasdas2", foundUser2.getUuid());
 
     }
 }

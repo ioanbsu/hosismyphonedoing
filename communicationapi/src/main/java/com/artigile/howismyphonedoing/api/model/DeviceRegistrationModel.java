@@ -1,12 +1,14 @@
 package com.artigile.howismyphonedoing.api.model;
 
+import java.io.Serializable;
+
 /**
  * @author IoaN, 6/3/13 9:13 PM
  */
-public class DeviceRegistrationModel {
+public class DeviceRegistrationModel implements Serializable{
     private String userEmail;
 
-    private String deviceUuid;
+    private String deviceCloudRegistrationId;
 
     public String getUserEmail() {
         return userEmail;
@@ -16,11 +18,11 @@ public class DeviceRegistrationModel {
         this.userEmail = userEmail;
     }
 
-    public String getDeviceUuid() {
-        return deviceUuid;
+    public String getDeviceCloudRegistrationId() {
+        return deviceCloudRegistrationId;
     }
 
-    public void setDeviceUuid(String deviceUuid) {
-        this.deviceUuid = deviceUuid;
+    public void setDeviceCloudRegistrationId(String deviceCloudRegistrationId) {
+        this.deviceCloudRegistrationId = deviceCloudRegistrationId;
     }
 }

@@ -1,10 +1,15 @@
 package com.artigile.checkmyphone;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.Context;
 import android.util.Log;
+import com.artigile.howismyphonedoing.api.AndroidMessageProcessor;
 import com.artigile.howismyphonedoing.api.CommonContants;
-import com.artigile.howismyphonedoing.api.MessageSender;
 import com.artigile.howismyphonedoing.api.MessageType;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -20,16 +25,21 @@ import static com.artigile.checkmyphone.CommonUtilities.TAG;
 /**
  * @author IoaN, 6/3/13 9:08 PM
  */
-public class MessageSenderImpl implements MessageSender<String> {
-    private static final String serverUrl = SERVER_URL + "/register";
+@Singleton
+public class AndroidMessageSender implements AndroidMessageProcessor<String> {
+    private static final String serverUrl = SERVER_URL + CommonContants.MESSAGES_COMMUNICATION_URL;
+    @Inject
+    private Context context;
+    @Inject
+    private DeviceUuidResolver deviceUuidResolver;
 
     @Override
-    public void sendMessage(String key, MessageType messageType, String message) throws IOException {
+    public String processMessage(MessageType messageType, String message) throws IOException {
         Map<String, String> params = new HashMap<String, String>();
-        params.put(CommonContants.REG_ID, key);
+        params.put(CommonContants.UUID, deviceUuidResolver.getDeviceUuid(context).toString());
         params.put(CommonContants.MESSAGE_EVENT_TYPE, messageType.toString());
         params.put(CommonContants.SERIALIZED_OBJECT, message);
-        post(params);
+        return post(params);
     }
 
     /**
@@ -38,7 +48,7 @@ public class MessageSenderImpl implements MessageSender<String> {
      * @param params request parameters.
      * @throws java.io.IOException propagated from POST.
      */
-    public void post(Map<String, String> params)
+    public String post(Map<String, String> params)
             throws IOException {
         URL url;
         try {
@@ -78,12 +88,20 @@ public class MessageSenderImpl implements MessageSender<String> {
             if (status != 200) {
                 throw new IOException("Post failed with error code " + status);
             }
+            return status + "";
         } catch (Exception e) {
             e.printStackTrace();
+            return "Message failed to be sent.";
         } finally {
             if (conn != null) {
                 conn.disconnect();
             }
         }
     }
+
+    private String getUserEmail(Context context) {
+        Account[] accounts = AccountManager.get(context).getAccountsByType("com.google");
+        return accounts[0].name;
+    }
+
 }

@@ -1,11 +1,13 @@
 package com.artigile.howismyphonedoing.api.model;
 
+import java.io.Serializable;
+
 /**
  * User: ioanbsu
  * Date: 5/29/13
  * Time: 11:57 AM
  */
-public class PhoneModel {
+public class PhoneModel implements Serializable{
     private String board;
     private String bootLoader;
     private String brand;

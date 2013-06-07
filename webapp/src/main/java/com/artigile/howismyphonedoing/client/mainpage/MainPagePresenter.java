@@ -2,7 +2,7 @@ package com.artigile.howismyphonedoing.client.mainpage;
 
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcServiceAsync;
-import com.artigile.howismyphonedoing.client.rpc.GreetingRpcServiceAsync;
+import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.widget.SigninWithGooglePlusWindow;
 import com.artigile.howismyphonedoing.shared.entity.GooglePlusAuthenticatedUser;
 import com.google.gwt.appengine.channel.client.*;
@@ -22,7 +22,7 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
     @Inject
     private AuthRpcServiceAsync authRpcService;
     @Inject
-    private GreetingRpcServiceAsync greetingRpcServiceAsync;
+    private MessageRpcServiceAsync messageRpcServiceAsync;
     @Inject
     private SigninWithGooglePlusWindow signinWithGooglePlusWindow;
     @Inject
@@ -102,12 +102,12 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
     }
 
     public void sendTextToPhone(String text) {
-        greetingRpcServiceAsync.sendSimpleTextMessage(text, new AsyncCallbackImpl<String>() {
+        messageRpcServiceAsync.sendSimpleTextMessage(text, new AsyncCallbackImpl<String>() {
         });
     }
 
     public void getPhonesInfo() {
-        greetingRpcServiceAsync.getPhoneInfo(new AsyncCallbackImpl<String>() {
+        messageRpcServiceAsync.getPhoneInfo(new AsyncCallbackImpl<String>() {
             @Override
             public void success(String result) {
                 view.setPhoneInfo(result);

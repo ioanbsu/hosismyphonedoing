@@ -40,7 +40,7 @@ public class MainActivity extends RoboActivity {
     TextView mDisplay;
     AsyncTask<Void, Void, Void> mRegisterTask;
     @Inject
-    private DeviceRegistrationService deviceRegistrationService;
+    private DeviceRegistrationServiceImpl deviceRegistrationService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

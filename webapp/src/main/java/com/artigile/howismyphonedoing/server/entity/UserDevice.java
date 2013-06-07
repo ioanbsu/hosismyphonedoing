@@ -13,16 +13,18 @@ import javax.jdo.annotations.PrimaryKey;
 public class UserDevice {
     @PrimaryKey
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    private String registeredId;
+    private String uuid;
+    @Persistent
+    private String deviceCloudRegistrationId;
     @Persistent
     private String userEmail;
 
-    public String getRegisteredId() {
-        return registeredId;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setRegisteredId(String registeredId) {
-        this.registeredId = registeredId;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getUserEmail() {
@@ -33,6 +35,14 @@ public class UserDevice {
         this.userEmail = userEmail;
     }
 
+    public String getDeviceCloudRegistrationId() {
+        return deviceCloudRegistrationId;
+    }
+
+    public void setDeviceCloudRegistrationId(String deviceCloudRegistrationId) {
+        this.deviceCloudRegistrationId = deviceCloudRegistrationId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,16 +50,13 @@ public class UserDevice {
 
         UserDevice that = (UserDevice) o;
 
-        if (registeredId != null ? !registeredId.equals(that.registeredId) : that.registeredId != null) return false;
-        if (userEmail != null ? !userEmail.equals(that.userEmail) : that.userEmail != null) return false;
+        if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = userEmail != null ? userEmail.hashCode() : 0;
-        result = 31 * result + (registeredId != null ? registeredId.hashCode() : 0);
-        return result;
+        return uuid != null ? uuid.hashCode() : 0;
     }
 }

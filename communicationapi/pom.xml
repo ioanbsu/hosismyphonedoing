@@ -13,6 +13,9 @@
     <name>communication api that is used to communicate between the app and phone</name>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
     </dependencies>
 </project>

@@ -3,7 +3,10 @@ package com.artigile.howismyphonedoing.server.dao;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import org.springframework.stereotype.Service;
 
-import javax.jdo.*;
+import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Query;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +47,7 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
         PersistenceManager pm = pmfInstance.getPersistenceManager();
         try {
             UserDevice userDevice = pm.getObjectById(UserDevice.class, oldId);
-            userDevice.setRegisteredId(newId);
+            userDevice.setUuid(newId);
             pm.makePersistent(userDevice);
         } finally {
             pm.close();
@@ -59,5 +62,15 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
         List<UserDevice> userDevices = (List<UserDevice>) query.execute(userEmail);
         return new HashSet<>(userDevices);
 
+    }
+
+    @Override
+    public UserDevice getById(String uuid) {
+        PersistenceManager pm = pmfInstance.getPersistenceManager();
+        try {
+            return pm.getObjectById(UserDevice.class, uuid);
+        } finally {
+            pm.close();
+        }
     }
 }

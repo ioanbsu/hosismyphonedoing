@@ -13,8 +13,9 @@ public class CommonContants {
      */
     public static final String MESSAGE_EVENT_TYPE = "messageEventType";
     public static final String USER_EMAIL = "userEmail";
-    public static final String REG_ID = "regId";
+    public static final String UUID = "uuid";
     public static final String SERIALIZED_OBJECT = "serializedObject";
+    public static final String MESSAGES_COMMUNICATION_URL = "/messageServlet";
 
     private CommonContants() {
 

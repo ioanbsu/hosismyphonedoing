@@ -23,7 +23,7 @@ public class SecurityAspect implements Serializable{
     public static final String SESSION_USER_ATTR_NAME = "googlePlusLoggedInUser";
     public static final String USER_IN_SESSION_EMAIL = "userInSessionEmail";
 
-    @Before("execution (* com.artigile.howismyphonedoing*..rpc..*(..)) && !execution(* com.artigile.howismyphonedoing.server.rpc.AuthRpcServiceImpl.validateGooglePlusCallback(..))")
+    @Before("execution (* com.artigile.howismyphonedoing.server*..rpc..*(..)) && !execution(* com.artigile.howismyphonedoing.server.rpc.AuthRpcServiceImpl.validateGooglePlusCallback(..))")
     public void checkRemoteConnection(JoinPoint joinPoint) throws UserNotLoggedInException {
         HttpSession session = ServletUtils.getRequest().getSession();
         if (session.getAttribute(SESSION_USER_ATTR_NAME) == null || !(session.getAttribute(SESSION_USER_ATTR_NAME) instanceof GooglePlusAuthenticatedUser)) {

@@ -1,7 +1,8 @@
 package com.artigile.howismyphonedoing.server.config;
 
+import com.artigile.howismyphonedoing.api.CommonContants;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcService;
-import com.artigile.howismyphonedoing.client.rpc.GreetingRpcService;
+import com.artigile.howismyphonedoing.client.rpc.MessageRpcService;
 import org.gwtwidgets.server.spring.GWTRPCServiceExporter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
@@ -23,13 +24,13 @@ public class RpcConfig extends GenericWebApplicationContext {
         Properties mappings = new Properties();
         mappings.put("/mainHowIsMyPhoneDoing", "mainHowIsMyPhoneDoingServiceExporter");
         mappings.put("/authService", "authServiceExporter");
-        mappings.put("/register", "registerDeviceServlet");
+        mappings.put(CommonContants.MESSAGES_COMMUNICATION_URL, "messageCommunicationServlet");
         simpleUrlHandlerMapping.setMappings(mappings);
         return simpleUrlHandlerMapping;
     }
 
     @Bean
-    public GWTRPCServiceExporter mainHowIsMyPhoneDoingServiceExporter(GreetingRpcService creetingRpcService) {
+    public GWTRPCServiceExporter mainHowIsMyPhoneDoingServiceExporter(MessageRpcService creetingRpcService) {
         GWTRPCServiceExporter invoiceAppServiceExporter = new GWTRPCServiceExporter();
         invoiceAppServiceExporter.setService(creetingRpcService);
         return invoiceAppServiceExporter;

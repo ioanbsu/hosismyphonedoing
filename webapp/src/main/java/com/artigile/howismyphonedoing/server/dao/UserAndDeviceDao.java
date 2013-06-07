@@ -16,4 +16,6 @@ public interface UserAndDeviceDao {
     void updateRegistration(String oldId, String newId);
 
     Set<UserDevice> getDevices(String userEmail);
+
+    UserDevice getById(String uuid);
 }
