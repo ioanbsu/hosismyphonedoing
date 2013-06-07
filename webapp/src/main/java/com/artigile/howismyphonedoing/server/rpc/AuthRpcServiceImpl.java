@@ -2,8 +2,8 @@ package com.artigile.howismyphonedoing.server.rpc;
 
 import com.artigile.howismyphonedoing.client.exception.UserNotLoggedInException;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcService;
-import com.artigile.howismyphonedoing.server.service.SecurityAspect;
 import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
+import com.artigile.howismyphonedoing.server.service.SecurityAspect;
 import com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver;
 import com.artigile.howismyphonedoing.shared.entity.GooglePlusAuthenticatedUser;
 import com.google.api.client.auth.oauth2.TokenResponseException;
@@ -44,18 +44,13 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
      * Gson object to serialize JSON responses to requests to this servlet.
      */
     private static final Gson GSON = new Gson();
-    /**
-     * Optionally replace this with your application's name.
-     */
-    private static final String APPLICATION_NAME = "How Is My Phone Doing";
     @Autowired
     private KeysResolver keysResolver;
-    @Autowired
-    private UserAndDeviceDao userAndDeviceDao;
 
     @Override
     public String userIsInSession() throws UserNotLoggedInException {
-        return "ersponse!";
+        ChannelService channelService = ChannelServiceFactory.getChannelService();
+        return channelService.createChannel(getUserEmailFromSession());
     }
 
     @Override

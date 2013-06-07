@@ -84,8 +84,8 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
         exportStaticMethod(this);
         authRpcService.userIsInSession(new AsyncCallbackImpl<String>() {
             @Override
-            public void success(String result) {
-                Window.alert("User already logged in!");
+            public void success(String token) {
+                initGaeChannel(token);
             }
 
             @Override
