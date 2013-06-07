@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.util.Locale;
 
 import static com.artigile.checkmyphone.CommonUtilities.displayMessage;
 
@@ -29,6 +30,8 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     private AndroidMessageSender messageSender;
     @Inject
     private Context context;
+    @Inject
+    private TextToSpeechService textToSpeechService;
 
     private static PhoneModel buildPhoneModel() {
         PhoneModel phoneModel = new PhoneModel();
@@ -67,7 +70,15 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
+        }else if(messageType == MessageType.NOTIFY_PHONE){
+            try {
+                String messageStr= (String) messageType.getValue(message);
+                textToSpeechService.talk(messageStr);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
             displayMessage(context, message);
             TextToSpeech textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
                 @Override

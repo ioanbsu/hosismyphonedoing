@@ -28,7 +28,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Inject
     private AndroidMessageSender messageSender;
     @Inject
-    private AndroidMessageReceiver messageProcessor;
+    private AndroidMessageReceiver messageReceiver;
 
     public GCMIntentService() {
         super(SENDER_ID);
@@ -51,7 +51,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onMessage(Context context, Intent intent) {
         Log.i(TAG, "Received message. Extras: " + intent.getExtras());
-        messageProcessor.processMessage(MessageType.valueOf(intent.getStringExtra(CommonContants.MESSAGE_EVENT_TYPE)),
+        messageReceiver.processMessage(MessageType.valueOf(intent.getStringExtra(CommonContants.MESSAGE_EVENT_TYPE)),
                 intent.getStringExtra(CommonContants.SERIALIZED_OBJECT));
     }
 

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +20,7 @@ import roboguice.inject.InjectView;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Locale;
 
 import static com.artigile.checkmyphone.CommonUtilities.*;
 
@@ -27,7 +30,8 @@ import static com.artigile.checkmyphone.CommonUtilities.*;
  * Time: 3:47 PM
  */
 @Singleton
-public class MainActivity extends RoboActivity {
+public class MainActivity extends RoboActivity implements
+        TextToSpeech.OnInitListener {
 
     private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -41,6 +45,8 @@ public class MainActivity extends RoboActivity {
     AsyncTask<Void, Void, Void> mRegisterTask;
     @Inject
     private DeviceRegistrationServiceImpl deviceRegistrationService;
+    @Inject
+    private TextToSpeechService textToSpeechService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,7 @@ public class MainActivity extends RoboActivity {
         GCMRegistrar.checkManifest(this);
         setContentView(R.layout.main);
         registerPhoneIfNecessary();
+        textToSpeechService.setTts(new TextToSpeech(this, this));
     }
 
     @Override
@@ -158,5 +165,15 @@ public class MainActivity extends RoboActivity {
         }
     }
 
-
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            int result = textToSpeechService.setLanguage(Locale.US);
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            }
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
 }
