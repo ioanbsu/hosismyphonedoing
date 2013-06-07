@@ -1,21 +1,21 @@
 package com.artigile.howismyphonedoing.server.entity;
 
-import com.artigile.howismyphonedoing.api.model.PhoneModel;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
 
 /**
  * @author IoaN, 5/28/13 9:25 PM
  */
-@Entity
+@PersistenceCapable
 public class UserDevice {
-    @Id
+    @PrimaryKey
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
     private String registeredId;
-
+    @Persistent
     private String userEmail;
-
-
 
     public String getRegisteredId() {
         return registeredId;

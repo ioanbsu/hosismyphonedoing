@@ -117,31 +117,12 @@
             <artifactId>gwt-gae-channel</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.datanucleus</groupId>
-            <artifactId>datanucleus-api-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.datanucleus</groupId>
-            <artifactId>datanucleus-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.google.appengine.orm</groupId>
             <artifactId>datanucleus-appengine</artifactId>
-            <!-- Need to exclude the enhancer since it interfere with the enhancer plugin. -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.datanucleus</groupId>
-                    <artifactId>datanucleus-enhancer</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency><!--
+        </dependency>
         <dependency>
-            <groupId>javax.jdo</groupId>
-            <artifactId>jdo-api</artifactId>
-        </dependency>-->
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jpa_2.0_spec</artifactId>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-api-jdo</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -190,12 +171,10 @@
             </resource>
         </resources>
         <plugins>
-
             <!-- GWT Maven Plugin -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.5.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -222,7 +201,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.1.1</version>
                 <executions>
                     <execution>
                         <phase>compile</phase>
@@ -238,47 +216,39 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>com.google.appengine</groupId>
-                <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine-version}</version>
-            </plugin>
-
             <plugin>
                 <groupId>org.datanucleus</groupId>
                 <artifactId>maven-datanucleus-plugin</artifactId>
-                <version>${datanucleus.jpa.version}</version>
-
                 <configuration>
-                    <api>JPA</api>
+                    <api>JDO</api>
                     <metadataIncludes>com/artigile/howismyphonedoing/server/entity/*.class</metadataIncludes>
-                    <verbose>true</verbose>
+                    <verbose>false</verbose>
+                    <fork>false</fork>
                 </configuration>
-
-                <dependencies>
-                    <dependency>
-                        <groupId>org.datanucleus</groupId>
-                        <artifactId>datanucleus-core</artifactId>
-                        <version>${datanucleus.jpa.version}</version>
-                    </dependency>
-                </dependencies>
-
                 <executions>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>process-classes</phase>
                         <goals>
                             <goal>enhance</goal>
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.jdo</groupId>
+                        <artifactId>jdo-api</artifactId>
+                        <version>${jdo-api.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.datanucleus</groupId>
+                        <artifactId>datanucleus-core</artifactId>
+                        <version>${datanucleus-core.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
+
+
         </plugins>
     </build>
 

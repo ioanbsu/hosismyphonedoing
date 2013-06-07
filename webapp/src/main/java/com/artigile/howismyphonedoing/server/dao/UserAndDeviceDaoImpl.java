@@ -3,13 +3,9 @@ package com.artigile.howismyphonedoing.server.dao;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.jdo.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -17,43 +13,51 @@ import java.util.Set;
  */
 @Service
 public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
-    private final EntityManagerFactory emfInstance = Persistence.createEntityManagerFactory("transactions-optional");
-    private EntityManager em = emfInstance.createEntityManager();
-    private CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+    private static final PersistenceManagerFactory pmfInstance = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 
     @Override
     public void register(UserDevice userDevice) {
-        em.getTransaction().begin();
-        em.persist(userDevice);
-        em.getTransaction().commit();
+        PersistenceManager pm = pmfInstance.getPersistenceManager();
+        try {
+            pm.makePersistent(userDevice);
+        } finally {
+            pm.close();
+        }
     }
 
     @Override
     public void unregister(String registeredDeviceId) {
-        em.getTransaction().begin();
-        UserDevice userDevice = em.find(UserDevice.class, registeredDeviceId);
-        if (userDevice != null) {
-            em.remove(userDevice);
+        PersistenceManager pm = pmfInstance.getPersistenceManager();
+        try {
+            UserDevice userDevice = pm.getObjectById(UserDevice.class, registeredDeviceId);
+            if (userDevice != null) {
+                pm.deletePersistent(userDevice);
+            }
+        } finally {
+            pm.close();
         }
-        em.getTransaction().commit();
-
     }
 
     @Override
     public void updateRegistration(String oldId, String newId) {
-        em.getTransaction().begin();
-        UserDevice userDevice = em.find(UserDevice.class, oldId);
-        userDevice.setRegisteredId(newId);
-        em.persist(userDevice);
-        em.getTransaction().commit();
+        PersistenceManager pm = pmfInstance.getPersistenceManager();
+        try {
+            UserDevice userDevice = pm.getObjectById(UserDevice.class, oldId);
+            userDevice.setRegisteredId(newId);
+            pm.makePersistent(userDevice);
+        } finally {
+            pm.close();
+        }
     }
 
     @Override
     public Set<UserDevice> getDevices(String userEmail) {
-        CriteriaQuery<UserDevice> criteria = criteriaBuilder.createQuery(UserDevice.class);
-        Root<UserDevice> personRoot = criteria.from(UserDevice.class);
-        criteria.select(personRoot).where(criteriaBuilder.equal(personRoot.get("userEmail"), userEmail));
-        return new HashSet<>(em.createQuery(criteria).getResultList());
+        PersistenceManager pm = pmfInstance.getPersistenceManager();
+        Query query = pm.newQuery(UserDevice.class, "userEmail == emailParam");
+        query.declareParameters("String emailParam");
+        List<UserDevice> userDevices = (List<UserDevice>) query.execute(userEmail);
+        return new HashSet<>(userDevices);
 
     }
 }
