@@ -1,5 +1,6 @@
 package com.artigile.checkmyphone;
 
+import com.artigile.checkmyphone.service.AndroidMessageSender;
 import com.artigile.howismyphonedoing.api.AndroidMessageProcessor;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;

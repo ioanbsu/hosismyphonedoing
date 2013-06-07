@@ -1,4 +1,4 @@
-package com.artigile.checkmyphone;
+package com.artigile.checkmyphone.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;

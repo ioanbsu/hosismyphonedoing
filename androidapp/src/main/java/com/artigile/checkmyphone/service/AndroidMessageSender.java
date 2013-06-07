@@ -1,4 +1,4 @@
-package com.artigile.checkmyphone;
+package com.artigile.checkmyphone.service;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.artigile.checkmyphone.CommonUtilities.SERVER_URL;
-import static com.artigile.checkmyphone.CommonUtilities.TAG;
+import static com.artigile.checkmyphone.service.CommonUtilities.SERVER_URL;
+import static com.artigile.checkmyphone.service.CommonUtilities.TAG;
 
 /**
  * @author IoaN, 6/3/13 9:08 PM

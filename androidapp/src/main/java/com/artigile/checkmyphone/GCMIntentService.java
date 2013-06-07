@@ -3,6 +3,9 @@ package com.artigile.checkmyphone;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import com.artigile.checkmyphone.service.AndroidMessageReceiver;
+import com.artigile.checkmyphone.service.AndroidMessageSender;
+import com.artigile.checkmyphone.service.DeviceRegistrationServiceImpl;
 import com.artigile.checkmyphone.util.GCMBaseIntentService;
 import com.artigile.howismyphonedoing.api.CommonContants;
 import com.artigile.howismyphonedoing.api.MessageType;
@@ -10,8 +13,8 @@ import com.artigile.howismyphonedoing.api.MessageType;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import static com.artigile.checkmyphone.CommonUtilities.SENDER_ID;
-import static com.artigile.checkmyphone.CommonUtilities.displayMessage;
+import static com.artigile.checkmyphone.service.CommonUtilities.SENDER_ID;
+import static com.artigile.checkmyphone.service.CommonUtilities.displayMessage;
 
 /**
  * User: ioanbsu

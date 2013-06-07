@@ -1,11 +1,11 @@
-package com.artigile.checkmyphone;
+package com.artigile.checkmyphone.service;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.util.Log;
+import com.artigile.checkmyphone.R;
 import com.artigile.checkmyphone.util.GCMRegistrar;
-import com.artigile.howismyphonedoing.api.AndroidMessageProcessor;
 import com.artigile.howismyphonedoing.api.MessageType;
 import com.artigile.howismyphonedoing.api.model.DeviceRegistrationModel;
 import com.google.gson.Gson;
@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
-import static com.artigile.checkmyphone.CommonUtilities.*;
+import static com.artigile.checkmyphone.service.CommonUtilities.*;
 
 /**
  * Helper class used to communicate with the demo server.

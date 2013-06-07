@@ -1,4 +1,4 @@
-package com.artigile.checkmyphone;
+package com.artigile.checkmyphone.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
+import com.artigile.checkmyphone.MainActivity;
+import com.artigile.checkmyphone.R;
+import com.artigile.checkmyphone.TextToSpeechService;
 import com.artigile.howismyphonedoing.api.AndroidMessageProcessor;
 import com.artigile.howismyphonedoing.api.MessageType;
 import com.artigile.howismyphonedoing.api.model.PhoneModel;
@@ -15,9 +18,8 @@ import com.google.gson.Gson;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.util.Locale;
 
-import static com.artigile.checkmyphone.CommonUtilities.displayMessage;
+import static com.artigile.checkmyphone.service.CommonUtilities.displayMessage;
 
 /**
  * User: ioanbsu

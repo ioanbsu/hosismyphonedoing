@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -14,6 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.artigile.checkmyphone.service.DeviceRegistrationServiceImpl;
+import com.artigile.checkmyphone.service.LocationService;
+import com.artigile.checkmyphone.service.LocationServiceImpl;
 import com.artigile.checkmyphone.util.GCMRegistrar;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
@@ -22,7 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Locale;
 
-import static com.artigile.checkmyphone.CommonUtilities.*;
+import static com.artigile.checkmyphone.service.CommonUtilities.*;
 
 /**
  * User: ioanbsu
@@ -47,6 +51,8 @@ public class MainActivity extends RoboActivity implements
     private DeviceRegistrationServiceImpl deviceRegistrationService;
     @Inject
     private TextToSpeechService textToSpeechService;
+    @Inject
+    private LocationService locationService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,6 +118,12 @@ public class MainActivity extends RoboActivity implements
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+        locationService.getLocation(new LocationServiceImpl.LocationReadyListener() {
+            @Override
+            public void onLocationReady(Location location) {
+                mDisplay.append(location.getLatitude() + " " + location.getLongitude() + " " + location.getAccuracy() + "\n");
+            }
+        });
     }
 
     @Override
