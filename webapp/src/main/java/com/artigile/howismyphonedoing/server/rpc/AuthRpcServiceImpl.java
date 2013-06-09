@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.artigile.howismyphonedoing.server.service.SecurityAspect.SESSION_USER_ATTR_NAME;
@@ -78,10 +79,10 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
         }
 
         try {
-            logger.info("1");
+            logger.info("1 --- " + keysResolver.getClientId() + " " + keysResolver.getClientSecret());
             // Upgrade the authorization code into an access and refresh token.
             GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(TRANSPORT, JSON_FACTORY,
-                    keysResolver.getClientId(), keysResolver.clientSecret, googlePlusAuthenticatedUser.getCode(),
+                    keysResolver.getClientId(), keysResolver.getClientSecret(), googlePlusAuthenticatedUser.getCode(),
                     "postmessage").execute();
             // Create a credential representation of the token data.
             logger.info("2");
@@ -93,10 +94,8 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
 
             // Check that the token is valid.
             logger.info("3");
-            Oauth2 oauth2 = new Oauth2.Builder(
-                    TRANSPORT, JSON_FACTORY, credential).build();
-            Tokeninfo tokenInfo = oauth2.tokeninfo()
-                    .setAccessToken(credential.getAccessToken()).execute();
+            Oauth2 oauth2 = new Oauth2.Builder(TRANSPORT, JSON_FACTORY, credential).build();
+            Tokeninfo tokenInfo = oauth2.tokeninfo().setAccessToken(credential.getAccessToken()).execute();
             // If there was an error in the token info, abort.
             logger.info("4");
             if (tokenInfo.containsKey("error")) {
@@ -127,8 +126,8 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
             return GSON.toJson("Failed to upgrade the authorization code.");
         } catch (IOException e) {
             response.setStatus(500);
-            e.printStackTrace();
-            return GSON.toJson("Failed to read token data from Google. " + e.getMessage());
+            logger.log(Level.WARNING, "Failed to read token data from Google. ",e);
+            return GSON.toJson("Failed to read token data from Google. " + e.getMessage() + "[[ " + e.getCause());
         }
 
     }
@@ -153,4 +152,6 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
         }
         return state;
     }
+
+
 }

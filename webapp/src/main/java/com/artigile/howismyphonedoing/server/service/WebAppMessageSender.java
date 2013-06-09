@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -77,7 +79,7 @@ public class WebAppMessageSender implements WebAppMessageProcessor<Set<UserDevic
         try {
             multicastResult = sender.send(message, devices, 5);
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error posting messages", e);
+            logger.log(Level.WARNING, "Error posting messages", e);
             return;
         }
         List<Result> results = multicastResult.getResults();

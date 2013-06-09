@@ -347,11 +347,11 @@ public class Sender {
                 multicastResult = sendNoRetry(message, unsentRegIds);
             } catch (IOException e) {
                 // no need for WARNING since exception might be already logged
-                logger.log(Level.FINEST, "IOException on attempt " + attempt, e);
+                logger.log(Level.WARNING, "IOException on attempt " + attempt, e);
             }
             if (multicastResult != null) {
                 long multicastId = multicastResult.getMulticastId();
-                logger.fine("multicast_id on attempt # " + attempt + ": " +
+                logger.info("multicast_id on attempt # " + attempt + ": " +
                         multicastId);
                 multicastIds.add(multicastId);
                 unsentRegIds = updateStatus(unsentRegIds, results, multicastResult);

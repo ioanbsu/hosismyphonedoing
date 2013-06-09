@@ -86,9 +86,7 @@ public class LocationServiceImpl implements LocationService {
             @Override
             public void onLocationChanged(Location location) {
                 if (location.getAccuracy() < 30) {
-                    if (locationClient.isConnected()) {
-                        stopRequestingLocationUpdates();
-                    }
+                    stopRequestingLocationUpdates();
                 }
                 locationListener.onLocationChanged(location);
             }
@@ -106,13 +104,17 @@ public class LocationServiceImpl implements LocationService {
 
         @Override
         public void onConnected(Bundle connectionHint) {
-            Log.v(TAG, "Location Client connected");
-            // Display last location
-            Location location = locationClient.getLastLocation();
-            if (location != null) {
-                internalLocationListener.onLocationChanged(location);
+            try {
+                Log.v(TAG, "Location Client connected");
+                // Display last location
+                Location location = locationClient.getLastLocation();
+                if (location != null) {
+                    internalLocationListener.onLocationChanged(location);
+                }
+                requestLocationUpdates();
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Location can not be achieved.");
             }
-            requestLocationUpdates();
         }
 
         @Override

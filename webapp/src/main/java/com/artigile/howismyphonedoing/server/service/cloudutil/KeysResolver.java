@@ -21,9 +21,9 @@ public class KeysResolver {
     private static final String CLIENT_SECRET_KEY = "google.api.client.secret";
     private static final String PHONE_API_KEY = "phone.api.key";
     protected final Logger logger = Logger.getLogger(getClass().getName());
-    public String clientId;
-    public String clientSecret;
-    public String phoneApiKey;
+    private String clientId;
+    private String clientSecret;
+    private String phoneApiKey;
     @Autowired
     private Environment env;
 
