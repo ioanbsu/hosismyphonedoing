@@ -2,18 +2,22 @@ package com.artigile.checkmyphone.service;
 
 import android.content.Context;
 import android.content.Intent;
+import com.artigile.checkmyphone.R;
+import roboguice.inject.InjectResource;
+
+import javax.inject.Singleton;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * User: ioanbsu
  * Date: 5/21/13
  * Time: 9:39 AM
  */
+@Singleton
 public class CommonUtilities {
-
-    /**
-     * Base URL of the Demo Server (such as http://my_host:8080/gcm-demo)
-     */
-    public static final String SERVER_URL = "http://169.229.196.12:8080/remoteService";
+    @InjectResource(R.string.remote_application_url)
+    private String serverUrl;
     /**
      * Google API project id registered to use GCM.
      */
@@ -41,9 +45,13 @@ public class CommonUtilities {
      * @param context application's context.
      * @param message message to be displayed.
      */
-    public static void displayMessage(Context context, String message) {
+    public void displayMessage(Context context, String message) {
         Intent intent = new Intent(DISPLAY_MESSAGE_ACTION);
         intent.putExtra(EXTRA_MESSAGE, message);
         context.sendBroadcast(intent);
+    }
+
+    public String getServerUrl(String propertyName) {
+        return serverUrl;
     }
 }

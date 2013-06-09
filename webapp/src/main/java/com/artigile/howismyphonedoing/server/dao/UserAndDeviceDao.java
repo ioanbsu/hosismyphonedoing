@@ -18,4 +18,6 @@ public interface UserAndDeviceDao {
     Set<UserDevice> getDevices(String userEmail);
 
     UserDevice getById(String uuid);
+
+    void removeAllEntities();
 }

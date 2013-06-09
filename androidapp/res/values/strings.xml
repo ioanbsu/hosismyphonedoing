@@ -18,5 +18,6 @@
     <string name="gcm_recoverable_error">GCM recoverable error</string>
     <string name="register">register</string>
     <string name="test">Test Button</string>
+    <string name="remote_application_url">http://howismyphonedoing.appspot.com/remoteService</string>
 
 </resources>

@@ -6,8 +6,8 @@ import android.content.Context;
 import android.util.Log;
 import com.artigile.checkmyphone.R;
 import com.artigile.checkmyphone.util.GCMRegistrar;
-import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.api.model.DeviceRegistrationModel;
+import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.google.gson.Gson;
 
 import javax.inject.Inject;
@@ -21,7 +21,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
-import static com.artigile.checkmyphone.service.CommonUtilities.*;
+import static com.artigile.checkmyphone.service.CommonUtilities.TAG;
+
 
 /**
  * Helper class used to communicate with the demo server.
@@ -36,6 +37,8 @@ public final class DeviceRegistrationServiceImpl {
     private DeviceUuidResolver deviceUuidResolver;
     @Inject
     private AndroidMessageSender messageSender;
+    @Inject
+    private CommonUtilities commonUtilities;
 
     /**
      * Register this account/device pair within the server.
@@ -51,11 +54,11 @@ public final class DeviceRegistrationServiceImpl {
         for (int i = 1; i <= MAX_ATTEMPTS; i++) {
             Log.d(TAG, "Attempt #" + i + " to register");
             try {
-                displayMessage(context, context.getString(R.string.server_registering, i, MAX_ATTEMPTS));
-                messageSender.processMessage( MessageType.REGISTER_DEVICE, deviceRegistrationModelConverted);
+                commonUtilities.displayMessage(context, context.getString(R.string.server_registering, i, MAX_ATTEMPTS));
+                messageSender.processMessage(MessageType.REGISTER_DEVICE, deviceRegistrationModelConverted);
                 GCMRegistrar.setRegisteredOnServer(context, true);
                 String message = context.getString(R.string.server_registered);
-                displayMessage(context, message);
+                commonUtilities.displayMessage(context, message);
                 return;
             } catch (IOException e) {
                 // Here we are simplifying and retrying on any error; in a real
@@ -80,7 +83,7 @@ public final class DeviceRegistrationServiceImpl {
         }
         String message = context.getString(R.string.server_register_error,
                 MAX_ATTEMPTS);
-        displayMessage(context, message);
+        commonUtilities.displayMessage(context, message);
     }
 
     private String createRegisterMap(Context context, String cloudRegistrationId) {
@@ -106,7 +109,7 @@ public final class DeviceRegistrationServiceImpl {
             messageSender.processMessage(MessageType.UNREGISTER_DEVICE, deviceRegistrationModelConverted);
             GCMRegistrar.setRegisteredOnServer(context, false);
             String message = context.getString(R.string.server_unregistered);
-            displayMessage(context, message);
+            commonUtilities.displayMessage(context, message);
         } catch (IOException e) {
             // At this point the device is unregistered from GCM, but still
             // registered in the server.
@@ -115,7 +118,7 @@ public final class DeviceRegistrationServiceImpl {
             // a "NotRegistered" error message and should unregister the device.
             String message = context.getString(R.string.server_unregister_error,
                     e.getMessage());
-            displayMessage(context, message);
+            commonUtilities.displayMessage(context, message);
         }
     }
 

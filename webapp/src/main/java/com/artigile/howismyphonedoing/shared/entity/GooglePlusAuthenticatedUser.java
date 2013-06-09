@@ -6,12 +6,12 @@ import java.io.Serializable;
 /**
  * @author IoaN, 5/21/13 10:35 PM
  */
-public class GooglePlusAuthenticatedUser implements Serializable{
+public class GooglePlusAuthenticatedUser implements Serializable {
 
     private String code;
     private String accessToken;
     private String clientId;
-
+    private String state;
 
     public String getCode() {
         return code;
@@ -35,5 +35,13 @@ public class GooglePlusAuthenticatedUser implements Serializable{
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

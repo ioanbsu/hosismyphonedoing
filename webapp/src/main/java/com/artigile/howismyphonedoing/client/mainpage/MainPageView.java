@@ -33,6 +33,8 @@ public class MainPageView extends Composite implements ReverseViewInterface<Main
     Button phoneLocation;
     @UiField
     SimplePanel mapContainer;
+    @UiField
+    Button removeAllDevices;
     GoogleMap map;
     private MainPagePresenter mainPagePresenter;
     private Marker marker;
@@ -78,6 +80,11 @@ public class MainPageView extends Composite implements ReverseViewInterface<Main
     @UiHandler("phoneLocation")
     void getPhoneLocationHandler(ClickEvent event) {
         mainPagePresenter.getPhoneLocation();
+    }
+
+    @UiHandler("removeAllDevices")
+    void getRemoveAllDevicesHandler(ClickEvent event) {
+        mainPagePresenter.removeAllDevices();
     }
 
     public void setPhoneInfo(String result) {

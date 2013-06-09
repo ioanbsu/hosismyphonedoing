@@ -4,12 +4,13 @@ import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
+import com.artigile.howismyphonedoing.client.service.ApplicationState;
 import com.artigile.howismyphonedoing.client.service.HowIsMyPhoneDoingFactory;
 import com.artigile.howismyphonedoing.client.widget.SigninWithGooglePlusWindow;
 import com.artigile.howismyphonedoing.shared.entity.GooglePlusAuthenticatedUser;
+import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.gwt.appengine.channel.client.*;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.SerializationStreamFactory;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.mvp4g.client.annotation.Presenter;
@@ -34,13 +35,15 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
     private ChannelFactory channelFactory;
     @Inject
     private HowIsMyPhoneDoingFactory howIsMyPhoneDoingFactory;
-    private SerializationStreamFactory pushServiceStreamFactory;
+    @Inject
+    private ApplicationState applicationState;
 
     public void onGooglePlusCallbackEvent(String code, String accessToken, String clientId, String error) {
         GooglePlusAuthenticatedUser googlePlusAuthenticatedUser = new GooglePlusAuthenticatedUser();
         googlePlusAuthenticatedUser.setCode(code);
         googlePlusAuthenticatedUser.setAccessToken(accessToken);
         googlePlusAuthenticatedUser.setClientId(clientId);
+        googlePlusAuthenticatedUser.setState(applicationState.getStateKey());
         authRpcService.validateGooglePlusCallback(googlePlusAuthenticatedUser, new AsyncCallbackImpl<String>() {
             @Override
             public void success(String token) {
@@ -82,16 +85,17 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
 
     public void onInitApp() {
         exportStaticMethod(this);
-        authRpcService.userIsInSession(new AsyncCallbackImpl<String>() {
+        authRpcService.userIsInSession(new AsyncCallbackImpl<StateAndChanelEntity>() {
             @Override
-            public void success(String token) {
-                initGaeChannel(token);
+            public void success(StateAndChanelEntity token) {
+                if (!token.isUserInSession()) {
+                    initGaeChannel(token.getChanelToken());
+                } else {
+                    applicationState.setStateKey(token.getStateSecret());
+                    signinWithGooglePlusWindow.show();
+                }
             }
 
-            @Override
-            public void failure(Throwable caught) {
-                signinWithGooglePlusWindow.show();
-            }
         });
     }
 
@@ -130,6 +134,20 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
             @Override
             public void success(String result) {
                 view.setPhoneInfo(result);
+            }
+        });
+    }
+
+    public void removeAllDevices() {
+        messageRpcServiceAsync.removeAllEntities(new AsyncCallbackImpl<String>() {
+            @Override
+            public void success(String result) {
+                Window.alert("Devices removed");
+            }
+
+            @Override
+            public void failure(Throwable caught) {
+                Window.alert("failed to remove entities");
             }
         });
     }

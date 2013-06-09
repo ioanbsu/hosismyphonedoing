@@ -1,6 +1,6 @@
 package com.artigile.howismyphonedoing.server.service;
 
-import com.artigile.howismyphonedoing.api.CommonContants;
+import com.artigile.howismyphonedoing.api.CommonConstants;
 import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.api.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
@@ -47,8 +47,8 @@ public class WebAppMessageSender implements WebAppMessageProcessor<Set<UserDevic
         if (devices.isEmpty()) {
             status = "Message ignored as there is no device registered!";
         } else {
-            Message message = new Message.Builder().addData(CommonContants.SERIALIZED_OBJECT, messageStr)
-                    .addData(CommonContants.MESSAGE_EVENT_TYPE, messageType.toString())
+            Message message = new Message.Builder().addData(CommonConstants.SERIALIZED_OBJECT, messageStr)
+                    .addData(CommonConstants.MESSAGE_EVENT_TYPE, messageType.toString())
                     .build();
             // must split in chunks of 1000 devices (GCM limit)
             int total = devices.size();

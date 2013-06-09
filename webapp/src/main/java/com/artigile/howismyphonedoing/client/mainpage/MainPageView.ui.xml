@@ -18,6 +18,7 @@
                 <g:Button text="send message" ui:field="sendTextToPhone"/>
                 <g:Button text="getMyPhoneInfo" ui:field="phoneInfoButton"/>
                 <g:Button text="Get Phone Location" ui:field="phoneLocation"/>
+                <g:Button text="Remove all devices" ui:field="removeAllDevices"/>
                 <g:TextBox ui:field="textToSend"/>
                 <g:Label ui:field="phoneInfo"/>
                 <g:SimplePanel ui:field="mapContainer" styleName="{style.mapStyle}"/>

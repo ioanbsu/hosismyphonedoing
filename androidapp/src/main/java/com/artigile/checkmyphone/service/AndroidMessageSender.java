@@ -6,7 +6,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.artigile.howismyphonedoing.api.AndroidMessageProcessor;
-import com.artigile.howismyphonedoing.api.CommonContants;
+import com.artigile.howismyphonedoing.api.CommonConstants;
 import com.artigile.howismyphonedoing.api.model.MessageType;
 
 import javax.inject.Inject;
@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.artigile.checkmyphone.service.CommonUtilities.SERVER_URL;
 import static com.artigile.checkmyphone.service.CommonUtilities.TAG;
 
 /**
@@ -28,18 +27,23 @@ import static com.artigile.checkmyphone.service.CommonUtilities.TAG;
  */
 @Singleton
 public class AndroidMessageSender implements AndroidMessageProcessor<String> {
-    private static final String serverUrl = SERVER_URL + CommonContants.MESSAGES_COMMUNICATION_URL;
+    private String serverUrl;
     @Inject
     private Context context;
     @Inject
     private DeviceUuidResolver deviceUuidResolver;
+    @Inject
+    private CommonUtilities commonUtilities;
 
     @Override
     public String processMessage(MessageType messageType, String message) throws IOException {
+        if (serverUrl == null) {
+            serverUrl = commonUtilities.getServerUrl(CommonConstants.SERVER_URL_PARAM_NAME) + CommonConstants.MESSAGES_COMMUNICATION_URL;
+        }
         Map<String, String> params = new HashMap<String, String>();
-        params.put(CommonContants.UUID, deviceUuidResolver.getDeviceUuid(context).toString());
-        params.put(CommonContants.MESSAGE_EVENT_TYPE, messageType.toString());
-        params.put(CommonContants.SERIALIZED_OBJECT, message);
+        params.put(CommonConstants.UUID, deviceUuidResolver.getDeviceUuid(context).toString());
+        params.put(CommonConstants.MESSAGE_EVENT_TYPE, messageType.toString());
+        params.put(CommonConstants.SERIALIZED_OBJECT, message);
         return post(params);
     }
 

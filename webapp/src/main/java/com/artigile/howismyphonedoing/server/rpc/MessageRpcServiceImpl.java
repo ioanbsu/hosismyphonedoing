@@ -48,4 +48,10 @@ public class MessageRpcServiceImpl extends AbstractRpcService implements Message
         return "message sent to get phone location";
     }
 
+    @Override
+    public String removeAllEntities() {
+        userAndDeviceDao.removeAllEntities();
+        return "sucessfully removed";
+    }
+
 }

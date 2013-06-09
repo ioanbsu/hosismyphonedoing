@@ -1,6 +1,6 @@
 package com.artigile.howismyphonedoing.server.servlet;
 
-import com.artigile.howismyphonedoing.api.CommonContants;
+import com.artigile.howismyphonedoing.api.CommonConstants;
 import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.server.service.WebApMessageReceiver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +29,8 @@ public class MessageCommunicationServlet extends AbstractServlet {
 
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String uuid = request.getParameter(CommonContants.UUID);
-        messageProcessor.processMessage(uuid, MessageType.valueOf(request.getParameter(CommonContants.MESSAGE_EVENT_TYPE)), request.getParameter(CommonContants.SERIALIZED_OBJECT));
+        String uuid = request.getParameter(CommonConstants.UUID);
+        messageProcessor.processMessage(uuid, MessageType.valueOf(request.getParameter(CommonConstants.MESSAGE_EVENT_TYPE)), request.getParameter(CommonConstants.SERIALIZED_OBJECT));
         return null;
     }
 

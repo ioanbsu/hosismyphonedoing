@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 
-import static com.artigile.checkmyphone.service.CommonUtilities.displayMessage;
 
 /**
  * User: ioanbsu
@@ -43,6 +42,8 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     private LocationService locationService;
     @Inject
     private MessageParser messageParser;
+    @Inject
+    private CommonUtilities commonUtilities;
     private String TAG = "AndroidMessageReceiver";
 
     private static DeviceModel buildPhoneModel() {
@@ -109,7 +110,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                     }
                 });
             } else {
-                displayMessage(context, message);
+                commonUtilities.displayMessage(context, message);
                 TextToSpeech textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
                     @Override
                     public void onInit(int status) {

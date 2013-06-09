@@ -1,6 +1,10 @@
 package com.artigile.howismyphonedoing.server.dao;
 
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
 import org.springframework.stereotype.Service;
 
 import javax.jdo.JDOHelper;
@@ -73,6 +77,20 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
             return pm.getObjectById(UserDevice.class, uuid);
         } finally {
             pm.close();
+        }
+    }
+
+    @Override
+    public void removeAllEntities() {
+        PersistenceManager pm = pmfInstance.getPersistenceManager();
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        com.google.appengine.api.datastore.Query mydeleteq = new com.google.appengine.api.datastore.Query();
+        PreparedQuery pq = datastore.prepare(mydeleteq);
+        for (Entity result : pq.asIterable()) {
+            try {
+                datastore.delete(result.getKey());
+            } catch (IllegalArgumentException e) {
+            }
         }
     }
 }

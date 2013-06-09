@@ -16,9 +16,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.artigile.checkmyphone.service.CommonUtilities;
 import com.artigile.checkmyphone.service.DeviceRegistrationServiceImpl;
 import com.artigile.checkmyphone.service.LocationService;
 import com.artigile.checkmyphone.util.GCMRegistrar;
+import com.artigile.howismyphonedoing.api.CommonConstants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationListener;
@@ -56,12 +58,14 @@ public class MainActivity extends RoboActivity implements
     private TextToSpeechService textToSpeechService;
     @Inject
     private LocationService locationService;
+    @Inject
+    private CommonUtilities commonUtilities;
     private Dialog errorDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkNotNull(SERVER_URL, "SERVER_URL");
+        checkNotNull(commonUtilities.getServerUrl(CommonConstants.SERVER_URL_PARAM_NAME), "SERVER_URL");
         checkNotNull(SENDER_ID, "SENDER_ID");
         // Make sure the device has the proper dependencies.
         GCMRegistrar.checkDevice(this);

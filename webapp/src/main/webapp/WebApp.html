@@ -30,7 +30,7 @@
     </script>
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript">
-    var globalResultVar;
+        var globalResultVar;
         (function () {
             var po = document.createElement('script');
             po.type = 'text/javascript';
@@ -41,42 +41,9 @@
         })();
 
         function signInCallback(authResult) {
-//            console.log(authResult);
-//            console.log(authResult['code']);
-            globalResultVar=authResult;
-            window.exposedMethod(authResult['code'],authResult['access_token'],authResult['client_id'],authResult['error']);
-            /*if (authResult['code']) {
-
-                // Hide the sign-in button now that the user is authorized, for example:
-                $('#signinButton').attr('style', 'display: none');
-
-                // Send the code to the server
-                $.ajax({
-                    type: 'POST',
-                    url: 'plus.php?storeToken',
-                    contentType: 'application/octet-stream; charset=utf-8',
-                    success: function (result) {
-                        // Handle or verify the server response if necessary.
-
-                        // Prints the list of people that the user has allowed the app to know
-                        // to the console.
-                        console.log(result);
-                        if (result['profile'] && result['people']) {
-                            $('#results').html('Hello ' + result['profile']['displayName'] + '. You successfully made a server side call to people.get and people.list');
-                        } else {
-                            $('#results').html('Failed to make a server-side call. Check your configuration and console.');
-                        }
-                    },
-                    processData: false,
-                    data: authResult['code']
-                });
-            } else if (authResult['error']) {
-                // There was an error.
-                // Possible error codes:
-                //   "access_denied" - User denied access to your app
-                //   "immediate_failed" - Could not automatially log in the user
-                // console.log('There was an error: ' + authResult['error']);
-            }*/
+            console.log(authResult);
+            globalResultVar = authResult;
+            window.exposedMethod(authResult['code'], authResult['access_token'], authResult['client_id'], authResult['error']);
         }
     </script>
 </head>
@@ -99,5 +66,21 @@
         in order for this application to display correctly.
     </div>
 </noscript>
+<div id="signInButtonPanel">
+    <div id="signinButton">
+                       <span class="g-signin"
+                             data-scope="https://www.googleapis.com/auth/userinfo.email"
+                             data-clientid="983271462651.apps.googleusercontent.com"
+                             data-redirecturi="postmessage"
+                             data-accesstype="offline"
+                             data-cookiepolicy="single_host_origin"
+                             data-approvalprompt="force"
+                             data-callback="signInCallback"
+                             data-height="tall"
+                             data-width="wide">
+                       </span>
+    </div>
+    <div id="result"></div>
+</div>
 </body>
 </html>

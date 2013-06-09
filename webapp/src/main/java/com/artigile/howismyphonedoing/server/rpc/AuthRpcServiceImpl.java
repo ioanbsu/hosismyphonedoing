@@ -2,10 +2,10 @@ package com.artigile.howismyphonedoing.server.rpc;
 
 import com.artigile.howismyphonedoing.client.exception.UserNotLoggedInException;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcService;
-import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.artigile.howismyphonedoing.server.service.SecurityAspect;
 import com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver;
 import com.artigile.howismyphonedoing.shared.entity.GooglePlusAuthenticatedUser;
+import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.api.client.auth.oauth2.TokenResponseException;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -25,6 +25,11 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.logging.Logger;
+
+import static com.artigile.howismyphonedoing.server.service.SecurityAspect.SESSION_USER_ATTR_NAME;
 
 /**
  * @author IoaN, 5/26/13 10:44 AM
@@ -40,37 +45,46 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
      * Default JSON factory to use to deserialize JSON.
      */
     private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
+    private static final String SESSION_STATE_KEY = "sessionStateKey";
     /**
      * Gson object to serialize JSON responses to requests to this servlet.
      */
     private static final Gson GSON = new Gson();
+    protected final Logger logger = Logger.getLogger(getClass().getName());
     @Autowired
     private KeysResolver keysResolver;
 
     @Override
-    public String userIsInSession() throws UserNotLoggedInException {
+    public StateAndChanelEntity userIsInSession() throws UserNotLoggedInException {
         ChannelService channelService = ChannelServiceFactory.getChannelService();
-        return channelService.createChannel(getUserEmailFromSession());
+        StateAndChanelEntity stateAndChanelEntity = new StateAndChanelEntity();
+        stateAndChanelEntity.setChanelToken(channelService.createChannel(getUserEmailFromSession()));
+        stateAndChanelEntity.setStateSecret(createStateKey());
+        stateAndChanelEntity.setUserInSession(getSession().getAttribute(SESSION_USER_ATTR_NAME) == null || !(getSession().getAttribute(SESSION_USER_ATTR_NAME) instanceof GooglePlusAuthenticatedUser));
+        return stateAndChanelEntity;
     }
 
     @Override
     public String validateGooglePlusCallback(GooglePlusAuthenticatedUser googlePlusAuthenticatedUser) {
+        logger.info("Got request to validate user");
         HttpServletRequest request = ServletUtils.getRequest();
         HttpServletResponse response = ServletUtils.getResponse();
 
         // Ensure that this is no request forgery going on, and that the user
         // sending us this connect request is the user that was supposed to.
-       /* if (!request.getParameter("state").equals(request.getSession().getAttribute("state"))) {
+        if (!googlePlusAuthenticatedUser.getState().equals(getSession().getAttribute(SESSION_STATE_KEY))) {
             response.setStatus(401);
             return GSON.toJson("Invalid state parameter.");
-        }*/
+        }
 
         try {
+            logger.info("1");
             // Upgrade the authorization code into an access and refresh token.
-            GoogleTokenResponse tokenResponse =
-                    new GoogleAuthorizationCodeTokenRequest(TRANSPORT, JSON_FACTORY,
-                            keysResolver.getClientId(), keysResolver.clientSecret, googlePlusAuthenticatedUser.getCode(), "postmessage").execute();
+            GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(TRANSPORT, JSON_FACTORY,
+                    keysResolver.getClientId(), keysResolver.clientSecret, googlePlusAuthenticatedUser.getCode(),
+                    "postmessage").execute();
             // Create a credential representation of the token data.
+            logger.info("2");
             GoogleCredential credential = new GoogleCredential.Builder()
                     .setJsonFactory(JSON_FACTORY)
                     .setTransport(TRANSPORT)
@@ -78,11 +92,13 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
                     .setFromTokenResponse(tokenResponse);
 
             // Check that the token is valid.
+            logger.info("3");
             Oauth2 oauth2 = new Oauth2.Builder(
                     TRANSPORT, JSON_FACTORY, credential).build();
             Tokeninfo tokenInfo = oauth2.tokeninfo()
                     .setAccessToken(credential.getAccessToken()).execute();
             // If there was an error in the token info, abort.
+            logger.info("4");
             if (tokenInfo.containsKey("error")) {
                 response.setStatus(401);
                 return GSON.toJson(tokenInfo.get("error").toString());
@@ -93,22 +109,26 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
                 return GSON.toJson("Token's user ID doesn't match given user ID.");
             }*/
             // Make sure the token we got is for our app.
+            logger.info("5");
             if (!tokenInfo.getIssuedTo().equals(keysResolver.getClientId())) {
                 response.setStatus(401);
                 return GSON.toJson("Token's client ID does not match app's.");
             }
             // Store the token in the session for later use.
+            logger.info("User had been validated. Saving into session");
             request.getSession().setAttribute("token", tokenResponse.toString());
-            request.getSession().setAttribute(SecurityAspect.SESSION_USER_ATTR_NAME, googlePlusAuthenticatedUser);
+            request.getSession().setAttribute(SESSION_USER_ATTR_NAME, googlePlusAuthenticatedUser);
             request.getSession().setAttribute(SecurityAspect.USER_IN_SESSION_EMAIL, tokenInfo.getEmail());
+            logger.info("User had been saved into session");
             return initServerGaeChanel(tokenInfo.getEmail());
         } catch (TokenResponseException e) {
             response.setStatus(500);
+            e.printStackTrace();
             return GSON.toJson("Failed to upgrade the authorization code.");
         } catch (IOException e) {
             response.setStatus(500);
-            return GSON.toJson("Failed to read token data from Google. " +
-                    e.getMessage());
+            e.printStackTrace();
+            return GSON.toJson("Failed to read token data from Google. " + e.getMessage());
         }
 
     }
@@ -121,5 +141,16 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
     @Override
     public void logout() {
         ServletUtils.getRequest().getSession().invalidate();
+    }
+
+    private String createStateKey() {
+        String state = (String) getSession().getAttribute(SESSION_STATE_KEY);
+        if (state == null) {
+            // Create a state token to prevent request forgery.
+            // Store it in the session for later validation.
+            state = new BigInteger(130, new SecureRandom()).toString(32);
+            getSession().setAttribute(SESSION_STATE_KEY, state);
+        }
+        return state;
     }
 }
