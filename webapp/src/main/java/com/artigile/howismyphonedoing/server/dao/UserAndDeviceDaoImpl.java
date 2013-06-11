@@ -66,7 +66,7 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
         Query query = pm.newQuery(UserDevice.class, "userEmail == emailParam");
         query.declareParameters("String emailParam");
         List<UserDevice> userDevices = (List<UserDevice>) query.execute(userEmail);
-        return new HashSet<>(userDevices);
+        return new HashSet<UserDevice>(userDevices);
 
     }
 

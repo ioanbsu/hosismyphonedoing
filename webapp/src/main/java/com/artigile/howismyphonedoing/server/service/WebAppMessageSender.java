@@ -74,7 +74,7 @@ public class WebAppMessageSender implements WebAppMessageProcessor<Set<UserDevic
 
     private void asyncSend(List<String> partialDevices, final Message message) {
         // make a copy
-        final List<String> devices = new ArrayList<>(partialDevices);
+        final List<String> devices = new ArrayList<String>(partialDevices);
         MulticastResult multicastResult;
         try {
             multicastResult = sender.send(message, devices, 5);
