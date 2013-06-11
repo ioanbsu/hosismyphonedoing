@@ -12,9 +12,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("../remoteService/authService")
 public interface AuthRpcService extends RemoteService {
 
-    StateAndChanelEntity userIsInSession() throws UserNotLoggedInException;
+    StateAndChanelEntity getLoggedInUser() throws UserNotLoggedInException;
 
-    String validateGooglePlusCallback(GooglePlusAuthenticatedUser googlePlusAuthenticatedUser) ;
+    StateAndChanelEntity validateGooglePlusCallback(GooglePlusAuthenticatedUser googlePlusAuthenticatedUser) throws Exception;
 
     void logout();
 }

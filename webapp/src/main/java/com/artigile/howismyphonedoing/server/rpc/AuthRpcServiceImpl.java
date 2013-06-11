@@ -25,11 +25,10 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.artigile.howismyphonedoing.server.service.SecurityAspect.SESSION_STATE_KEY;
 import static com.artigile.howismyphonedoing.server.service.SecurityAspect.SESSION_USER_ATTR_NAME;
 
 /**
@@ -46,7 +45,6 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
      * Default JSON factory to use to deserialize JSON.
      */
     private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
-    private static final String SESSION_STATE_KEY = "sessionStateKey";
     /**
      * Gson object to serialize JSON responses to requests to this servlet.
      */
@@ -56,17 +54,15 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
     private KeysResolver keysResolver;
 
     @Override
-    public StateAndChanelEntity userIsInSession() throws UserNotLoggedInException {
-        ChannelService channelService = ChannelServiceFactory.getChannelService();
+    public StateAndChanelEntity getLoggedInUser() throws UserNotLoggedInException {
         StateAndChanelEntity stateAndChanelEntity = new StateAndChanelEntity();
-        stateAndChanelEntity.setChanelToken(channelService.createChannel(getUserEmailFromSession()));
-        stateAndChanelEntity.setStateSecret(createStateKey());
-        stateAndChanelEntity.setUserInSession(getSession().getAttribute(SESSION_USER_ATTR_NAME) == null || !(getSession().getAttribute(SESSION_USER_ATTR_NAME) instanceof GooglePlusAuthenticatedUser));
+        stateAndChanelEntity.setEmail(getUserEmailFromSession());
+        stateAndChanelEntity.setChanelToken(initServerGaeChanel(stateAndChanelEntity.getEmail()));
         return stateAndChanelEntity;
     }
 
     @Override
-    public String validateGooglePlusCallback(GooglePlusAuthenticatedUser googlePlusAuthenticatedUser) {
+    public StateAndChanelEntity validateGooglePlusCallback(GooglePlusAuthenticatedUser googlePlusAuthenticatedUser) throws Exception {
         logger.info("Got request to validate user");
         HttpServletRequest request = ServletUtils.getRequest();
         HttpServletResponse response = ServletUtils.getResponse();
@@ -75,9 +71,8 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
         // sending us this connect request is the user that was supposed to.
         if (!googlePlusAuthenticatedUser.getState().equals(getSession().getAttribute(SESSION_STATE_KEY))) {
             response.setStatus(401);
-            return GSON.toJson("Invalid state parameter.");
+            throw new Exception("Invalid state parameter.");
         }
-
         try {
             logger.info("1 --- " + keysResolver.getClientId() + " " + keysResolver.getClientSecret());
             // Upgrade the authorization code into an access and refresh token.
@@ -100,7 +95,7 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
             logger.info("4");
             if (tokenInfo.containsKey("error")) {
                 response.setStatus(401);
-                return GSON.toJson(tokenInfo.get("error").toString());
+                throw new Exception(tokenInfo.get("error").toString());
             }
             // Make sure the token we got is for the intended user.
             /*if (!tokenInfo.getUserId().equals(clientId)) {
@@ -111,7 +106,7 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
             logger.info("5");
             if (!tokenInfo.getIssuedTo().equals(keysResolver.getClientId())) {
                 response.setStatus(401);
-                return GSON.toJson("Token's client ID does not match app's.");
+                throw new Exception("Token's client ID does not match app's.");
             }
             // Store the token in the session for later use.
             logger.info("User had been validated. Saving into session");
@@ -119,15 +114,15 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
             request.getSession().setAttribute(SESSION_USER_ATTR_NAME, googlePlusAuthenticatedUser);
             request.getSession().setAttribute(SecurityAspect.USER_IN_SESSION_EMAIL, tokenInfo.getEmail());
             logger.info("User had been saved into session");
-            return initServerGaeChanel(tokenInfo.getEmail());
+            return getLoggedInUser();
         } catch (TokenResponseException e) {
             response.setStatus(500);
             e.printStackTrace();
-            return GSON.toJson("Failed to upgrade the authorization code.");
+            throw new Exception("Failed to upgrade the authorization code.");
         } catch (IOException e) {
             response.setStatus(500);
-            logger.log(Level.WARNING, "Failed to read token data from Google. ",e);
-            return GSON.toJson("Failed to read token data from Google. " + e.getMessage() + "[[ " + e.getCause());
+            logger.log(Level.WARNING, "Failed to read token data from Google. ", e);
+            throw new Exception("Failed to read token data from Google. " + e.getMessage() + "[[ " + e.getCause());
         }
 
     }
@@ -139,18 +134,9 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
 
     @Override
     public void logout() {
+        String stateKey = (String) getSession().getAttribute(SESSION_STATE_KEY);
         ServletUtils.getRequest().getSession().invalidate();
-    }
-
-    private String createStateKey() {
-        String state = (String) getSession().getAttribute(SESSION_STATE_KEY);
-        if (state == null) {
-            // Create a state token to prevent request forgery.
-            // Store it in the session for later validation.
-            state = new BigInteger(130, new SecureRandom()).toString(32);
-            getSession().setAttribute(SESSION_STATE_KEY, state);
-        }
-        return state;
+        getSession().setAttribute(SESSION_STATE_KEY, stateKey);
     }
 
 

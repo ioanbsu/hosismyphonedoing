@@ -31,16 +31,7 @@
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript">
         var globalResultVar;
-        (function () {
-            var po = document.createElement('script');
-            po.type = 'text/javascript';
-            po.async = true;
-            po.src = 'https://plus.google.com/js/client:plusone.js?onload=start';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(po, s);
-        })();
-
-        function signInCallback(authResult) {
+              function signInCallback(authResult) {
             console.log(authResult);
             globalResultVar = authResult;
             window.exposedMethod(authResult['code'], authResult['access_token'], authResult['client_id'], authResult['error']);
@@ -66,21 +57,5 @@
         in order for this application to display correctly.
     </div>
 </noscript>
-<div id="signInButtonPanel">
-    <div id="signinButton">
-                       <span class="g-signin"
-                             data-scope="https://www.googleapis.com/auth/userinfo.email"
-                             data-clientid="983271462651.apps.googleusercontent.com"
-                             data-redirecturi="postmessage"
-                             data-accesstype="offline"
-                             data-cookiepolicy="single_host_origin"
-                             data-approvalprompt="force"
-                             data-callback="signInCallback"
-                             data-height="tall"
-                             data-width="wide">
-                       </span>
-    </div>
-    <div id="result"></div>
-</div>
 </body>
 </html>

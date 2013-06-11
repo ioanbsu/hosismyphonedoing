@@ -66,6 +66,12 @@ public class LocationServiceImpl implements LocationService {
         Log.v(TAG, "Location Client connect");
         if (!(locationClient.isConnected() || locationClient.isConnecting())) {
             locationClient.connect();
+        } else {
+            try {
+                requestLocationUpdates();
+            } catch (IllegalStateException e) {
+                Log.v(TAG, "Failed to get location");
+            }
         }
     }
 
@@ -86,10 +92,9 @@ public class LocationServiceImpl implements LocationService {
                     currentBestLocation = location;
                 }
                 if (isBetterLocation(location, currentBestLocation)) {
-                    currentBestLocation=location;
+                    currentBestLocation = location;
                     locationListener.onLocationChanged(location);
                 }
-
                 if (currentBestLocation.getAccuracy() < 30) {
                     stopRequestingLocationUpdates();
                 }

@@ -1,11 +1,10 @@
-package com.artigile.howismyphonedoing.client.mainpage;
+package com.artigile.howismyphonedoing.client.mvp.mapview;
 
 import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.maps.gwt.client.*;
 import com.mvp4g.client.view.ReverseViewInterface;
 
@@ -13,87 +12,37 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * @author IoaN, 5/26/13 9:10 AM
+ * User: ioanbsu
+ * Date: 6/11/13
+ * Time: 12:57 PM
  */
 @Singleton
-public class MainPageView extends Composite implements ReverseViewInterface<MainPagePresenter> {
+public class MapBodyView extends Composite implements ReverseViewInterface<MapBodyPresenter> {
 
-
-    @UiField
-    Button logoutButton;
-    @UiField
-    Button sendTextToPhone;
-    @UiField
-    TextBox textToSend;
-    @UiField
-    Button phoneInfoButton;
-    @UiField
-    Label phoneInfo;
-    @UiField
-    Button phoneLocation;
     @UiField
     SimplePanel mapContainer;
-    @UiField
-    Button removeAllDevices;
-    GoogleMap map;
-    private MainPagePresenter mainPagePresenter;
+    private GoogleMap map;
+    private MapBodyPresenter presenter;
     private Marker marker;
     private Circle circle;
 
     @Inject
-    public MainPageView(Binder binder) {
+    public MapBodyView(Binder binder) {
         initWidget(binder.createAndBindUi(this));
+    }
+
+    public void initMap() {
         MapOptions mapOptions = MapOptions.create();
         mapOptions.setCenter(LatLng.create(-25.363882, 131.044922));
         mapOptions.setZoom(18.0);
         mapOptions.setMapTypeId(MapTypeId.SATELLITE);
-
         map = GoogleMap.create(mapContainer.getElement(), mapOptions);
         map.setTilt(45);
     }
 
-    @Override
-    public MainPagePresenter getPresenter() {
-        return mainPagePresenter;
-    }
-
-    @Override
-    public void setPresenter(MainPagePresenter mainPagePresenter) {
-        this.mainPagePresenter = mainPagePresenter;
-    }
-
-    @UiHandler("logoutButton")
-    void logOutButtonClickHandler(ClickEvent clickEvent) {
-        mainPagePresenter.logout();
-    }
-
-    @UiHandler("sendTextToPhone")
-    void sendTextToPhoneButtonClickHandler(ClickEvent clickEvent) {
-        mainPagePresenter.sendTextToPhone(textToSend.getText());
-    }
-
-    @UiHandler("phoneInfoButton")
-    void phoneInfoButtonButtonClickHandler(ClickEvent clickEvent) {
-        mainPagePresenter.getPhonesInfo();
-    }
-
-    @UiHandler("phoneLocation")
-    void getPhoneLocationHandler(ClickEvent event) {
-        mainPagePresenter.getPhoneLocation();
-    }
-
-    @UiHandler("removeAllDevices")
-    void getRemoveAllDevicesHandler(ClickEvent event) {
-        mainPagePresenter.removeAllDevices();
-    }
-
-    public void setPhoneInfo(String result) {
-        phoneInfo.setText(result);
-    }
-
     public void showMarker(IDeviceLocationModel deviceLocationModel) {
         if (marker != null) {
-            marker.setMap((GoogleMap)null);
+            marker.setMap((GoogleMap) null);
         }
         MarkerOptions newMarkerOpts = MarkerOptions.create();
         LatLng myLatLng = LatLng.create(deviceLocationModel.getLatitude(), deviceLocationModel.getLongitude());
@@ -117,10 +66,19 @@ public class MainPageView extends Composite implements ReverseViewInterface<Main
         populationOptions.setCenter(myLatLng);
         populationOptions.setRadius(deviceLocationModel.getAccuracy());
         circle = Circle.create(populationOptions);
+    }
 
+    @Override
+    public MapBodyPresenter getPresenter() {
+        return presenter;
+    }
+
+    @Override
+    public void setPresenter(MapBodyPresenter presenter) {
+        this.presenter = presenter;
     }
 
 
-    public static interface Binder extends UiBinder<DockLayoutPanel, MainPageView> {
+    public static interface Binder extends UiBinder<SimplePanel, MapBodyView> {
     }
 }

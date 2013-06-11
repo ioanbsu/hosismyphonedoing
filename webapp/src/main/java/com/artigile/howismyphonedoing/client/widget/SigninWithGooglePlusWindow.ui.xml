@@ -7,14 +7,38 @@
             padding: 40px;
         }
 
+        .dialogZIndexStyle {
+
+        }
+
+        .buttonHiddenStyle {
+            display: none;
+        }
+
 
     </ui:style>
 
-    <g:DialogBox ui:field="showSignInWithGoogle" glassEnabled="true" modal="true">
+    <g:DialogBox ui:field="showSignInWithGoogle" glassEnabled="true" modal="true"
+                 addStyleNames="{style.dialogZIndexStyle}">
         <g:FlowPanel styleName="{style.mainPanelStyle}">
             <g:Label text="{msg.please_sign_in_with_google}"/>
-            <g:HTMLPanel ui:field="signInWithGoogleButtonPanel"/>
-            <g:Button text="hide" ui:field="hideWindow"/>
+            <g:HTMLPanel ui:field="signInWithGoogleButtonPanel">
+                <div id="signinButton">
+                    <span class="g-signin"
+                          data-scope="https://www.googleapis.com/auth/userinfo.email"
+                          data-clientid="983271462651.apps.googleusercontent.com"
+                          data-redirecturi="postmessage"
+                          data-accesstype="offline"
+                          data-cookiepolicy="single_host_origin"
+                          data-approvalprompt="force"
+                          data-callback="signInCallback"
+                          data-height="tall"
+                          data-width="wide">
+                    </span>
+                </div>
+                <div id="result"></div>
+            </g:HTMLPanel>
+            <g:Button text="hide" ui:field="hideWindow" styleName="{style.buttonHiddenStyle}"/>
         </g:FlowPanel>
     </g:DialogBox>
 

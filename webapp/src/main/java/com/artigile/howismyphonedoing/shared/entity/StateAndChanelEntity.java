@@ -11,7 +11,7 @@ public class StateAndChanelEntity implements Serializable {
 
     private String stateSecret;
 
-    private boolean isUserInSession;
+    private String email;
 
     public String getChanelToken() {
         return chanelToken;
@@ -29,11 +29,11 @@ public class StateAndChanelEntity implements Serializable {
         this.stateSecret = stateSecret;
     }
 
-    public boolean isUserInSession() {
-        return isUserInSession;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUserInSession(boolean userInSession) {
-        isUserInSession = userInSession;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
