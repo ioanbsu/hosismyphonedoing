@@ -2,6 +2,7 @@ package com.artigile.howismyphonedoing.client.service;
 
 import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
 import com.artigile.howismyphonedoing.client.MainEventBus;
+import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
 import com.google.gwt.appengine.channel.client.*;
 import com.google.gwt.core.client.GWT;
 import com.google.web.bindery.autobean.shared.AutoBean;
@@ -38,7 +39,7 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
         socket = channel.open(new SocketListener() {
             @Override
             public void onOpen() {
-                GWT.log("Channel opened!");
+                eventBus.channelStateChanged(ChannelStateType.CHANNEL_OPENED);
             }
 
             @Override
@@ -55,7 +56,7 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
 
             @Override
             public void onClose() {
-                GWT.log("Channel closed!");
+                eventBus.channelStateChanged(ChannelStateType.CHANNEL_CLOSED);
             }
         });
     }

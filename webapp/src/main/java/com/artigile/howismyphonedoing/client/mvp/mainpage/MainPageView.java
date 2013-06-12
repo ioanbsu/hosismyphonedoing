@@ -2,6 +2,7 @@ package com.artigile.howismyphonedoing.client.mvp.mainpage;
 
 import com.artigile.howismyphonedoing.client.mvp.mapview.MapBodyView;
 import com.artigile.howismyphonedoing.client.mvp.toppanel.TopPanelView;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
@@ -54,6 +55,10 @@ public class MainPageView extends ResizeComposite implements ReverseViewInterfac
 
     public void showMap() {
 //        mainViewPanel.showWidget(1);
+    }
+
+    public void onUserLoggedIn() {
+        topPanelView.getElement().getStyle().setDisplay(Style.Display.BLOCK);
     }
 
 

@@ -17,4 +17,5 @@ public class ApplicationState {
     public void setStateKey(String stateKey) {
         this.stateKey = stateKey;
     }
+
 }

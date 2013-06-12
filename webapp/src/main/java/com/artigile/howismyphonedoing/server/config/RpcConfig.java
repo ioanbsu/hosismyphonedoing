@@ -3,6 +3,7 @@ package com.artigile.howismyphonedoing.server.config;
 import com.artigile.howismyphonedoing.api.CommonConstants;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcService;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcService;
+import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcService;
 import org.gwtwidgets.server.spring.GWTRPCServiceExporter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ public class RpcConfig extends GenericWebApplicationContext {
         Properties mappings = new Properties();
         mappings.put("/mainHowIsMyPhoneDoing", "mainHowIsMyPhoneDoingServiceExporter");
         mappings.put("/authService", "authServiceExporter");
+        mappings.put("/userInfoService", "userInfoServiceExporter");
         mappings.put(CommonConstants.MESSAGES_COMMUNICATION_URL, "messageCommunicationServlet");
         simpleUrlHandlerMapping.setMappings(mappings);
         return simpleUrlHandlerMapping;
@@ -40,6 +42,13 @@ public class RpcConfig extends GenericWebApplicationContext {
     public GWTRPCServiceExporter authServiceExporter(AuthRpcService authRpcService) {
         GWTRPCServiceExporter invoiceAppServiceExporter = new GWTRPCServiceExporter();
         invoiceAppServiceExporter.setService(authRpcService);
+        return invoiceAppServiceExporter;
+    }
+
+    @Bean
+    public GWTRPCServiceExporter userInfoServiceExporter(UserInfoRpcService userInfoRpcService) {
+        GWTRPCServiceExporter invoiceAppServiceExporter = new GWTRPCServiceExporter();
+        invoiceAppServiceExporter.setService(userInfoRpcService);
         return invoiceAppServiceExporter;
     }
 

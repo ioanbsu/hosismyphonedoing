@@ -12,15 +12,51 @@
             font-size: 10px;
         }
 
+        .chahelState {
+            position: absolute;
+            top: 15px;
+            right: 0;
+            font-size: 10px;
+            color: grey;
+            margin: 5px;
+        }
+
+        .topMenuButtonStyle {
+            float: left;
+            padding: 25px;
+            transition: background 0.2s, margin-left 0.2s, margin-right 0.2s, box-shadow 0.2s;
+            -webkit-transition-property: background, margin-left, margin-right, box-shadow;
+            -webkit-transition-duration: 0.2s;
+            background-color: #FFF;
+            margin: 0;
+            border-radius: 0;
+            border: none;
+            color:#505050;
+        }
+
+        .topMenuButtonStyle:hover {
+            box-shadow: 0px 0px 6px #101010;
+            cursor: pointer;
+            margin-left: 5px;
+            margin-right: 5px;
+            background: #eee;
+        }
+
+        .logOutFloatRight {
+            float: right;
+        }
+
 
     </ui:style>
     <g:FlowPanel>
-        <g:Button text="Log out" ui:field="logoutButton"/>
-        <g:Button text="send message" ui:field="sendTextToPhone"/>
-        <g:Button text="getMyPhoneInfo" ui:field="phoneInfoButton"/>
-        <g:Button text="Get Phone Location" ui:field="phoneLocation"/>
-        <g:Button text="Remove all devices" ui:field="removeAllDevices"/>
+        <g:Button ui:field="myDevicesCount" styleName="{style.topMenuButtonStyle}"/>
+        <g:Button text="{msg.top_panel_get_device_location_button}" ui:field="phoneLocation" styleName="{style.topMenuButtonStyle}"/>
+        <g:Button text="{msg.top_panel_remove_all_my_devices}" ui:field="removeAllDevices" styleName="{style.topMenuButtonStyle}"/>
+        <g:Button text="{msg.top_panel_read_loud_on_my_phone}" ui:field="sendTextToPhone" styleName="{style.topMenuButtonStyle}"/>
         <g:TextBox ui:field="textToSend"/>
-        <g:Label ui:field="loggedInAs" styleName="{style.loggedInLabel}" text="{msg.not_logged_in}"/>
+        <g:Button text="{msg.top_panel_log_out}" ui:field="logoutButton" styleName="{style.topMenuButtonStyle} {style.logOutFloatRight}"/>
+
+        <g:Label ui:field="channelStateLabel" styleName="{style.chahelState}"/>
+        <g:Label ui:field="loggedInAs" styleName="{style.loggedInLabel}" text="{msg.top_panel_not_logged_in}"/>
     </g:FlowPanel>
 </ui:UiBinder>

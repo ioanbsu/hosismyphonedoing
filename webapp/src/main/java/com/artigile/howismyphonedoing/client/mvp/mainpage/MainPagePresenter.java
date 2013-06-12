@@ -69,6 +69,7 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
     public void onUserLoggedIn(StateAndChanelEntity stateAndChanelEntity) {
         gaeChannelService.initGaeChannel(stateAndChanelEntity.getChanelToken());
         signinWithGooglePlusWindow.hide();
+        view.onUserLoggedIn();
     }
 
     public void onGooglePlusCallbackEvent(String code, String accessToken, String clientId, String error) {
