@@ -23,7 +23,7 @@
 
         .topMenuButtonStyle {
             float: left;
-            padding: 25px;
+            padding: 1.9em;
             transition: background 0.2s, margin-left 0.2s, margin-right 0.2s, box-shadow 0.2s;
             -webkit-transition-property: background, margin-left, margin-right, box-shadow;
             -webkit-transition-duration: 0.2s;

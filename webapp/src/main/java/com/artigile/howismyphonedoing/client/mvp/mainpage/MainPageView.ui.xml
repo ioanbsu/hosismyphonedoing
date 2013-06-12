@@ -22,8 +22,8 @@
 
 
     </ui:style>
-    <g:DockLayoutPanel unit='PX'>
-        <g:north size='70'>
+    <g:DockLayoutPanel unit='EM'>
+        <g:north size='5.5'>
             <toppanel:TopPanelView ui:field="topPanelView" styleName="{style.topPanel}"/>
         </g:north>
         <g:center>
