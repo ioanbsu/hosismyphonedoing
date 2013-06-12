@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2007-2013 Artigile.
+ * Software development company.
+ * All Rights Reserved.
+ *
+ * This software is the confidential and proprietary information of Artigile. ("Confidential Information").
+ * You shall not disclose such Confidential Information and shall use it only in accordance with the terms of the
+ * license agreement you entered into with Artigile software company.
+ */
+
 package com.artigile.howismyphonedoing.client.mvp.mainpage;
 
 import com.artigile.howismyphonedoing.client.MainEventBus;
@@ -34,7 +44,6 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
     private GaeChannelService gaeChannelService;
 
     public void onInitApp() {
-        exportStaticMethod(this);
         signinWithGooglePlusWindow.show();
         authRpcService.getLoggedInUser(new AsyncCallbackImpl<StateAndChanelEntity>() {
             @Override
@@ -68,37 +77,11 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
 
     public void onUserLoggedIn(StateAndChanelEntity stateAndChanelEntity) {
         gaeChannelService.initGaeChannel(stateAndChanelEntity.getChanelToken());
-        signinWithGooglePlusWindow.hide();
         view.onUserLoggedIn();
     }
 
-    public void onGooglePlusCallbackEvent(String code, String accessToken, String clientId, String error) {
-        GooglePlusAuthenticatedUser googlePlusAuthenticatedUser = new GooglePlusAuthenticatedUser();
-        googlePlusAuthenticatedUser.setCode(code);
-        googlePlusAuthenticatedUser.setAccessToken(accessToken);
-        googlePlusAuthenticatedUser.setClientId(clientId);
-        googlePlusAuthenticatedUser.setState(applicationState.getStateKey());
-        authRpcService.validateGooglePlusCallback(googlePlusAuthenticatedUser, new AsyncCallbackImpl<StateAndChanelEntity>() {
-            @Override
-            public void success(StateAndChanelEntity token) {
-                eventBus.userLoggedIn(token);
-            }
-
-            @Override
-            public void failure(Throwable caught) {
-
-            }
-        });
-    }
 
 
-    public native void exportStaticMethod(MainPagePresenter thiz) /*-{
-        var _this = this;
-
-        $wnd.exposedMethod = function (code, accessToken, idToken, error) {
-            _this.@com.artigile.howismyphonedoing.client.mvp.mainpage.MainPagePresenter::onGooglePlusCallbackEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(code, accessToken, idToken, error);
-        }
-    }-*/;
 
 
 }

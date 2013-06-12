@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2007-2013 Artigile.
+  ~ Software development company.
+  ~ All Rights Reserved.
+  ~
+  ~ This software is the confidential and proprietary information of Artigile. ("Confidential Information").
+  ~ You shall not disclose such Confidential Information and shall use it only in accordance with the terms of the
+  ~ license agreement you entered into with Artigile software company.
+  -->
+
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
     <application>howismyphonedoing</application>
     <version>1</version>

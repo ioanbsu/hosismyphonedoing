@@ -1,4 +1,14 @@
 <!doctype html>
+<!--
+  ~ Copyright (c) 2007-2013 Artigile.
+  ~ Software development company.
+  ~ All Rights Reserved.
+  ~
+  ~ This software is the confidential and proprietary information of Artigile. ("Confidential Information").
+  ~ You shall not disclose such Confidential Information and shall use it only in accordance with the terms of the
+  ~ license agreement you entered into with Artigile software company.
+  -->
+
 <!-- The DOCTYPE declaration above will set the    -->
 <!-- browser's rendering engine into               -->
 <!-- "Standards Mode". Replacing this declaration  -->
@@ -31,7 +41,7 @@
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript">
         var globalResultVar;
-              function signInCallback(authResult) {
+        function signInCallback(authResult) {
             console.log(authResult);
             globalResultVar = authResult;
             window.exposedMethod(authResult['code'], authResult['access_token'], authResult['client_id'], authResult['error']);
