@@ -93,6 +93,8 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
             } else if (messageType == MessageType.NOTIFY_PHONE) {
                 String messageStr = (String) messageParser.parse(messageType, message);
                 textToSpeechService.talk(messageStr);
+                commonUtilities.displayMessage(context, message);
+                messageSender.processMessage(messageType, "Message received");
             } else if (messageType == MessageType.GET_DEVICE_LOCATION) {
                 Log.v(TAG, "got request to return phone location.");
                 locationService.getLocation(new LocationListener() {

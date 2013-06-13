@@ -61,7 +61,7 @@ public class DevicesListWindow extends BaseEventHandler<MainEventBus> {
         refreshDevicesList();
     }
 
-    public void onUsersDevicesListUdated(List<UserDeviceModel> result) {
+    public void onUsersDevicesListReceived(List<UserDeviceModel> result) {
         devicesList.clear();
         if (result == null || result.isEmpty()) {
             devicesList.add(new Label(messages.view_my_devices_window_no_devices_found_message()));
@@ -91,7 +91,7 @@ public class DevicesListWindow extends BaseEventHandler<MainEventBus> {
         userInfoRpcServiceAsync.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>(eventBus) {
             @Override
             public void success(List<UserDeviceModel> result) {
-                eventBus.usersDevicesListUdated(result);
+                eventBus.usersDevicesListReceived(result);
             }
         });
     }

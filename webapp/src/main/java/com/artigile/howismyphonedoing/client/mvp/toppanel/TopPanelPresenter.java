@@ -63,15 +63,19 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
 
     public void onUserLoggedIn(StateAndChanelEntity stateAndChanelEntity) {
         view.setLoggedInUserData(stateAndChanelEntity.getEmail());
+        onUpdateDevicesList();
+    }
+
+    public void onUpdateDevicesList() {
         userInfoRpcService.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>(eventBus) {
             @Override
             public void success(List<UserDeviceModel> result) {
-                eventBus.usersDevicesListUdated(result);
+                eventBus.usersDevicesListReceived(result);
             }
         });
     }
 
-    public void onUsersDevicesListUdated(List<UserDeviceModel> result) {
+    public void onUsersDevicesListReceived(List<UserDeviceModel> result) {
         devicesList = result;
         view.setMyDevicesCount(result.size());
     }
@@ -93,7 +97,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
         messageRpcServiceAsync.removeAllEntities(new AsyncCallbackImpl<String>(eventBus) {
             @Override
             public void success(String result) {
-                eventBus.usersDevicesListUdated(new ArrayList<UserDeviceModel>());
+                eventBus.usersDevicesListReceived(new ArrayList<UserDeviceModel>());
                 Window.alert("Devices removed");
             }
 

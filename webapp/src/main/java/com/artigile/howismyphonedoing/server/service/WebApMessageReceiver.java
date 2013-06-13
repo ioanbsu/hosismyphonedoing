@@ -14,11 +14,13 @@ import com.artigile.howismyphonedoing.api.MessageParser;
 import com.artigile.howismyphonedoing.api.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.api.model.DeviceRegistrationModel;
 import com.artigile.howismyphonedoing.api.model.MessageType;
+import com.artigile.howismyphonedoing.api.model.ResponseFromServer;
 import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,31 +42,40 @@ public class WebApMessageReceiver implements WebAppMessageProcessor<String> {
     @Override
     public String processMessage(String uuid, MessageType messageType, String serializedObject) {
         try {
+            String userEmail = null;
             if (messageType == MessageType.REGISTER_DEVICE) {
                 logger.info("Registering new device: " + uuid);
                 DeviceRegistrationModel registrationModel = (DeviceRegistrationModel) messageParser.parse(messageType, serializedObject);
                 UserDevice userDevice = new UserDevice();
-                userDevice.setUserEmail(registrationModel.getUserEmail());
+                userEmail = registrationModel.getUserEmail();
+                userDevice.setUserEmail(userEmail);
                 userDevice.setUuid(uuid);
                 userDevice.setDeviceCloudRegistrationId(registrationModel.getDeviceCloudRegistrationId());
                 userAndDeviceDao.register(userDevice);
             }
             if (messageType == MessageType.UNREGISTER_DEVICE) {
                 logger.info("Unregistering device: " + uuid);
-                userAndDeviceDao.unregister(uuid);
+                userEmail = userAndDeviceDao.unregister(uuid);
             }
             if (messageType == MessageType.DEVICE_INFO) {
                 logger.info("Parsing info about phone.");
                 UserDevice userDevice = userAndDeviceDao.getById(uuid);
-                ChannelService channelService = ChannelServiceFactory.getChannelService();
-                channelService.sendMessage(new ChannelMessage(userDevice.getUserEmail(), serializedObject));
+                userEmail = userDevice.getUserEmail();
+
             }
             if (messageType == MessageType.GET_DEVICE_LOCATION) {
                 logger.info("Parsing device location info.");
                 UserDevice userDevice = userAndDeviceDao.getById(uuid);
-                ChannelService channelService = ChannelServiceFactory.getChannelService();
-                channelService.sendMessage(new ChannelMessage(userDevice.getUserEmail(), serializedObject));
+                userEmail = userDevice.getUserEmail();
             }
+            if (userEmail != null) {
+                ChannelService channelService = ChannelServiceFactory.getChannelService();
+                ResponseFromServer responseFromServer = new ResponseFromServer();
+                responseFromServer.setMessageType(messageType);
+                responseFromServer.setSerializedObject(serializedObject);
+                channelService.sendMessage(new ChannelMessage(userEmail, new Gson().toJson(responseFromServer)));
+            }
+
 
         } catch (Exception e) {
             logger.warning("unexpected error happened, please investigate!!!!!!!!!!!!!!!!");

@@ -15,9 +15,11 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
@@ -28,14 +30,17 @@ import java.util.Set;
 /**
  * @author IoaN, 5/28/13 9:30 PM
  */
-@Service
+@Repository
+@Transactional(readOnly = true)
 public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
 
-    private static final PersistenceManagerFactory pmfInstance = JDOHelper.getPersistenceManagerFactory("transactions-optional");
+    @Autowired
+    @Qualifier("pmfTransactionAware")
+    private PersistenceManagerFactory pmfTransationAware;
 
     @Override
     public void register(UserDevice userDevice) {
-        PersistenceManager pm = pmfInstance.getPersistenceManager();
+        PersistenceManager pm = pmfTransationAware.getPersistenceManager();
         try {
             pm.makePersistent(userDevice);
         } finally {
@@ -44,21 +49,24 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
     }
 
     @Override
-    public void unregister(String registeredDeviceId) {
-        PersistenceManager pm = pmfInstance.getPersistenceManager();
+    public String unregister(String registeredDeviceId) {
+        PersistenceManager pm = pmfTransationAware.getPersistenceManager();
+        String userEmail = null;
         try {
             UserDevice userDevice = pm.getObjectById(UserDevice.class, registeredDeviceId);
             if (userDevice != null) {
+                userEmail = userDevice.getUserEmail();
                 pm.deletePersistent(userDevice);
             }
         } finally {
             pm.close();
         }
+        return userEmail;
     }
 
     @Override
     public void updateRegistration(String oldDeviceRegistrationId, String newDeviceRegistrationId) {
-        PersistenceManager pm = pmfInstance.getPersistenceManager();
+        PersistenceManager pm = pmfTransationAware.getPersistenceManager();
         try {
             Query query = pm.newQuery(UserDevice.class, "deviceCloudRegistrationId == deviceCloudRegistrationIdParam");
             query.declareParameters("String deviceCloudRegistrationIdParam");
@@ -72,17 +80,21 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
 
     @Override
     public Set<UserDevice> getDevices(String userEmail) {
-        PersistenceManager pm = pmfInstance.getPersistenceManager();
-        Query query = pm.newQuery(UserDevice.class, "userEmail == emailParam");
-        query.declareParameters("String emailParam");
-        List<UserDevice> userDevices = (List<UserDevice>) query.execute(userEmail);
-        return new HashSet<UserDevice>(userDevices);
+        PersistenceManager pm = pmfTransationAware.getPersistenceManager();
+        try {
+            Query query = pm.newQuery(UserDevice.class, "userEmail == emailParam");
+            query.declareParameters("String emailParam");
+            List<UserDevice> userDevices = (List<UserDevice>) query.execute(userEmail);
+            return new HashSet<UserDevice>(userDevices);
+        } finally {
+            pm.close();
+        }
 
     }
 
     @Override
     public UserDevice getById(String uuid) {
-        PersistenceManager pm = pmfInstance.getPersistenceManager();
+        PersistenceManager pm = pmfTransationAware.getPersistenceManager();
         try {
             return pm.getObjectById(UserDevice.class, uuid);
         } finally {
@@ -91,9 +103,9 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
     }
 
     @Override
-    public void removeAllEntities(String userEmailFromSession) {
+    public void removeAllUserDevices(String userEmailFromSession) {
         Set<UserDevice> userDevices = getDevices(userEmailFromSession);
-        PersistenceManager pm = pmfInstance.getPersistenceManager();
+        PersistenceManager pm = pmfTransationAware.getPersistenceManager();
         try {
             pm.deletePersistentAll(userDevices);
         } finally {

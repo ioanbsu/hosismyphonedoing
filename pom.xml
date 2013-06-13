@@ -113,10 +113,10 @@
                 <version>${version}</version>
             </dependency>
             <dependency>
-                     <groupId>com.google.gwt.google-apis</groupId>
-                     <artifactId>gwt-maps</artifactId>
-                     <version>${gwt-maps.version}</version>
-                   </dependency>
+                <groupId>com.google.gwt.google-apis</groupId>
+                <artifactId>gwt-maps</artifactId>
+                <version>${gwt-maps.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.google.gwt</groupId>
                 <artifactId>gwt-servlet</artifactId>
@@ -269,6 +269,11 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <dependency>

@@ -21,7 +21,7 @@ public interface UserAndDeviceDao {
 
     void register(UserDevice userDevice);
 
-    void unregister(String registeredDeviceId);
+    String unregister(String registeredDeviceId);
 
     void updateRegistration(String oldId, String newId);
 
@@ -29,5 +29,5 @@ public interface UserAndDeviceDao {
 
     UserDevice getById(String uuid);
 
-    void removeAllEntities(String userEmailFromSession);
+    void removeAllUserDevices(String userEmailFromSession);
 }

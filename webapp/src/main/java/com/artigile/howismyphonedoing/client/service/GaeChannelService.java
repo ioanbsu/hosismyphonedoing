@@ -11,6 +11,8 @@
 package com.artigile.howismyphonedoing.client.service;
 
 import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
+import com.artigile.howismyphonedoing.api.model.IResponseFromServer;
+import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
@@ -38,7 +40,7 @@ import javax.inject.Singleton;
 public class GaeChannelService extends BaseEventHandler<MainEventBus> {
 
     private static final int MAX_CHANNEL_OPEN_ATTEMTPS = 5;
-    private static final int DELAY_BETWEEN_ATTEMPTS = 1 * 1000;
+    private static final int DELAY_BETWEEN_ATTEMPTS = 60 * 1000;
     private Socket socket;
     @Inject
     private ChannelFactory channelFactory;
@@ -90,8 +92,23 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
 
                 @Override
                 public void onMessage(String encodedData) {
-                    AutoBean<IDeviceLocationModel> bean = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IDeviceLocationModel.class, encodedData);
-                    eventBus.phoneLocationUpdated(bean.as());
+                    AutoBean<IResponseFromServer> responseFromServerAutoBean = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IResponseFromServer.class, encodedData);
+                    IResponseFromServer responseFromServer = responseFromServerAutoBean.as();
+                    if (responseFromServer.getMessageType() == MessageType.GET_DEVICE_LOCATION) {
+                        AutoBean<IDeviceLocationModel> phoneLocationModelAutoBean = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IDeviceLocationModel.class, responseFromServer.getSerializedObject());
+                        eventBus.phoneLocationUpdated(phoneLocationModelAutoBean.as());
+                    } else if (responseFromServer.getMessageType() == MessageType.DEVICE_INFO) {
+                        gotNotification(responseFromServer);
+                    } else if (responseFromServer.getMessageType() == MessageType.NOTIFY_PHONE) {
+                        gotNotification(responseFromServer);
+                    } else if (responseFromServer.getMessageType() == MessageType.REGISTER_DEVICE) {
+                        eventBus.updateDevicesList();
+                        gotNotification(responseFromServer);
+                    } else if (responseFromServer.getMessageType() == MessageType.UNREGISTER_DEVICE) {
+                        eventBus.updateDevicesList();
+                        gotNotification(responseFromServer);
+                    }
+
                 }
 
                 @Override
@@ -101,15 +118,15 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
 
                 @Override
                 public void onClose() {
-                    if (channelOpenAttempt > 1) {
-                        eventBus.channelStateChanged(ChannelStateType.CHANNEL_CONNECTING);
-                    } else {
-                        eventBus.channelStateChanged(ChannelStateType.CHANNEL_CLOSED);
-                    }
+                    eventBus.channelStateChanged(ChannelStateType.CHANNEL_CONNECTING);
                     reOpenChannel();
                 }
             });
         }
+    }
+
+    private void gotNotification(IResponseFromServer responseFromServer) {
+        Window.alert(responseFromServer.getMessageType() + responseFromServer.getSerializedObject());
     }
 
     private void stopTryingToReconnect() {

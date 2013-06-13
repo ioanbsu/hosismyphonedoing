@@ -49,7 +49,10 @@ public interface MainEventBus extends EventBus {
     void phoneLocationUpdated(IDeviceLocationModel as);
 
     @Event(handlers = {TopPanelPresenter.class, DevicesListWindow.class})
-    void usersDevicesListUdated(List<UserDeviceModel> result);
+    void usersDevicesListReceived(List<UserDeviceModel> result);
+
+    @Event(handlers = {TopPanelPresenter.class})
+    void updateDevicesList();
 
     @Event(handlers = TopPanelPresenter.class)
     void channelStateChanged(ChannelStateType channelState);
