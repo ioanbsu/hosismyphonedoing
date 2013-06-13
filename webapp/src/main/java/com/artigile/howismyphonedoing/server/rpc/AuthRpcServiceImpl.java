@@ -39,7 +39,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.artigile.howismyphonedoing.server.service.SecurityAspect.SESSION_USER_ATTR_NAME;
-import static com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver.SESSION_STATE_KEY;
 
 /**
  * @author IoaN, 5/26/13 10:44 AM
@@ -48,6 +47,10 @@ import static com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolv
 public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcService {
 
     /**
+     * Gson object to serialize JSON responses to requests to this servlet.
+     */
+    public static final String SESSION_STATE_KEY = "sessionStateKey";
+    /**
      * Default HTTP transport to use to make HTTP requests.
      */
     private static final HttpTransport TRANSPORT = new NetHttpTransport();
@@ -55,9 +58,6 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
      * Default JSON factory to use to deserialize JSON.
      */
     private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
-    /**
-     * Gson object to serialize JSON responses to requests to this servlet.
-     */
     private static final Gson GSON = new Gson();
     protected final Logger logger = Logger.getLogger(getClass().getName());
     @Autowired
@@ -151,7 +151,14 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
 
     @Override
     public String refreshStateToken() {
-        return keysResolver.createStateKey(getSession());
+        String state = (String) getSession().getAttribute(SESSION_STATE_KEY);
+        if (state == null) {
+            // Create a state token to prevent request forgery.
+            // Store it in the session for later validation.
+            state = keysResolver.createStateKey();
+            getSession().setAttribute(SESSION_STATE_KEY, state);
+        }
+        return state;
     }
 
 

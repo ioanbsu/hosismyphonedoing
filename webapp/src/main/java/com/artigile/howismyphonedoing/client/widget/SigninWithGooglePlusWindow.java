@@ -23,7 +23,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.mvp4g.client.annotation.EventHandler;
 import com.mvp4g.client.event.BaseEventHandler;
@@ -38,7 +37,6 @@ import javax.inject.Singleton;
 @Singleton
 public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
 
-    private static final int MAX_LOGIN_ATTEMPTS = 5;
     @UiField
     DialogBox showSignInWithGoogle;
     @UiField
@@ -55,7 +53,6 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
     private GaeChannelService gaeChannelService;
     private boolean loginButtonLoaded;
     private AsyncCallbackImpl.AfterRpcResponceHandler afterRpcResponceHandler;
-    private int loginAttempts;
 
     @Inject
     public SigninWithGooglePlusWindow(Binder binder) {
@@ -94,14 +91,14 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
         googlePlusAuthenticatedUser.setCode(code);
         googlePlusAuthenticatedUser.setAccessToken(accessToken);
         googlePlusAuthenticatedUser.setClientId(clientId);
-        loginAttempts = 0;
         loginWithGoogle(googlePlusAuthenticatedUser);
     }
 
     private void loginWithGoogle(final GooglePlusAuthenticatedUser googlePlusAuthenticatedUser) {
-        if (loginAttempts < MAX_LOGIN_ATTEMPTS) {
+        if (applicationState.getStateKey()==null||applicationState.getStateKey().isEmpty()) {
+            updateStateTokenAndLogin(googlePlusAuthenticatedUser);
+        }   else{
             googlePlusAuthenticatedUser.setState(applicationState.getStateKey());
-            loginAttempts++;
             loadingIcon.setVisible(true);
             signInWithGoogleButtonPanel.setVisible(false);
             authRpcService.validateGooglePlusCallback(googlePlusAuthenticatedUser, new AsyncCallbackImpl<StateAndChanelEntity>(eventBus, afterRpcResponceHandler) {
@@ -112,11 +109,9 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
 
                 @Override
                 public void failure(Throwable caught) {
-                    updateStateTokenAndLogin(googlePlusAuthenticatedUser);
+
                 }
             });
-        } else {
-            Window.Location.reload();
         }
     }
 
@@ -132,7 +127,6 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
 
     public void onUserLoggedIn(StateAndChanelEntity stateAndChanelEntity) {
         hide();
-        loginAttempts = 0;
         gaeChannelService.initGaeChannel(stateAndChanelEntity.getChanelToken());
     }
 
