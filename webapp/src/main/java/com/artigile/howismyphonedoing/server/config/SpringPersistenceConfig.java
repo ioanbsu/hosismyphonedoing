@@ -1,5 +1,6 @@
 package com.artigile.howismyphonedoing.server.config;
 
+import com.artigile.howismyphonedoing.server.patch.GAETransactionAwarePersistenceManagerFactoryProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jdo.JdoTransactionManager;
@@ -31,8 +32,8 @@ public class SpringPersistenceConfig implements TransactionManagementConfigurer 
     }
 
     @Bean(name = "pmfTransactionAware")
-    public TransactionAwarePersistenceManagerFactoryProxy transactionAwarePersistenceManagerFactoryProxy() {
-        TransactionAwarePersistenceManagerFactoryProxy transactionAwarePersistenceManagerFactoryProxy = new TransactionAwarePersistenceManagerFactoryProxy();
+    public GAETransactionAwarePersistenceManagerFactoryProxy transactionAwarePersistenceManagerFactoryProxy() {
+        GAETransactionAwarePersistenceManagerFactoryProxy transactionAwarePersistenceManagerFactoryProxy = new GAETransactionAwarePersistenceManagerFactoryProxy();
         transactionAwarePersistenceManagerFactoryProxy.setTargetPersistenceManagerFactory(localPersistenceManagerFactoryBean().getObject());
         transactionAwarePersistenceManagerFactoryProxy.setAllowCreate(false);
         return transactionAwarePersistenceManagerFactoryProxy;
