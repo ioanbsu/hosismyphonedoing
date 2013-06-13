@@ -11,7 +11,6 @@
 package com.artigile.howismyphonedoing.client.widget;
 
 import com.artigile.howismyphonedoing.client.MainEventBus;
-import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.ApplicationState;
@@ -39,6 +38,7 @@ import javax.inject.Singleton;
 @Singleton
 public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
 
+    private static final int MAX_LOGIN_ATTEMPTS = 5;
     @UiField
     DialogBox showSignInWithGoogle;
     @UiField
@@ -51,13 +51,11 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
     private ApplicationState applicationState;
     @Inject
     private AuthRpcServiceAsync authRpcService;
-
     @Inject
     private GaeChannelService gaeChannelService;
-
-
     private boolean loginButtonLoaded;
     private AsyncCallbackImpl.AfterRpcResponceHandler afterRpcResponceHandler;
+    private int loginAttempts;
 
     @Inject
     public SigninWithGooglePlusWindow(Binder binder) {
@@ -96,24 +94,45 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
         googlePlusAuthenticatedUser.setCode(code);
         googlePlusAuthenticatedUser.setAccessToken(accessToken);
         googlePlusAuthenticatedUser.setClientId(clientId);
-        googlePlusAuthenticatedUser.setState(applicationState.getStateKey());
-        loadingIcon.setVisible(true);
-        signInWithGoogleButtonPanel.setVisible(false);
-        authRpcService.validateGooglePlusCallback(googlePlusAuthenticatedUser, new AsyncCallbackImpl<StateAndChanelEntity>(eventBus, afterRpcResponceHandler) {
-            @Override
-            public void success(StateAndChanelEntity token) {
-                eventBus.userLoggedIn(token);
-            }
+        loginAttempts = 0;
+        loginWithGoogle(googlePlusAuthenticatedUser);
+    }
 
+    private void loginWithGoogle(final GooglePlusAuthenticatedUser googlePlusAuthenticatedUser) {
+        if (loginAttempts < MAX_LOGIN_ATTEMPTS) {
+            googlePlusAuthenticatedUser.setState(applicationState.getStateKey());
+            loginAttempts++;
+            loadingIcon.setVisible(true);
+            signInWithGoogleButtonPanel.setVisible(false);
+            authRpcService.validateGooglePlusCallback(googlePlusAuthenticatedUser, new AsyncCallbackImpl<StateAndChanelEntity>(eventBus, afterRpcResponceHandler) {
+                @Override
+                public void success(StateAndChanelEntity token) {
+                    eventBus.userLoggedIn(token);
+                }
+
+                @Override
+                public void failure(Throwable caught) {
+                    updateStateTokenAndLogin(googlePlusAuthenticatedUser);
+                }
+            });
+        } else {
+            Window.Location.reload();
+        }
+    }
+
+    private void updateStateTokenAndLogin(final GooglePlusAuthenticatedUser googlePlusAuthenticatedUser) {
+        authRpcService.refreshStateToken(new AsyncCallbackImpl<String>(eventBus) {
             @Override
-            public void failure(Throwable caught) {
-                Window.alert("Failed to validate google credentials");
+            public void success(String result) {
+                applicationState.setStateKey(result);
+                loginWithGoogle(googlePlusAuthenticatedUser);
             }
         });
     }
 
     public void onUserLoggedIn(StateAndChanelEntity stateAndChanelEntity) {
         hide();
+        loginAttempts = 0;
         gaeChannelService.initGaeChannel(stateAndChanelEntity.getChanelToken());
     }
 

@@ -38,8 +38,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.artigile.howismyphonedoing.server.service.SecurityAspect.SESSION_STATE_KEY;
 import static com.artigile.howismyphonedoing.server.service.SecurityAspect.SESSION_USER_ATTR_NAME;
+import static com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver.SESSION_STATE_KEY;
 
 /**
  * @author IoaN, 5/26/13 10:44 AM
@@ -147,6 +147,11 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
         String stateKey = (String) getSession().getAttribute(SESSION_STATE_KEY);
         ServletUtils.getRequest().getSession().invalidate();
         getSession().setAttribute(SESSION_STATE_KEY, stateKey);
+    }
+
+    @Override
+    public String refreshStateToken() {
+        return keysResolver.createStateKey(getSession());
     }
 
 

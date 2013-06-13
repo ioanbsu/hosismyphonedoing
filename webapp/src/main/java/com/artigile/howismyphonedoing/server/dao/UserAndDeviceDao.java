@@ -29,5 +29,5 @@ public interface UserAndDeviceDao {
 
     UserDevice getById(String uuid);
 
-    void removeAllEntities();
+    void removeAllEntities(String userEmailFromSession);
 }

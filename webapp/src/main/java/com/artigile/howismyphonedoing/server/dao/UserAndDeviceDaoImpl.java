@@ -91,8 +91,17 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
     }
 
     @Override
-    public void removeAllEntities() {
+    public void removeAllEntities(String userEmailFromSession) {
+        Set<UserDevice> userDevices = getDevices(userEmailFromSession);
         PersistenceManager pm = pmfInstance.getPersistenceManager();
+        try {
+            pm.deletePersistentAll(userDevices);
+        } finally {
+            pm.close();
+        }
+    }
+
+    public void cleanupDatabase() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         com.google.appengine.api.datastore.Query mydeleteq = new com.google.appengine.api.datastore.Query();
         PreparedQuery pq = datastore.prepare(mydeleteq);
@@ -103,4 +112,5 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
             }
         }
     }
+
 }

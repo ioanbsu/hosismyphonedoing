@@ -30,7 +30,9 @@ public class TextToSpeechService {
     }
 
     public void talk(String messageStr) {
-        tts.speak(messageStr, TextToSpeech.QUEUE_ADD, null);
+        if (messageStr != null) {
+            tts.speak(messageStr, TextToSpeech.QUEUE_ADD, null);
+        }
     }
 
     public int setLanguage(Locale locale) {

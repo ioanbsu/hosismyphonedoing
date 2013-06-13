@@ -10,12 +10,17 @@
 
 package com.artigile.howismyphonedoing.server.service.cloudutil;
 
+import org.gwtwidgets.server.spring.ServletUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.logging.Logger;
 
 /**
@@ -24,12 +29,13 @@ import java.util.logging.Logger;
  * Time: 6:38 PM
  */
 @Service
-public class KeysResolver {
+public class KeysResolver implements Serializable {
 
     public static final String REPLACE_KEY_WORD = "REPLACE!!!";
     private static final String CLIENT_ID_KEY = "google.api.client.id";
     private static final String CLIENT_SECRET_KEY = "google.api.client.secret";
     private static final String PHONE_API_KEY = "phone.api.key";
+    public static final String SESSION_STATE_KEY = "sessionStateKey";
     protected final Logger logger = Logger.getLogger(getClass().getName());
     private String clientId;
     private String clientSecret;
@@ -47,6 +53,18 @@ public class KeysResolver {
             throw new IllegalArgumentException("The client KEY or client secret should be configured in pom.xml file OR in settings.xml(preffered) file.");
         }
 
+    }
+
+
+    public String createStateKey(HttpSession session) {
+        String state = (String) session.getAttribute(SESSION_STATE_KEY);
+        if (state == null) {
+            // Create a state token to prevent request forgery.
+            // Store it in the session for later validation.
+            state = new BigInteger(130, new SecureRandom()).toString(32);
+            session.setAttribute(SESSION_STATE_KEY, state);
+        }
+        return state;
     }
 
     public String getPhoneApiKey() {

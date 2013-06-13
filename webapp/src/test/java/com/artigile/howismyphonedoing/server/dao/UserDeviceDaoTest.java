@@ -69,7 +69,7 @@ public class UserDeviceDaoTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void test() {
+    public void basicTestForUserCreation() {
         UserDevice userDevice1 = new UserDevice();
         userDevice1.setUuid("asdasdas1");
         userDevice1.setUserEmail("ioan@gmail.com");

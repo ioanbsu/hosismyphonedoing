@@ -132,8 +132,9 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                 // notifies user
                 generateNotification(context, message);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            return "failed to send a message";
         }
         return "message had been successfully sent";
     }

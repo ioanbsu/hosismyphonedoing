@@ -60,7 +60,7 @@ public class MessageRpcServiceImpl extends AbstractRpcService implements Message
 
     @Override
     public String removeAllEntities() {
-        userAndDeviceDao.removeAllEntities();
+        userAndDeviceDao.removeAllEntities(getUserEmailFromSession());
         return "sucessfully removed";
     }
 

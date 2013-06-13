@@ -27,4 +27,6 @@ public interface AuthRpcService extends RemoteService {
     StateAndChanelEntity validateGooglePlusCallback(GooglePlusAuthenticatedUser googlePlusAuthenticatedUser) throws Exception;
 
     void logout();
+
+    String refreshStateToken();
 }
