@@ -11,6 +11,7 @@
 package com.artigile.howismyphonedoing.client.service;
 
 import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
+import com.artigile.howismyphonedoing.api.model.IMessageNotSupportedByDeviceResponseModel;
 import com.artigile.howismyphonedoing.api.model.IResponseFromServer;
 import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.client.MainEventBus;
@@ -98,15 +99,18 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
                         AutoBean<IDeviceLocationModel> phoneLocationModelAutoBean = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IDeviceLocationModel.class, responseFromServer.getSerializedObject());
                         eventBus.phoneLocationUpdated(phoneLocationModelAutoBean.as());
                     } else if (responseFromServer.getMessageType() == MessageType.DEVICE_INFO) {
-                        gotNotification(responseFromServer);
-                    } else if (responseFromServer.getMessageType() == MessageType.NOTIFY_PHONE) {
-                        gotNotification(responseFromServer);
+
+                    } else if (responseFromServer.getMessageType() == MessageType.MESSAGE_TO_DEVICE) {
+
                     } else if (responseFromServer.getMessageType() == MessageType.REGISTER_DEVICE) {
                         eventBus.updateDevicesList();
-                        gotNotification(responseFromServer);
+
                     } else if (responseFromServer.getMessageType() == MessageType.UNREGISTER_DEVICE) {
                         eventBus.updateDevicesList();
-                        gotNotification(responseFromServer);
+                    } else if (responseFromServer.getMessageType() == MessageType.MESSAGE_TYPE_IS_NOT_SUPPORTED) {
+                        AutoBean<IMessageNotSupportedByDeviceResponseModel> messageNotSupported= AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IMessageNotSupportedByDeviceResponseModel.class, responseFromServer.getSerializedObject());
+                        MessageType messageType=MessageType.valueOf(messageNotSupported.as().getMessageType());
+                        eventBus.messageNotSupported(responseFromServer.getUserDeviceModel(), messageType);
                     }
 
                 }
@@ -125,9 +129,6 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
         }
     }
 
-    private void gotNotification(IResponseFromServer responseFromServer) {
-        Window.alert(responseFromServer.getMessageType() + responseFromServer.getSerializedObject());
-    }
 
     private void stopTryingToReconnect() {
         if (timer != null) {

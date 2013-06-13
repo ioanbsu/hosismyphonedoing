@@ -1,0 +1,59 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
+    <ui:style>
+        .mainPanelStyle {
+            padding: 20px;
+        }
+
+        .messageStyle {
+            text-align: justify;
+            padding-bottom: 10px;
+        }
+
+
+    </ui:style>
+
+    <g:DialogBox ui:field="dialogBox" glassEnabled="true" modal="true" animationEnabled="true"
+                 text="{msg.send_message_window_title}">
+        <g:FlowPanel styleName="{style.mainPanelStyle}">
+            <g:HTMLPanel>
+                <table>
+                    <tr>
+                        <td>
+                            <g:Label text="{msg.send_message_window_select_device}"/>
+                        </td>
+                        <td>
+                            <g:ListBox ui:field="devicesList"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <g:Label text="{msg.send_message_window_select_language}"/>
+                        </td>
+                        <td>
+                            <g:ListBox ui:field="languagesList"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <g:Label text="{msg.send_message_window_label}"/>
+                        </td>
+                        <td>
+                           <g:TextBox ui:field="messageToSend"/>
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td colspan="2">
+                            <g:Button ui:field="sendMessage" text="{msg.send_message_window_send_button}"/>
+                            <g:Button ui:field="closeWindow" text="{msg.send_message_window_cancel_button}"/>
+                        </td>
+                    </tr>
+                </table>
+            </g:HTMLPanel>
+
+        </g:FlowPanel>
+    </g:DialogBox>
+
+</ui:UiBinder>

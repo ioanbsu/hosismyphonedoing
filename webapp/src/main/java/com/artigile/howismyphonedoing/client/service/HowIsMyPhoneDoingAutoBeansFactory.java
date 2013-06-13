@@ -10,10 +10,7 @@
 
 package com.artigile.howismyphonedoing.client.service;
 
-import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
-import com.artigile.howismyphonedoing.api.model.IDeviceRegistrationModel;
-import com.artigile.howismyphonedoing.api.model.IResponseFromServer;
-import com.artigile.howismyphonedoing.api.model.ResponseFromServer;
+import com.artigile.howismyphonedoing.api.model.*;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
@@ -28,4 +25,6 @@ public interface HowIsMyPhoneDoingAutoBeansFactory extends AutoBeanFactory {
     AutoBean<IDeviceLocationModel> deviceLocationModel();
 
     AutoBean<IDeviceRegistrationModel> deviceRegistrationModel();
+
+    AutoBean<IMessageNotSupportedByDeviceResponseModel> messageTypNotSupportedResponseModel();
 }

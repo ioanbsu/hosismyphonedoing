@@ -19,10 +19,13 @@ import com.artigile.checkmyphone.service.CommonUtilities;
 import com.artigile.checkmyphone.service.DeviceRegistrationServiceImpl;
 import com.artigile.checkmyphone.util.GCMBaseIntentService;
 import com.artigile.howismyphonedoing.api.CommonConstants;
+import com.artigile.howismyphonedoing.api.MessageParser;
+import com.artigile.howismyphonedoing.api.model.MessageNotSupportedByDeviceResponseModel;
 import com.artigile.howismyphonedoing.api.model.MessageType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.io.IOException;
 
 import static com.artigile.checkmyphone.service.CommonUtilities.SENDER_ID;
 
@@ -42,7 +45,8 @@ public class GCMIntentService extends GCMBaseIntentService {
     private AndroidMessageSender messageSender;
     @Inject
     private AndroidMessageReceiver messageReceiver;
-
+    @Inject
+    private MessageParser messageParser;
     @Inject
     private CommonUtilities commonUtilities;
 
@@ -67,8 +71,18 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onMessage(Context context, Intent intent) {
         Log.i(TAG, "Received message. Extras: " + intent.getExtras());
-        messageReceiver.processMessage(MessageType.valueOf(intent.getStringExtra(CommonConstants.MESSAGE_EVENT_TYPE)),
-                intent.getStringExtra(CommonConstants.SERIALIZED_OBJECT));
+        String messageTypeStr = intent.getStringExtra(CommonConstants.MESSAGE_EVENT_TYPE);
+        try {
+            MessageType messageType = MessageType.valueOf(messageTypeStr);
+            messageReceiver.processMessage(messageType, intent.getStringExtra(CommonConstants.SERIALIZED_OBJECT));
+        } catch (IllegalArgumentException e) {
+            try {
+                String serializedCallback = messageParser.serialize(new MessageNotSupportedByDeviceResponseModel(messageTypeStr));
+                messageSender.processMessage(MessageType.MESSAGE_TYPE_IS_NOT_SUPPORTED, serializedCallback);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
     @Override

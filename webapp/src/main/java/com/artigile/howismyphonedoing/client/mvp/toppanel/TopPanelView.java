@@ -13,11 +13,10 @@ package com.artigile.howismyphonedoing.client.mvp.toppanel;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.mvp4g.client.view.ReverseViewInterface;
 
@@ -41,13 +40,13 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     @UiField
     Button phoneLocation;
     @UiField
-    TextBox textToSend;
-    @UiField
     Label loggedInAs;
     @UiField
     Button myDevicesCount;
     @UiField
-    Label channelStateLabel;
+    FlowPanel blockWhileConnecting;
+    @UiField
+    Image reloadPage;
     private TopPanelPresenter presenter;
     @Inject
     private Messages messages;
@@ -56,6 +55,7 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     @Inject
     public TopPanelView(Binder binder) {
         initWidget(binder.createAndBindUi(this));
+        blockWhileConnecting.setVisible(false);
     }
 
     @Override
@@ -75,9 +75,8 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
 
     @UiHandler("sendTextToPhone")
     void sendTextToPhoneButtonClickHandler(ClickEvent clickEvent) {
-        presenter.sendTextToPhone(textToSend.getText());
+        presenter.sendTextToPhone();
     }
-
 
     @UiHandler("phoneLocation")
     void getPhoneLocationHandler(ClickEvent event) {
@@ -90,8 +89,13 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     }
 
     @UiHandler("myDevicesCount")
-    void onMyDevicesCountClick(ClickEvent event){
-       presenter.showDevicesCountWindow();
+    void onMyDevicesCountClick(ClickEvent event) {
+        presenter.showDevicesCountWindow();
+    }
+
+    @UiHandler("reloadPage")
+    void onReloadPageClick(ClickEvent event) {
+        Window.Location.reload();
     }
 
     public void setLoggedInUserData(String email) {
@@ -103,7 +107,8 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     }
 
     public void updateChannelStateIcon(ChannelStateType channelState) {
-        channelStateLabel.setText(channelState + "");
+        blockWhileConnecting.setVisible(channelState == ChannelStateType.CHANNEL_CONNECTING);
+//        channelStateLabel.setText(channelState + "");
     }
 
 

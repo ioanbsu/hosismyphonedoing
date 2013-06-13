@@ -10,6 +10,7 @@
 
 package com.artigile.howismyphonedoing.client;
 
+import com.artigile.howismyphonedoing.api.model.MessageToDeviceModel;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcService;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.shared.FieldVerifier;
@@ -50,7 +51,7 @@ public class GwtTestWebApp extends GWTTestCase {
   }
 
   /**
-   * This test will send a request to the server using the sendSimpleTextMessage method in
+   * This test will send a request to the server using the sendMessageToDevice method in
    * MessageRpcService and verify the response.
    */
   public void testGreetingService() {
@@ -65,7 +66,7 @@ public class GwtTestWebApp extends GWTTestCase {
     delayTestFinish(10000);
 
     // Send a request to the server.
-    greetingService.sendSimpleTextMessage("GWT User", new AsyncCallback<String>() {
+    greetingService.sendMessageToDevice(new MessageToDeviceModel(), new AsyncCallback<String>() {
         public void onFailure(Throwable caught) {
             // The request resulted in an unexpected error.
             fail("Request failure: " + caught.getMessage());

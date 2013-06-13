@@ -1,13 +1,10 @@
 package com.artigile.howismyphonedoing.api.model;
 
-import java.io.Serializable;
-
 /**
  * @author IoaN, 6/3/13 9:13 PM
  */
 public class DeviceRegistrationModel implements IDeviceRegistrationModel {
     private String userEmail;
-
     private String deviceCloudRegistrationId;
 
     @Override

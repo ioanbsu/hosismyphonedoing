@@ -10,6 +10,7 @@
 
 package com.artigile.howismyphonedoing.client.rpc;
 
+import com.artigile.howismyphonedoing.api.model.MessageToDeviceModel;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -18,7 +19,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("../remoteService/mainHowIsMyPhoneDoing")
 public interface MessageRpcService extends RemoteService {
-  String sendSimpleTextMessage(String name) throws IllegalArgumentException;
+  String sendMessageToDevice(MessageToDeviceModel name) throws Exception;
 
     String getPhoneInfo();
 

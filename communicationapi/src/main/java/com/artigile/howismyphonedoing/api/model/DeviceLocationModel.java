@@ -1,7 +1,5 @@
 package com.artigile.howismyphonedoing.api.model;
 
-import java.io.Serializable;
-
 /**
  * @author IoaN, 6/7/13 7:19 AM
  */

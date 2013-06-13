@@ -10,6 +10,6 @@ import java.io.Serializable;
  * Time: 12:12 PM
  */
 public interface MessageParser {
-    public Serializable parse(MessageType messageType,String object) ;
+    public <T extends Serializable> T parse(MessageType messageType,String object) ;
     public String serialize(Serializable object) ;
 }

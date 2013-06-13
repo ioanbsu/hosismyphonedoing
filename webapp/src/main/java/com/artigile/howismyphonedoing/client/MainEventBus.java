@@ -11,13 +11,17 @@
 package com.artigile.howismyphonedoing.client;
 
 import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
+import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
+import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
 import com.artigile.howismyphonedoing.client.mvp.mainpage.MainPagePresenter;
 import com.artigile.howismyphonedoing.client.mvp.mapview.MapBodyPresenter;
 import com.artigile.howismyphonedoing.client.mvp.toppanel.TopPanelPresenter;
 import com.artigile.howismyphonedoing.client.service.GaeChannelService;
+import com.artigile.howismyphonedoing.client.service.MessageNotSupportedProcessor;
 import com.artigile.howismyphonedoing.client.widget.DevicesListWindow;
+import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
 import com.artigile.howismyphonedoing.client.widget.SigninWithGooglePlusWindow;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.mvp4g.client.annotation.Event;
@@ -48,7 +52,7 @@ public interface MainEventBus extends EventBus {
     @Event(handlers = MapBodyPresenter.class)
     void phoneLocationUpdated(IDeviceLocationModel as);
 
-    @Event(handlers = {TopPanelPresenter.class, DevicesListWindow.class})
+    @Event(handlers = {TopPanelPresenter.class, DevicesListWindow.class, SendMessageWindow.class})
     void usersDevicesListReceived(List<UserDeviceModel> result);
 
     @Event(handlers = {TopPanelPresenter.class})
@@ -59,4 +63,7 @@ public interface MainEventBus extends EventBus {
 
     @Event(handlers = SigninWithGooglePlusWindow.class)
     void showLoginWindow(String cause);
+
+    @Event(handlers = MessageNotSupportedProcessor.class)
+    void messageNotSupported(IUserDeviceModel userDeviceModel, MessageType messageType);
 }

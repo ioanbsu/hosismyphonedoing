@@ -19,6 +19,7 @@ import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.ApplicationState;
 import com.artigile.howismyphonedoing.client.widget.DevicesListWindow;
+import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.Window;
@@ -47,6 +48,8 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     private ApplicationState applicationState;
     @Inject
     private DevicesListWindow devicesListWindow;
+    @Inject
+    private SendMessageWindow sendMessageWindow;
     private List<UserDeviceModel> devicesList;
 
     public void onInitApp() {
@@ -84,13 +87,8 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
         view.updateChannelStateIcon(channelState);
     }
 
-    public void sendTextToPhone(String text) {
-        if (devicesList == null || devicesList.isEmpty()) {
-            showNoDevicesFoundMessage();
-        } else {
-            messageRpcServiceAsync.sendSimpleTextMessage(text, new AsyncCallbackImpl<String>(eventBus) {
-            });
-        }
+    public void sendTextToPhone() {
+         sendMessageWindow.show();
     }
 
     public void removeAllDevices() {

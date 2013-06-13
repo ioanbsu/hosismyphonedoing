@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Date: 6/13/13
  * Time: 9:04 AM
  */
-public interface IResponseFromServer extends Serializable{
+public interface IResponseFromServer extends Serializable {
     MessageType getMessageType();
 
     void setMessageType(MessageType messageType);
@@ -15,4 +15,8 @@ public interface IResponseFromServer extends Serializable{
     String getSerializedObject();
 
     void setSerializedObject(String serializedObject);
+
+    public IUserDeviceModel getUserDeviceModel();
+
+    public void setUserDeviceModel(IUserDeviceModel userDeviceModel);
 }

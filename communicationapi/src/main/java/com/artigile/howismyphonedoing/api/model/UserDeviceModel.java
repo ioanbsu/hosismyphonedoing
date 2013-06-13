@@ -7,14 +7,16 @@ import java.io.Serializable;
  * Date: 6/11/13
  * Time: 4:35 PM
  */
-public class UserDeviceModel implements Serializable{
+public class UserDeviceModel implements IUserDeviceModel {
 
     private String deviceId;
 
+    @Override
     public String getDeviceId() {
         return deviceId;
     }
 
+    @Override
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }

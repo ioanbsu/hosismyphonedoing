@@ -26,16 +26,22 @@ public enum MessageType {
             return DeviceRegistrationModel.class;
         }
     },
-    NOTIFY_PHONE {
+    MESSAGE_TO_DEVICE {
         @Override
         public Class<? extends Serializable> getDeserializedClass() {
-            return String.class;
+            return MessageToDeviceModel.class;
         }
     },
     GET_DEVICE_LOCATION {
         @Override
         public Class<? extends Serializable> getDeserializedClass() {
             return DeviceLocationModel.class;
+        }
+    },
+    MESSAGE_TYPE_IS_NOT_SUPPORTED {
+        @Override
+        public Class<? extends Serializable> getDeserializedClass() {
+            return MessageNotSupportedByDeviceResponseModel.class;
         }
     };
 

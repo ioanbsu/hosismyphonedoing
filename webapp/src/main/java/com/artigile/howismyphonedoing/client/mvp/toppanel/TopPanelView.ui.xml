@@ -11,6 +11,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
+    <ui:with field="images" type="com.artigile.howismyphonedoing.client.resources.Images"/>
     <ui:style>
 
         .loggedInLabel {
@@ -41,7 +42,7 @@
             margin: 0;
             border-radius: 0;
             border: none;
-            color:#505050;
+            color: #505050;
         }
 
         .topMenuButtonStyle:hover {
@@ -56,17 +57,72 @@
             float: right;
         }
 
+        .connectingBlock {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            z-index: 10;
+            opacity: 0.7;
+            filter: alpha(opacity=30);
+        }
+
+        .reloadPageImage {
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .connectingToServerStyle {
+            color: #FFF;
+            font-size: 25px;
+            font-weight: bold;
+            text-shadow: 0px 0px 5px #F00;
+            display: inline-block;
+        }
+
+        .connectingInnerBlock {
+            margin-left: auto;
+            text-align: center;
+            margin-right: auto;
+            margin-top: 200px;
+            box-shadow: 1px 1px 10px #FFF;
+        }
+
+        .tableStyle {
+            display: inline-block;
+        }
+
 
     </ui:style>
     <g:FlowPanel>
         <g:Button ui:field="myDevicesCount" styleName="{style.topMenuButtonStyle}"/>
-        <g:Button text="{msg.top_panel_get_device_location_button}" ui:field="phoneLocation" styleName="{style.topMenuButtonStyle}"/>
-        <g:Button text="{msg.top_panel_remove_all_my_devices}" ui:field="removeAllDevices" styleName="{style.topMenuButtonStyle}"/>
-        <g:Button text="{msg.top_panel_read_loud_on_my_phone}" ui:field="sendTextToPhone" styleName="{style.topMenuButtonStyle}"/>
-        <g:TextBox ui:field="textToSend"/>
-        <g:Button text="{msg.top_panel_log_out}" ui:field="logoutButton" styleName="{style.topMenuButtonStyle} {style.logOutFloatRight}"/>
+        <g:Button text="{msg.top_panel_get_device_location_button}" ui:field="phoneLocation"
+                  styleName="{style.topMenuButtonStyle}"/>
+        <g:Button text="{msg.top_panel_remove_all_my_devices}" ui:field="removeAllDevices"
+                  styleName="{style.topMenuButtonStyle}"/>
+        <g:Button text="{msg.top_panel_read_loud_on_my_phone}" ui:field="sendTextToPhone"
+                  styleName="{style.topMenuButtonStyle}"/>
+        <g:Button text="{msg.top_panel_log_out}" ui:field="logoutButton"
+                  styleName="{style.topMenuButtonStyle} {style.logOutFloatRight}"/>
 
-        <g:Label ui:field="channelStateLabel" styleName="{style.chahelState}"/>
         <g:Label ui:field="loggedInAs" styleName="{style.loggedInLabel}" text="{msg.top_panel_not_logged_in}"/>
+        <g:FlowPanel ui:field="blockWhileConnecting" addStyleNames="gwt-PopupPanelGlass {style.connectingBlock}">
+            <g:HTMLPanel styleName="{style.connectingInnerBlock}">
+                <table class="{style.tableStyle}">
+                    <tr>
+                        <td>
+                            <g:Label text="{msg.top_panel_connecting_to_devices_server}"
+                                     styleName="{style.connectingToServerStyle}"/>
+                        </td>
+                        <td>
+                            <g:Image resource="{images.refresh}" ui:field="reloadPage"
+                                     title="{msg.top_panel_reload_page_label}"
+                                     stylePrimaryName="{style.reloadPageImage}"/>
+                        </td>
+                    </tr>
+                </table>
+            </g:HTMLPanel>
+        </g:FlowPanel>
     </g:FlowPanel>
 </ui:UiBinder>

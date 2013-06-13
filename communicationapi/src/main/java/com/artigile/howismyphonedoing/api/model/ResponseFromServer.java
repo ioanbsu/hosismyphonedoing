@@ -9,6 +9,8 @@ public class ResponseFromServer implements IResponseFromServer {
 
     private MessageType messageType;
 
+    private IUserDeviceModel userDeviceModel;
+
     private String serializedObject;
 
     @Override
@@ -29,5 +31,13 @@ public class ResponseFromServer implements IResponseFromServer {
     @Override
     public void setSerializedObject(String serializedObject) {
         this.serializedObject = serializedObject;
+    }
+
+    public IUserDeviceModel getUserDeviceModel() {
+        return userDeviceModel;
+    }
+
+    public void setUserDeviceModel(IUserDeviceModel userDeviceModel) {
+        this.userDeviceModel = userDeviceModel;
     }
 }

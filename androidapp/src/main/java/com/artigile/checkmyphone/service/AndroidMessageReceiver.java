@@ -24,15 +24,14 @@ import com.artigile.checkmyphone.R;
 import com.artigile.checkmyphone.TextToSpeechService;
 import com.artigile.howismyphonedoing.api.AndroidMessageProcessor;
 import com.artigile.howismyphonedoing.api.MessageParser;
-import com.artigile.howismyphonedoing.api.model.DeviceLocationModel;
-import com.artigile.howismyphonedoing.api.model.DeviceModel;
-import com.artigile.howismyphonedoing.api.model.MessageType;
+import com.artigile.howismyphonedoing.api.model.*;
 import com.google.android.gms.location.LocationListener;
 import com.google.gson.Gson;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.util.Locale;
 
 
 /**
@@ -90,10 +89,12 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                 DeviceModel deviceModel = buildPhoneModel();
                 Gson gson = new Gson();
                 messageSender.processMessage(MessageType.DEVICE_INFO, gson.toJson(deviceModel));
-            } else if (messageType == MessageType.NOTIFY_PHONE) {
-                String messageStr = (String) messageParser.parse(messageType, message);
-                textToSpeechService.talk(messageStr);
-                commonUtilities.displayMessage(context, message);
+            } else if (messageType == MessageType.MESSAGE_TO_DEVICE) {
+                MessageToDeviceModel messageToTheDevice = messageParser.parse(messageType, message);
+                Locale locale = parseLocale(messageToTheDevice.getLocale());
+                textToSpeechService.setLanguage(locale);
+                textToSpeechService.talk(messageToTheDevice.getMessage());
+                generateNotification(context, messageToTheDevice.getMessage());
                 messageSender.processMessage(messageType, "Message received");
             } else if (messageType == MessageType.GET_DEVICE_LOCATION) {
                 Log.v(TAG, "got request to return phone location.");
@@ -139,6 +140,37 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
             return "failed to send a message";
         }
         return "message had been successfully sent";
+    }
+
+    private Locale parseLocale(GwtLocale locale) {
+        if (locale == GwtLocale.US) {
+            return Locale.US;
+        } else if (locale == GwtLocale.ENGLISH) {
+            return Locale.ENGLISH;
+        } else if (locale == GwtLocale.CANADA) {
+            return Locale.CANADA;
+        } else if (locale == GwtLocale.FRENCH) {
+            return Locale.FRENCH;
+        } else if (locale == GwtLocale.GERMAN) {
+            return Locale.GERMAN;
+        } else if (locale == GwtLocale.ITALIAN) {
+            return Locale.ITALIAN;
+        } else if (locale == GwtLocale.JAPANESE) {
+            return Locale.JAPANESE;
+        } else if (locale == GwtLocale.KOREAN) {
+            return Locale.KOREAN;
+        } else if (locale == GwtLocale.CHINESE) {
+            return Locale.CHINESE;
+        } else if (locale == GwtLocale.SIMPLIFIED_CHINESE) {
+            return Locale.SIMPLIFIED_CHINESE;
+        } else if (locale == GwtLocale.TAIWAN) {
+            return Locale.TAIWAN;
+        } else if (locale == GwtLocale.UK) {
+            return Locale.UK;
+        } else if (locale == GwtLocale.CANADA_FRENCH) {
+            return Locale.CANADA_FRENCH;
+        }
+        return Locale.getDefault();
     }
 
     /**
