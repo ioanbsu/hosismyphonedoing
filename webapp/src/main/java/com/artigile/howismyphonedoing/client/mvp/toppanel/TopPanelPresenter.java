@@ -63,7 +63,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
 
     public void onUserLoggedIn(StateAndChanelEntity stateAndChanelEntity) {
         view.setLoggedInUserData(stateAndChanelEntity.getEmail());
-        userInfoRpcService.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>() {
+        userInfoRpcService.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>(eventBus) {
             @Override
             public void success(List<UserDeviceModel> result) {
                 eventBus.usersDevicesListUdated(result);
@@ -84,13 +84,13 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
         if (devicesList == null || devicesList.isEmpty()) {
             showNoDevicesFoundMessage();
         } else {
-            messageRpcServiceAsync.sendSimpleTextMessage(text, new AsyncCallbackImpl<String>() {
+            messageRpcServiceAsync.sendSimpleTextMessage(text, new AsyncCallbackImpl<String>(eventBus) {
             });
         }
     }
 
     public void removeAllDevices() {
-        messageRpcServiceAsync.removeAllEntities(new AsyncCallbackImpl<String>() {
+        messageRpcServiceAsync.removeAllEntities(new AsyncCallbackImpl<String>(eventBus) {
             @Override
             public void success(String result) {
                 eventBus.usersDevicesListUdated(new ArrayList<UserDeviceModel>());
@@ -108,7 +108,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
         if (devicesList == null || devicesList.isEmpty()) {
             showNoDevicesFoundMessage();
         } else {
-            messageRpcServiceAsync.getPhoneLocation(new AsyncCallbackImpl<String>() {
+            messageRpcServiceAsync.getPhoneLocation(new AsyncCallbackImpl<String>(eventBus) {
                 @Override
                 public void success(String result) {
 

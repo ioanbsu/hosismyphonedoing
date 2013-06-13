@@ -1,0 +1,20 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+<ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
+    <ui:style>
+        .mainPanelStyle {
+            padding: 20px;
+        }
+
+
+
+    </ui:style>
+
+    <g:DialogBox ui:field="messageWindow" glassEnabled="true" modal="true" animationEnabled="true">
+        <g:FlowPanel styleName="{style.mainPanelStyle}">
+            <g:Label ui:field="messageWindowText"/>
+            <g:Button ui:field="closeWindow" text="{msg.message_window_default_ok_button}"/>
+        </g:FlowPanel>
+    </g:DialogBox>
+
+</ui:UiBinder>

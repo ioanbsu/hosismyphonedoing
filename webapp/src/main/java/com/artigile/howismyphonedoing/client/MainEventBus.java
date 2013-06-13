@@ -41,7 +41,8 @@ public interface MainEventBus extends EventBus {
     @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class, GaeChannelService.class})
     void userLogout();
 
-    @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class, SigninWithGooglePlusWindow.class})
+    @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class,
+            SigninWithGooglePlusWindow.class,GaeChannelService.class})
     void userLoggedIn(StateAndChanelEntity stateAndChanelEntity);
 
     @Event(handlers = MapBodyPresenter.class)
@@ -53,4 +54,6 @@ public interface MainEventBus extends EventBus {
     @Event(handlers = TopPanelPresenter.class)
     void channelStateChanged(ChannelStateType channelState);
 
+    @Event(handlers = SigninWithGooglePlusWindow.class)
+    void showLoginWindow(String cause);
 }

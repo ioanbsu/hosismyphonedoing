@@ -88,7 +88,7 @@ public class DevicesListWindow extends BaseEventHandler<MainEventBus> {
 
     private void refreshDevicesList() {
         devicesList.add(new Label("Loading devices list... Please Wait"));
-        userInfoRpcServiceAsync.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>() {
+        userInfoRpcServiceAsync.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>(eventBus) {
             @Override
             public void success(List<UserDeviceModel> result) {
                 eventBus.usersDevicesListUdated(result);

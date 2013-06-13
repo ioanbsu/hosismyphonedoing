@@ -60,6 +60,8 @@ public class LocationServiceImpl implements LocationService {
                     stopRequestingLocationUpdates();
                 }
             }, THREE_MINUTES);
+        } else if (currentBestLocation != null) {
+            locationListener.onLocationChanged(currentBestLocation);
         }
     }
 

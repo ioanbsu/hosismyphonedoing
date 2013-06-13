@@ -10,11 +10,21 @@
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
 
     <ui:style>
+        .loginPageTextStyle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding-top: 50px;
+            font-size: 65px;
+        }
     </ui:style>
 
     <g:SimplePanel ui:field="mapContainer">
-        <g:Label text="Login to see the map"/>
+        <g:Label text="{msg.application_title}" styleName="{style.loginPageTextStyle}"/>
     </g:SimplePanel>
 </ui:UiBinder>

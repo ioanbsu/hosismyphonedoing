@@ -11,9 +11,11 @@
 package com.artigile.howismyphonedoing.client.widget;
 
 import com.artigile.howismyphonedoing.client.MainEventBus;
+import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.ApplicationState;
+import com.artigile.howismyphonedoing.client.service.GaeChannelService;
 import com.artigile.howismyphonedoing.shared.entity.GooglePlusAuthenticatedUser;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -22,10 +24,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.*;
 import com.mvp4g.client.annotation.EventHandler;
 import com.mvp4g.client.event.BaseEventHandler;
 
@@ -45,16 +45,26 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
     Button hideWindow;
     @UiField
     HTMLPanel signInWithGoogleButtonPanel;
+    @UiField
+    FlowPanel loadingIcon;
     @Inject
     private ApplicationState applicationState;
     @Inject
     private AuthRpcServiceAsync authRpcService;
+
+    @Inject
+    private GaeChannelService gaeChannelService;
+
+
     private boolean loginButtonLoaded;
+    private AsyncCallbackImpl.AfterRpcResponceHandler afterRpcResponceHandler;
 
     @Inject
     public SigninWithGooglePlusWindow(Binder binder) {
         binder.createAndBindUi(this);
         exportOnGoogleResponseReadyMethod();
+        loadingIcon.setVisible(false);
+        afterRpcResponceHandler = initAfterResponseHandler();
     }
 
     public void show() {
@@ -87,16 +97,40 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
         googlePlusAuthenticatedUser.setAccessToken(accessToken);
         googlePlusAuthenticatedUser.setClientId(clientId);
         googlePlusAuthenticatedUser.setState(applicationState.getStateKey());
-        authRpcService.validateGooglePlusCallback(googlePlusAuthenticatedUser, new AsyncCallbackImpl<StateAndChanelEntity>() {
+        loadingIcon.setVisible(true);
+        signInWithGoogleButtonPanel.setVisible(false);
+        authRpcService.validateGooglePlusCallback(googlePlusAuthenticatedUser, new AsyncCallbackImpl<StateAndChanelEntity>(eventBus, afterRpcResponceHandler) {
             @Override
             public void success(StateAndChanelEntity token) {
                 eventBus.userLoggedIn(token);
+            }
+
+            @Override
+            public void failure(Throwable caught) {
+                Window.alert("Failed to validate google credentials");
             }
         });
     }
 
     public void onUserLoggedIn(StateAndChanelEntity stateAndChanelEntity) {
         hide();
+        gaeChannelService.initGaeChannel(stateAndChanelEntity.getChanelToken());
+    }
+
+    public void onShowLoginWindow(String key) {
+        applicationState.setStateKey(key);
+        loadGooglePlusLoginScript();
+        show();
+    }
+
+    private AsyncCallbackImpl.AfterRpcResponceHandler initAfterResponseHandler() {
+        return new AsyncCallbackImpl.AfterRpcResponceHandler() {
+            @Override
+            public void afterResponse() {
+                loadingIcon.setVisible(false);
+                signInWithGoogleButtonPanel.setVisible(true);
+            }
+        };
     }
 
     public native void exportOnGoogleResponseReadyMethod() /*-{
@@ -108,4 +142,6 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
 
     interface Binder extends UiBinder<DialogBox, SigninWithGooglePlusWindow> {
     }
+
+
 }

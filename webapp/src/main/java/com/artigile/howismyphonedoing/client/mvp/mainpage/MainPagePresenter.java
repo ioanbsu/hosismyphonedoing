@@ -16,13 +16,9 @@ import com.artigile.howismyphonedoing.client.rpc.AuthRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.ApplicationState;
 import com.artigile.howismyphonedoing.client.service.GaeChannelService;
 import com.artigile.howismyphonedoing.client.widget.SigninWithGooglePlusWindow;
-import com.artigile.howismyphonedoing.shared.entity.GooglePlusAuthenticatedUser;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
 
@@ -40,21 +36,13 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
     private SigninWithGooglePlusWindow signinWithGooglePlusWindow;
     @Inject
     private ApplicationState applicationState;
-    @Inject
-    private GaeChannelService gaeChannelService;
 
     public void onInitApp() {
         signinWithGooglePlusWindow.show();
-        authRpcService.getLoggedInUser(new AsyncCallbackImpl<StateAndChanelEntity>() {
+        authRpcService.getLoggedInUser(new AsyncCallbackImpl<StateAndChanelEntity>(eventBus) {
             @Override
             public void success(StateAndChanelEntity token) {
                 eventBus.userLoggedIn(token);
-            }
-
-            @Override
-            public void failure(Throwable caught) {
-                applicationState.setStateKey(caught.getMessage());
-                signinWithGooglePlusWindow.loadGooglePlusLoginScript();
             }
         });
         GWT.log("MainPagePresenter initiated.");
@@ -63,7 +51,7 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
     public void onUserLogout() {
         signinWithGooglePlusWindow.show();
         signinWithGooglePlusWindow.loadGooglePlusLoginScript();
-        authRpcService.logout(new AsyncCallbackImpl<Void>() {
+        authRpcService.logout(new AsyncCallbackImpl<Void>(eventBus) {
             @Override
             public void success(Void result) {
             }
@@ -76,12 +64,8 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
     }
 
     public void onUserLoggedIn(StateAndChanelEntity stateAndChanelEntity) {
-        gaeChannelService.initGaeChannel(stateAndChanelEntity.getChanelToken());
         view.onUserLoggedIn();
     }
-
-
-
 
 
 }

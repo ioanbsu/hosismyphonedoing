@@ -12,6 +12,7 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
     >
     <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
+    <ui:with field="images" type="com.artigile.howismyphonedoing.client.resources.Images"/>
     <ui:style>
         .mainPanelStyle {
             padding: 40px;
@@ -22,16 +23,42 @@
         }
 
         .buttonHiddenStyle {
-            display: none;
+            display:none;
+        }
+
+        .loadingIcon {
+            float: left;
+        }
+
+        .loadingLabel {
+            float: left;
+            font-size: 10px;
+            padding: 11px 5px;
+        }
+
+        .whyUseMyGoogleAccount {
+            float: left;
+        }
+
+        .welomeLabel {
+            font-size: 45px;
+            width: 100%;
+            float: left;
+            color: #505050;
+            text-align: center;
         }
 
 
     </ui:style>
 
     <g:DialogBox ui:field="showSignInWithGoogle" glassEnabled="true" modal="true"
-                 addStyleNames="{style.dialogZIndexStyle}">
+                 addStyleNames="{style.dialogZIndexStyle}" text="{msg.application_title}">
         <g:FlowPanel styleName="{style.mainPanelStyle}">
-            <g:Label text="{msg.please_sign_in_with_google}"/>
+            <g:Label text="{msg.login_window_log_in_with_google_text}" styleName="{style.welomeLabel}"/>
+            <g:FlowPanel ui:field="loadingIcon">
+                <g:Image resource="{images.loadingIcon}" stylePrimaryName="{style.loadingIcon}"/>
+                <g:Label text="{msg.login_window_logging_in_progress}" styleName="{style.loadingLabel}"/>
+            </g:FlowPanel>
             <g:HTMLPanel ui:field="signInWithGoogleButtonPanel">
                 <div id="signinButton">
                     <span class="g-signin"

@@ -19,6 +19,6 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory;
  * Date: 6/7/13
  * Time: 2:53 PM
  */
-public interface HowIsMyPhoneDoingFactory extends AutoBeanFactory {
+public interface HowIsMyPhoneDoingAutoBeansFactory extends AutoBeanFactory {
     AutoBean<IDeviceLocationModel> deviceLocationModel();
 }
