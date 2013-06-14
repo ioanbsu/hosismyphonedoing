@@ -42,7 +42,7 @@ public class MessageRpcServiceImpl extends AbstractRpcService implements Message
 
     public String sendMessageToDevice(MessageToDeviceModel messageContent) throws Exception {
         UserDevice userDevice = userAndDeviceDao.getById(messageContent.getDeviceId());
-        if(userDevice==null){
+        if (userDevice == null) {
             throw new DeviceWasRemovedException();
         }
         messageSender.processMessage(new HashSet<UserDevice>(Arrays.asList(userDevice)),
@@ -65,9 +65,9 @@ public class MessageRpcServiceImpl extends AbstractRpcService implements Message
     }
 
     @Override
-    public String removeAllEntities() {
+    public String removeAllUserDevices() {
         userAndDeviceDao.removeAllUserDevices(getUserEmailFromSession());
-        return "sucessfully removed";
+        return "successfully removed";
     }
 
 }

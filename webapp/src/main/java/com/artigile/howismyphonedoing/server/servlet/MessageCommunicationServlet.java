@@ -12,7 +12,7 @@ package com.artigile.howismyphonedoing.server.servlet;
 
 import com.artigile.howismyphonedoing.api.CommonConstants;
 import com.artigile.howismyphonedoing.api.model.MessageType;
-import com.artigile.howismyphonedoing.server.service.WebApMessageReceiver;
+import com.artigile.howismyphonedoing.server.service.WebAppMessageReceiver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,15 +32,17 @@ public class MessageCommunicationServlet extends AbstractServlet {
     // change to true to allow GET calls
     static final boolean DEBUG = true;
     protected final Logger logger = Logger.getLogger(getClass().getName());
-
-
     @Autowired
-    private WebApMessageReceiver messageProcessor;
+    private WebAppMessageReceiver messageProcessor;
 
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String uuid = request.getParameter(CommonConstants.UUID);
-        messageProcessor.processMessage(uuid, MessageType.valueOf(request.getParameter(CommonConstants.MESSAGE_EVENT_TYPE)), request.getParameter(CommonConstants.SERIALIZED_OBJECT));
+        try {
+            messageProcessor.processMessage(uuid, MessageType.valueOf(request.getParameter(CommonConstants.MESSAGE_EVENT_TYPE)), request.getParameter(CommonConstants.SERIALIZED_OBJECT));
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
         return null;
     }
 

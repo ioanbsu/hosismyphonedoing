@@ -108,8 +108,8 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
                     } else if (responseFromServer.getMessageType() == MessageType.UNREGISTER_DEVICE) {
                         eventBus.updateDevicesList();
                     } else if (responseFromServer.getMessageType() == MessageType.MESSAGE_TYPE_IS_NOT_SUPPORTED) {
-                        AutoBean<IMessageNotSupportedByDeviceResponseModel> messageNotSupported= AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IMessageNotSupportedByDeviceResponseModel.class, responseFromServer.getSerializedObject());
-                        MessageType messageType=MessageType.valueOf(messageNotSupported.as().getMessageType());
+                        AutoBean<IMessageNotSupportedByDeviceResponseModel> messageNotSupported = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IMessageNotSupportedByDeviceResponseModel.class, responseFromServer.getSerializedObject());
+                        MessageType messageType = MessageType.valueOf(messageNotSupported.as().getMessageType());
                         eventBus.messageNotSupported(responseFromServer.getUserDeviceModel(), messageType);
                     }
 
@@ -122,13 +122,14 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
 
                 @Override
                 public void onClose() {
-                    eventBus.channelStateChanged(ChannelStateType.CHANNEL_CONNECTING);
-                    reOpenChannel();
+                    if (userLoggedIn) {
+                        eventBus.channelStateChanged(ChannelStateType.CHANNEL_CONNECTING);
+                        reOpenChannel();
+                    }
                 }
             });
         }
     }
-
 
     private void stopTryingToReconnect() {
         if (timer != null) {
@@ -138,7 +139,7 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
     }
 
     private void reOpenChannel() {
-        if (userLoggedIn && channelOpenAttempt == 0) {
+        if (channelOpenAttempt == 0) {
             timer = new Timer() {
                 @Override
                 public void run() {

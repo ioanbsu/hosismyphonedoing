@@ -11,6 +11,8 @@ public class UserDeviceModel implements IUserDeviceModel {
 
     private String deviceId;
 
+    private String humanReadableName;
+
     @Override
     public String getDeviceId() {
         return deviceId;
@@ -19,5 +21,15 @@ public class UserDeviceModel implements IUserDeviceModel {
     @Override
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    @Override
+    public String getHumanReadableName() {
+        return humanReadableName;
+    }
+
+    @Override
+    public void setHumanReadableName(String humanReadableName) {
+        this.humanReadableName = humanReadableName;
     }
 }

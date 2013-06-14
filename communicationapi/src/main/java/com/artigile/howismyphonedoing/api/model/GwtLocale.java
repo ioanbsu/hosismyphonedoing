@@ -12,11 +12,11 @@ public enum GwtLocale {
     FRENCH("French"),
     GERMAN("German"),
     ITALIAN("Italian"),
-    JAPANESE("Japanese"),
-    KOREAN("Korean"),
-    CHINESE("Chinese"),
-    SIMPLIFIED_CHINESE("Simplified Chinese"),
-    TAIWAN("Thai"),
+//    JAPANESE("Japanese"),
+//    KOREAN("Korean"),
+//    CHINESE("Chinese"),
+//    SIMPLIFIED_CHINESE("Simplified Chinese"),
+//    TAIWAN("Thai"),
     UK("UK"),
     CANADA_FRENCH("Canadian French");
     private String languageName;

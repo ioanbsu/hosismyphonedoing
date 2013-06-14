@@ -11,13 +11,13 @@ import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.text.shared.AbstractRenderer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.*;
+import com.google.gwt.view.client.ProvidesKey;
 import com.mvp4g.client.annotation.EventHandler;
 import com.mvp4g.client.event.BaseEventHandler;
 
@@ -39,13 +39,13 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
     @UiField
     DialogBox dialogBox;
     @UiField
-    ListBox devicesList;
-    @UiField
     ListBox languagesList;
     @UiField
     TextBox messageToSend;
     @UiField
     Button sendMessage;
+    @UiField(provided = true)
+    ValueListBox<UserDeviceModel> devicesValueListBox;
     @Inject
     private MessageRpcServiceAsync messageRpcServiceAsync;
     @Inject
@@ -57,6 +57,24 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
 
     @Inject
     public SendMessageWindow(Binder binder) {
+        devicesValueListBox = new ValueListBox<UserDeviceModel>(new AbstractRenderer<UserDeviceModel>() {
+            @Override
+            public String render(UserDeviceModel object) {
+                if(object==null){
+                    return "";
+                }
+                return object.getHumanReadableName();
+            }
+        }, new ProvidesKey<UserDeviceModel>() {
+            @Override
+            public Object getKey(UserDeviceModel item) {
+                if (item == null) {
+                    return null;
+                }
+                return item.getDeviceId();
+            }
+        }
+        );
         binder.createAndBindUi(this);
         for (GwtLocale gwtLocale : GwtLocale.values()) {
             languagesList.addItem(gwtLocale.getLanguageName());
@@ -71,13 +89,10 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
         this.userDeviceModels = userDeviceModels;
         boolean devicesListEmpty = userDeviceModels == null || userDeviceModels.isEmpty();
         sendMessage.setEnabled(!devicesListEmpty);
-        devicesList.clear();
+        devicesValueListBox.setAcceptableValues(userDeviceModels);
         if (!devicesListEmpty) {
-            for (UserDeviceModel userDeviceModel : userDeviceModels) {
-                devicesList.addItem(userDeviceModel.getDeviceId());
-            }
+            devicesValueListBox.setValue(userDeviceModels.get(0));
         }
-
     }
 
     @UiHandler("sendMessage")
@@ -87,7 +102,7 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
 
     private void sendMessageToTheDevice() {
         MessageToDeviceModel messageToTheDevice = new MessageToDeviceModel();
-        messageToTheDevice.setDeviceId(devicesList.getItemText(devicesList.getSelectedIndex()));
+        messageToTheDevice.setDeviceId(devicesValueListBox.getValue().getDeviceId());
         messageToTheDevice.setMessage(messageToSend.getText());
         messageToTheDevice.setLocale(GwtLocale.parse(languagesList.getItemText(languagesList.getSelectedIndex())));
         messageToSend.setText("");

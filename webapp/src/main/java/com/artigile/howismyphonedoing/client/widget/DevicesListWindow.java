@@ -67,7 +67,7 @@ public class DevicesListWindow extends BaseEventHandler<MainEventBus> {
             devicesList.add(new Label(messages.view_my_devices_window_no_devices_found_message()));
         } else {
             for (UserDeviceModel userDeviceModel : result) {
-                devicesList.add(new Label(userDeviceModel.getDeviceId()));
+                devicesList.add(new Label(userDeviceModel.getHumanReadableName()));
             }
         }
     }

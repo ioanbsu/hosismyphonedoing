@@ -12,10 +12,14 @@ package com.artigile.checkmyphone.service;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import com.artigile.checkmyphone.R;
 import com.artigile.checkmyphone.util.GCMRegistrar;
+import com.artigile.howismyphonedoing.api.AndroidMessageResultListener;
+import com.artigile.howismyphonedoing.api.MessageSendResultType;
 import com.artigile.howismyphonedoing.api.model.DeviceRegistrationModel;
 import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.google.gson.Gson;
@@ -49,6 +53,11 @@ public final class DeviceRegistrationServiceImpl {
     private AndroidMessageSender messageSender;
     @Inject
     private CommonUtilities commonUtilities;
+    @Inject
+    private DeviceInfoService deviceInfoService;
+
+    @Inject
+
 
     /**
      * Register this account/device pair within the server.
@@ -65,9 +74,20 @@ public final class DeviceRegistrationServiceImpl {
             Log.d(TAG, "Attempt #" + i + " to register");
             try {
                 commonUtilities.displayMessage(context, context.getString(R.string.server_registering, i, MAX_ATTEMPTS));
-                messageSender.processMessage(MessageType.REGISTER_DEVICE, deviceRegistrationModelConverted);
+                messageSender.processMessage(MessageType.REGISTER_DEVICE, deviceRegistrationModelConverted, new AndroidMessageResultListener() {
+                    @Override
+                    public void onMessageResult(MessageSendResultType messageSendResult) {
+                        String message = "";
+                        if (messageSendResult == MessageSendResultType.FAILED) {
+                            message = context.getString(R.string.failed_to_register_device);
+                        } else if (messageSendResult == MessageSendResultType.SUCCESS) {
+                            message = context.getString(R.string.server_registered);
+                        }
+                        commonUtilities.displayMessage(context, message);
+                    }
+                });
                 GCMRegistrar.setRegisteredOnServer(context, true);
-                String message = context.getString(R.string.server_registered);
+                String message = context.getString(R.string.connecting_to_howismyphonedoing_server);
                 commonUtilities.displayMessage(context, message);
                 return;
             } catch (IOException e) {
@@ -101,6 +121,7 @@ public final class DeviceRegistrationServiceImpl {
         String userEmail = getUserEmail(context);
         deviceRegistrationModel.setUserEmail(userEmail);
         deviceRegistrationModel.setDeviceCloudRegistrationId(cloudRegistrationId);
+        deviceRegistrationModel.setDeviceModel(deviceInfoService.buildPhoneModel());
         return new Gson().toJson(deviceRegistrationModel);
     }
 
@@ -116,9 +137,20 @@ public final class DeviceRegistrationServiceImpl {
         Log.i(TAG, "unregistering device (regId = " + regId + ")");
         String deviceRegistrationModelConverted = createRegisterMap(context, regId);
         try {
-            messageSender.processMessage(MessageType.UNREGISTER_DEVICE, deviceRegistrationModelConverted);
+            messageSender.processMessage(MessageType.UNREGISTER_DEVICE, deviceRegistrationModelConverted, new AndroidMessageResultListener() {
+                @Override
+                public void onMessageResult(MessageSendResultType messageSendResult) {
+                    String message = "";
+                    if (messageSendResult == MessageSendResultType.FAILED) {
+                        message = context.getString(R.string.failed_to_unregister_device);
+                    } else if (messageSendResult == MessageSendResultType.SUCCESS) {
+                        message = context.getString(R.string.server_registered);
+                    }
+                    commonUtilities.displayMessage(context, message);
+                }
+            });
             GCMRegistrar.setRegisteredOnServer(context, false);
-            String message = context.getString(R.string.server_unregistered);
+            String message = context.getString(R.string.connecting_to_howismyphonedoing_server);
             commonUtilities.displayMessage(context, message);
         } catch (IOException e) {
             // At this point the device is unregistered from GCM, but still

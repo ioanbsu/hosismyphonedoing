@@ -74,14 +74,16 @@ public class GCMIntentService extends GCMBaseIntentService {
         String messageTypeStr = intent.getStringExtra(CommonConstants.MESSAGE_EVENT_TYPE);
         try {
             MessageType messageType = MessageType.valueOf(messageTypeStr);
-            messageReceiver.processMessage(messageType, intent.getStringExtra(CommonConstants.SERIALIZED_OBJECT));
+            messageReceiver.processMessage(messageType, intent.getStringExtra(CommonConstants.SERIALIZED_OBJECT), null);
         } catch (IllegalArgumentException e) {
             try {
                 String serializedCallback = messageParser.serialize(new MessageNotSupportedByDeviceResponseModel(messageTypeStr));
-                messageSender.processMessage(MessageType.MESSAGE_TYPE_IS_NOT_SUPPORTED, serializedCallback);
+                messageSender.processMessage(MessageType.MESSAGE_TYPE_IS_NOT_SUPPORTED, serializedCallback, null);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

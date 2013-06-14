@@ -9,5 +9,5 @@ import java.io.IOException;
  */
 public interface AndroidMessageProcessor<T> {
 
-    public String processMessage( MessageType messageType, String message) throws IOException;
+    public String processMessage( MessageType messageType, String message,AndroidMessageResultListener messageResultListener) throws IOException;
 }

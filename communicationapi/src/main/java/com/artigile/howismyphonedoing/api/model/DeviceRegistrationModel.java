@@ -7,6 +7,8 @@ public class DeviceRegistrationModel implements IDeviceRegistrationModel {
     private String userEmail;
     private String deviceCloudRegistrationId;
 
+    private IDeviceModel deviceModel;
+
     @Override
     public String getUserEmail() {
         return userEmail;
@@ -25,5 +27,15 @@ public class DeviceRegistrationModel implements IDeviceRegistrationModel {
     @Override
     public void setDeviceCloudRegistrationId(String deviceCloudRegistrationId) {
         this.deviceCloudRegistrationId = deviceCloudRegistrationId;
+    }
+
+    @Override
+    public IDeviceModel getDeviceModel() {
+        return deviceModel;
+    }
+
+    @Override
+    public void setDeviceModel(IDeviceModel deviceModel) {
+        this.deviceModel = deviceModel;
     }
 }

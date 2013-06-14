@@ -13,37 +13,49 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="top">
 
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/unregister"
-        android:id="@+id/unregisterDevice"
-        android:onClick="unregisterDevice"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/register"
-        android:id="@+id/register"
-        android:onClick="registerDevice"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/unregister"
+            android:id="@+id/unregisterDevice"
+            android:onClick="unregisterDevice"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/test"
-        android:id="@+id/testButton"
-        android:onClick="testButton"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register"
+            android:id="@+id/register"
+            android:onClick="registerDevice"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/display"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="69dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="94dp"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cleanLogs"
+            android:id="@+id/cleanLogsButton"
+            android:onClick="cleanLogsButton"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView"
+        >
+
+        <TextView
+            android:gravity="top"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/display"
+            />
+    </ScrollView>
 
 </LinearLayout>

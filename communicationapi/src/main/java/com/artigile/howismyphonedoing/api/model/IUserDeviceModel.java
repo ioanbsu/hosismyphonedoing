@@ -11,4 +11,8 @@ public interface IUserDeviceModel extends Serializable {
     String getDeviceId();
 
     void setDeviceId(String deviceId);
+
+    String getHumanReadableName();
+
+    void setHumanReadableName(String humanReadableName);
 }

@@ -12,20 +12,18 @@ package com.artigile.howismyphonedoing.server.service;
 
 import com.artigile.howismyphonedoing.api.MessageParser;
 import com.artigile.howismyphonedoing.api.WebAppMessageProcessor;
-import com.artigile.howismyphonedoing.api.model.DeviceRegistrationModel;
-import com.artigile.howismyphonedoing.api.model.MessageType;
-import com.artigile.howismyphonedoing.api.model.ResponseFromServer;
-import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
+import com.artigile.howismyphonedoing.api.model.*;
 import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
-import com.google.gson.Gson;
+import com.google.gson.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 /**
@@ -34,7 +32,7 @@ import java.util.logging.Logger;
  * Time: 5:55 PM
  */
 @Service
-public class WebApMessageReceiver implements WebAppMessageProcessor<String> {
+public class WebAppMessageReceiver implements WebAppMessageProcessor<String> {
     protected final Logger logger = Logger.getLogger(getClass().getName());
     @Autowired
     private UserAndDeviceDao userAndDeviceDao;
@@ -42,7 +40,7 @@ public class WebApMessageReceiver implements WebAppMessageProcessor<String> {
     private MessageParser messageParser;
 
     @Override
-    public String processMessage(String uuid, MessageType messageType, String serializedObject) {
+    public String processMessage(String uuid, MessageType messageType, String serializedObject) throws Exception{
         try {
             String userEmail = null;
             UserDevice userDevice = null;
@@ -54,6 +52,7 @@ public class WebApMessageReceiver implements WebAppMessageProcessor<String> {
                 userDevice.setUserEmail(userEmail);
                 userDevice.setUuid(uuid);
                 userDevice.setDeviceCloudRegistrationId(registrationModel.getDeviceCloudRegistrationId());
+                userDevice.setHumanReadableName(registrationModel.getDeviceModel().getModel());
                 userAndDeviceDao.register(userDevice);
             } else if (messageType == MessageType.UNREGISTER_DEVICE) {
                 logger.info("Unregistering device: " + uuid);
@@ -80,11 +79,9 @@ public class WebApMessageReceiver implements WebAppMessageProcessor<String> {
 
         } catch (Exception e) {
             logger.warning("unexpected error happened, please investigate!!!!!!!!!!!!!!!!");
-            e.printStackTrace();
-            return "message was not parsed:(";
+            throw e;
         }
         return "message pasring success";
     }
-
 
 }

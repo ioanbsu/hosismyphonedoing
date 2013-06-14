@@ -10,11 +10,11 @@
 
 package com.artigile.checkmyphone;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -88,6 +88,12 @@ public class MainActivity extends RoboActivity implements
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        checkIfUserHasGoogleAccount();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.app_menu, menu);
@@ -130,19 +136,13 @@ public class MainActivity extends RoboActivity implements
         GCMRegistrar.register(this, SENDER_ID);
     }
 
-    public void testButton(View v) {
+    public void cleanLogsButton(View v) {
         Context context = getApplicationContext();
         CharSequence text = "Button clicked";
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
-        mDisplay.setText("Request for location update sent");
-        locationService.getLocation(new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                mDisplay.setText(location.getLatitude() + " " + location.getLongitude() + " " + location.getAccuracy());
-            }
-        });
+        mDisplay.setText("");
     }
 
     @Override
@@ -221,6 +221,29 @@ public class MainActivity extends RoboActivity implements
             } else {
                 // Handle unrecoverable error
             }
+        }
+    }
+
+    private void checkIfUserHasGoogleAccount() {
+        Account[] accounts = AccountManager.get(this).getAccountsByType("com.google");
+        if (accounts.length == 0) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setTitle(R.string.your_device_has_no_linked_google_account_title);
+            alertDialogBuilder.setMessage(R.string.your_device_has_no_linked_google_account_message)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // if this button is clicked, close
+                            // current activity
+                            MainActivity.this.finish();
+                        }
+                    });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
         }
     }
 

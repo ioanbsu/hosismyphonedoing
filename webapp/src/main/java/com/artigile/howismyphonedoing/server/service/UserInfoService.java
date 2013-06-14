@@ -35,6 +35,7 @@ public class UserInfoService {
         for (UserDevice userDevice : userAndDeviceDao.getDevices(userEmail)) {
             UserDeviceModel userDeviceModel = new UserDeviceModel();
             userDeviceModel.setDeviceId(userDevice.getUuid());
+            userDeviceModel.setHumanReadableName(userDevice.getHumanReadableName());
             userDeviceModelList.add(userDeviceModel);
         }
         return userDeviceModelList;

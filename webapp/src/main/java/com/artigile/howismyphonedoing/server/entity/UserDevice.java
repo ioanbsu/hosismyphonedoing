@@ -28,6 +28,8 @@ public class UserDevice {
     private String deviceCloudRegistrationId;
     @Persistent
     private String userEmail;
+    @Persistent
+    private String humanReadableName;
 
     public String getUuid() {
         return uuid;
@@ -51,6 +53,14 @@ public class UserDevice {
 
     public void setDeviceCloudRegistrationId(String deviceCloudRegistrationId) {
         this.deviceCloudRegistrationId = deviceCloudRegistrationId;
+    }
+
+    public String getHumanReadableName() {
+        return humanReadableName;
+    }
+
+    public void setHumanReadableName(String humanReadableName) {
+        this.humanReadableName = humanReadableName;
     }
 
     @Override

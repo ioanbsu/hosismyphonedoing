@@ -13,8 +13,11 @@
     <string name="app_name">How is my phone doing?</string>
     <string name="unregister">Unregister</string>
     <string name="sample_menu_item">clickMe</string>
-    <string name="already_registered">Device had been already registered</string>
+    <string name="already_registered">Device had been already registered in GCM</string>
     <string name="server_registering">registering server</string>
+    <string name="connecting_to_howismyphonedoing_server">connecting to howismyphonedoing server</string>
+    <string name="failed_to_register_device">Failed to register your device, please try later</string>
+    <string name="failed_to_unregister_device">Failed to unregister your device, please try later</string>
     <string name="server_registered">server had been registered</string>
     <string name="server_register_error">server registration error</string>
     <string name="server_unregistered">server unregistered</string>
@@ -28,7 +31,12 @@
     <string name="gcm_recoverable_error">GCM recoverable error</string>
     <string name="register">register</string>
     <string name="test">Test Button</string>
-    <string name="remote_application_url">http://howismyphonedoing.appspot.com/remoteService</string>
-    <!--<string name="remote_application_url">http://169.229.196.12:8080/remoteService</string>-->
+    <!--<string name="remote_application_url">http://howismyphonedoing.appspot.com/remoteService</string>-->
+    <string name="remote_application_url">http://169.229.196.12:8080/remoteService</string>
+
+    <string name="your_device_has_no_linked_google_account_title">Ops!</string>
+    <string name="your_device_has_no_linked_google_account_message">It looks like your device does not has linked Google account. Please register your device with Google in order to use \"How Is My Phone Doing App\". The application will automatically exist when you tap OK</string>
+    <string name="cleanLogs">Clean Logs</string>
+
 
 </resources>

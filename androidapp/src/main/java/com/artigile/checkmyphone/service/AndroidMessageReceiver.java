@@ -23,6 +23,7 @@ import com.artigile.checkmyphone.MainActivity;
 import com.artigile.checkmyphone.R;
 import com.artigile.checkmyphone.TextToSpeechService;
 import com.artigile.howismyphonedoing.api.AndroidMessageProcessor;
+import com.artigile.howismyphonedoing.api.AndroidMessageResultListener;
 import com.artigile.howismyphonedoing.api.MessageParser;
 import com.artigile.howismyphonedoing.api.model.*;
 import com.google.android.gms.location.LocationListener;
@@ -54,6 +55,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     @Inject
     private CommonUtilities commonUtilities;
     private String TAG = "AndroidMessageReceiver";
+    private AndroidMessageResultListener androidMessageResultListener;
 
     private static DeviceModel buildPhoneModel() {
         DeviceModel deviceModel = new DeviceModel();
@@ -83,19 +85,21 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     }
 
     @Override
-    public String processMessage(final MessageType messageType, String message) {
+    public String processMessage(final MessageType messageType, String message, AndroidMessageResultListener messageResultListener) throws IOException {
+        this.androidMessageResultListener = messageResultListener;
         try {
+            commonUtilities.displayMessage(context, messageType + "");
             if (messageType == MessageType.DEVICE_INFO) {
                 DeviceModel deviceModel = buildPhoneModel();
                 Gson gson = new Gson();
-                messageSender.processMessage(MessageType.DEVICE_INFO, gson.toJson(deviceModel));
+                messageSender.processMessage(MessageType.DEVICE_INFO, messageParser.serialize(deviceModel), null);
             } else if (messageType == MessageType.MESSAGE_TO_DEVICE) {
                 MessageToDeviceModel messageToTheDevice = messageParser.parse(messageType, message);
                 Locale locale = parseLocale(messageToTheDevice.getLocale());
                 textToSpeechService.setLanguage(locale);
                 textToSpeechService.talk(messageToTheDevice.getMessage());
                 generateNotification(context, messageToTheDevice.getMessage());
-                messageSender.processMessage(messageType, "Message received");
+                messageSender.processMessage(messageType, "Message received", null);
             } else if (messageType == MessageType.GET_DEVICE_LOCATION) {
                 Log.v(TAG, "got request to return phone location.");
                 locationService.getLocation(new LocationListener() {
@@ -116,7 +120,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                         deviceLocationModel.setSpeed(location.getSpeed());
                         deviceLocationModel.setHasBearing(location.hasBearing());
                         try {
-                            messageSender.processMessage(messageType, messageParser.serialize(deviceLocationModel));
+                            messageSender.processMessage(messageType, messageParser.serialize(deviceLocationModel), null);
                         } catch (IOException e) {
 
                         }
@@ -155,7 +159,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
             return Locale.GERMAN;
         } else if (locale == GwtLocale.ITALIAN) {
             return Locale.ITALIAN;
-        } else if (locale == GwtLocale.JAPANESE) {
+        } /*else if (locale == GwtLocale.JAPANESE) {
             return Locale.JAPANESE;
         } else if (locale == GwtLocale.KOREAN) {
             return Locale.KOREAN;
@@ -165,7 +169,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
             return Locale.SIMPLIFIED_CHINESE;
         } else if (locale == GwtLocale.TAIWAN) {
             return Locale.TAIWAN;
-        } else if (locale == GwtLocale.UK) {
+        }*/ else if (locale == GwtLocale.UK) {
             return Locale.UK;
         } else if (locale == GwtLocale.CANADA_FRENCH) {
             return Locale.CANADA_FRENCH;

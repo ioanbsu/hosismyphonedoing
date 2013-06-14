@@ -25,5 +25,5 @@ public interface MessageRpcService extends RemoteService {
 
     String getPhoneLocation();
 
-    String removeAllEntities();
+    String removeAllUserDevices();
 }

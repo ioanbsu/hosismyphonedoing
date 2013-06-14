@@ -20,8 +20,11 @@ import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.ApplicationState;
 import com.artigile.howismyphonedoing.client.widget.DevicesListWindow;
 import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
+import com.artigile.howismyphonedoing.client.widget.YesNoWindow;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
@@ -50,6 +53,8 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     private DevicesListWindow devicesListWindow;
     @Inject
     private SendMessageWindow sendMessageWindow;
+    @Inject
+    private YesNoWindow yesNoWindow;
     private List<UserDeviceModel> devicesList;
 
     public void onInitApp() {
@@ -92,18 +97,24 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     }
 
     public void removeAllDevices() {
-        messageRpcServiceAsync.removeAllEntities(new AsyncCallbackImpl<String>(eventBus) {
+        yesNoWindow.show(new ClickHandler() {
             @Override
-            public void success(String result) {
-                eventBus.usersDevicesListReceived(new ArrayList<UserDeviceModel>());
-                Window.alert("Devices removed");
-            }
+            public void onClick(ClickEvent event) {
+                messageRpcServiceAsync.removeAllUserDevices(new AsyncCallbackImpl<String>(eventBus) {
+                    @Override
+                    public void success(String result) {
+                        eventBus.usersDevicesListReceived(new ArrayList<UserDeviceModel>());
+                        Window.alert("Devices removed");
+                    }
 
-            @Override
-            public void failure(Throwable caught) {
-                Window.alert("failed to remove entities");
+                    @Override
+                    public void failure(Throwable caught) {
+                        Window.alert("failed to remove entities");
+                    }
+                });
             }
-        });
+        }, null, messages.top_panel_remove_all_devices_prompt());
+
     }
 
     public void sendRequestToUpdatePhoneLocation() {

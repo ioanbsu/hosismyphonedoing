@@ -16,7 +16,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.artigile.howismyphonedoing.api.AndroidMessageProcessor;
+import com.artigile.howismyphonedoing.api.AndroidMessageResultListener;
 import com.artigile.howismyphonedoing.api.CommonConstants;
+import com.artigile.howismyphonedoing.api.MessageSendResultType;
 import com.artigile.howismyphonedoing.api.model.MessageType;
 
 import javax.inject.Inject;
@@ -44,9 +46,11 @@ public class AndroidMessageSender implements AndroidMessageProcessor<String> {
     private DeviceUuidResolver deviceUuidResolver;
     @Inject
     private CommonUtilities commonUtilities;
+    private AndroidMessageResultListener messageResultListener;
 
     @Override
-    public String processMessage(MessageType messageType, String message) throws IOException {
+    public String processMessage(MessageType messageType, String message, AndroidMessageResultListener messageResultListener) throws IOException {
+        this.messageResultListener = messageResultListener;
         if (serverUrl == null) {
             serverUrl = commonUtilities.getServerUrl(CommonConstants.SERVER_URL_PARAM_NAME) + CommonConstants.MESSAGES_COMMUNICATION_URL;
         }
@@ -65,9 +69,9 @@ public class AndroidMessageSender implements AndroidMessageProcessor<String> {
      */
     private String post(Map<String, String> params)
             throws IOException {
-        AsyncTask<Map<String, String>, Void, String> asyncSendResponseToWebServer = new AsyncTask<Map<String, String>, Void, String>() {
+        AsyncTask<Map<String, String>, Void, MessageSendResultType> asyncSendResponseToWebServer = new AsyncTask<Map<String, String>, Void, MessageSendResultType>() {
             @Override
-            protected String doInBackground(Map<String, String>... paramsArray) {
+            protected MessageSendResultType doInBackground(Map<String, String>... paramsArray) {
                 for (Map<String, String> params : paramsArray) {
                     URL url;
                     try {
@@ -105,19 +109,26 @@ public class AndroidMessageSender implements AndroidMessageProcessor<String> {
                         // handle the response
                         int status = conn.getResponseCode();
                         if (status != 200) {
-                            throw new IOException("Post failed with error code " + status);
+                            return MessageSendResultType.FAILED;
                         }
-                        return status + "";
+                        return MessageSendResultType.SUCCESS;
                     } catch (Exception e) {
                         e.printStackTrace();
-                        return "Message failed to be sent.";
+                        return MessageSendResultType.FAILED;
                     } finally {
                         if (conn != null) {
                             conn.disconnect();
                         }
                     }
                 }
-                return "no messages were sent";
+                return MessageSendResultType.NO_MESSAGES_TO_SEND;
+            }
+
+            @Override
+            protected void onPostExecute(MessageSendResultType messageSendResult) {
+                if(messageResultListener!=null){
+                    messageResultListener.onMessageResult(messageSendResult);
+                }
             }
         };
         asyncSendResponseToWebServer.execute(params);
@@ -128,5 +139,6 @@ public class AndroidMessageSender implements AndroidMessageProcessor<String> {
         Account[] accounts = AccountManager.get(context).getAccountsByType("com.google");
         return accounts[0].name;
     }
+
 
 }

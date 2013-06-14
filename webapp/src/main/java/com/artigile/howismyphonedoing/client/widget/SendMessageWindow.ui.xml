@@ -14,7 +14,7 @@
 
     </ui:style>
 
-    <g:DialogBox ui:field="dialogBox" glassEnabled="true" modal="true" animationEnabled="true"
+    <g:DialogBox ui:field="dialogBox" glassEnabled="false" modal="false" animationEnabled="true"
                  text="{msg.send_message_window_title}">
         <g:FlowPanel styleName="{style.mainPanelStyle}">
             <g:HTMLPanel>
@@ -24,7 +24,7 @@
                             <g:Label text="{msg.send_message_window_select_device}"/>
                         </td>
                         <td>
-                            <g:ListBox ui:field="devicesList"/>
+                            <g:ValueListBox ui:field="devicesValueListBox"/>
                         </td>
                     </tr>
                     <tr>

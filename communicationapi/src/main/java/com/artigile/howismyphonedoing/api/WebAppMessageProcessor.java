@@ -9,5 +9,5 @@ import com.artigile.howismyphonedoing.api.model.MessageType;
  */
 public interface WebAppMessageProcessor<T> {
 
-    String processMessage(T key,MessageType messageType, String message);
+    String processMessage(T key,MessageType messageType, String message) throws Exception;
 }

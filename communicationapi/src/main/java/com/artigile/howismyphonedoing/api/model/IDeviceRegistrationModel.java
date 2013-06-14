@@ -15,4 +15,8 @@ public interface IDeviceRegistrationModel extends Serializable {
     String getDeviceCloudRegistrationId();
 
     void setDeviceCloudRegistrationId(String deviceCloudRegistrationId);
+
+    IDeviceModel getDeviceModel();
+
+    void setDeviceModel(IDeviceModel deviceModel);
 }
