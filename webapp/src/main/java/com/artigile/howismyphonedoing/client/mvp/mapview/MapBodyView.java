@@ -43,7 +43,7 @@ public class MapBodyView extends Composite implements ReverseViewInterface<MapBo
 
     public void initMap() {
         MapOptions mapOptions = MapOptions.create();
-        mapOptions.setCenter(LatLng.create(-25.363882, 131.044922));
+        mapOptions.setCenter(LatLng.create(54.4898398, 26.8960599));
         mapOptions.setZoom(18.0);
         mapOptions.setMapTypeId(MapTypeId.SATELLITE);
         map = GoogleMap.create(mapContainer.getElement(), mapOptions);
@@ -61,7 +61,6 @@ public class MapBodyView extends Composite implements ReverseViewInterface<MapBo
         newMarkerOpts.setTitle("Hello World!");
         marker = Marker.create(newMarkerOpts);
         map.setCenter(myLatLng);
-
 
         if (circle != null) {
             circle.setMap(null);

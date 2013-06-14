@@ -88,7 +88,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     }
 
     public void sendTextToPhone() {
-         sendMessageWindow.show();
+        sendMessageWindow.show();
     }
 
     public void removeAllDevices() {
