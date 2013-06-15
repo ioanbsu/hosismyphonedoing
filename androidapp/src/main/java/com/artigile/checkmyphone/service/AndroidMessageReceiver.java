@@ -16,7 +16,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import com.artigile.checkmyphone.MainActivity;
@@ -27,7 +26,6 @@ import com.artigile.howismyphonedoing.api.AndroidMessageResultListener;
 import com.artigile.howismyphonedoing.api.MessageParser;
 import com.artigile.howismyphonedoing.api.model.*;
 import com.google.android.gms.location.LocationListener;
-import com.google.gson.Gson;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -54,35 +52,10 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     private MessageParser messageParser;
     @Inject
     private CommonUtilities commonUtilities;
+    @Inject
+    private DeviceInfoService deviceInfoService;
     private String TAG = "AndroidMessageReceiver";
     private AndroidMessageResultListener androidMessageResultListener;
-
-    private static DeviceModel buildPhoneModel() {
-        DeviceModel deviceModel = new DeviceModel();
-        deviceModel.setBoard(Build.BOARD);
-        deviceModel.setModel(Build.MODEL);
-        deviceModel.setBootLoader(Build.BOOTLOADER);
-        deviceModel.setBrand(Build.BRAND);
-        deviceModel.setCpuAbi(Build.CPU_ABI);
-        deviceModel.setCpuAbi2(Build.CPU_ABI2);
-        deviceModel.setDevice(Build.DEVICE);
-        deviceModel.setDisplay(Build.DISPLAY);
-        deviceModel.setFingerprint(Build.FINGERPRINT);
-        deviceModel.setHardware(Build.HARDWARE);
-        deviceModel.setHost(Build.HOST);
-        deviceModel.setId(Build.ID);
-        deviceModel.setManufacturer(Build.MANUFACTURER);
-        deviceModel.setModel(Build.MODEL);
-        deviceModel.setProduct(Build.PRODUCT);
-        deviceModel.setSerial(Build.SERIAL);
-        deviceModel.setTags(Build.TAGS);
-        deviceModel.setTime(Build.TIME);
-        deviceModel.setType(Build.TYPE);
-        deviceModel.setUnknown(Build.UNKNOWN);
-        deviceModel.setUser(Build.USER);
-        deviceModel.setRadioVersion(Build.getRadioVersion());
-        return deviceModel;
-    }
 
     @Override
     public String processMessage(final MessageType messageType, String message, AndroidMessageResultListener messageResultListener) throws IOException {
@@ -90,8 +63,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
         try {
             commonUtilities.displayMessage(context, messageType + "");
             if (messageType == MessageType.DEVICE_INFO) {
-                DeviceModel deviceModel = buildPhoneModel();
-                Gson gson = new Gson();
+                IDeviceModel deviceModel = deviceInfoService.buildPhoneModel();
                 messageSender.processMessage(MessageType.DEVICE_INFO, messageParser.serialize(deviceModel), null);
             } else if (messageType == MessageType.MESSAGE_TO_DEVICE) {
                 MessageToDeviceModel messageToTheDevice = messageParser.parse(messageType, message);
@@ -105,7 +77,9 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                 locationService.getLocation(new LocationListener() {
                     @Override
                     public void onLocationChanged(Location location) {
+                        IDeviceModel deviceModel = deviceInfoService.buildPhoneModel();
                         DeviceLocationModel deviceLocationModel = new DeviceLocationModel();
+                        deviceLocationModel.setDeviceName(deviceModel.getModel());
                         deviceLocationModel.setAccuracy(location.getAccuracy());
                         deviceLocationModel.setAltitude(location.getAltitude());
                         deviceLocationModel.setBearing(location.getBearing());
@@ -122,7 +96,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                         try {
                             messageSender.processMessage(messageType, messageParser.serialize(deviceLocationModel), null);
                         } catch (IOException e) {
-
+                            commonUtilities.displayMessage(context, "Location updates failed to be sent...");
                         }
                     }
                 });

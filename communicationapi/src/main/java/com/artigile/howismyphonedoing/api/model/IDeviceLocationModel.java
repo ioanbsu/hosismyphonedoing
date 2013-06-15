@@ -63,4 +63,8 @@ public interface IDeviceLocationModel extends Serializable {
     String getDeviceId();
 
     void setDeviceId(String deviceId);
+
+    String getDeviceName();
+
+    void setDeviceName(String deviceName);
 }

@@ -26,8 +26,6 @@
             margin: 0 1px 4px 1px;
             border-bottom: 1px solid #FFF;
             display: none;
-            transition: display 0.2s;
-            -webkit-transition-property: display;
         }
 
 

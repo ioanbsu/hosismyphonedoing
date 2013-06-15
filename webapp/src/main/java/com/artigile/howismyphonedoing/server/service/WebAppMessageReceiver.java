@@ -61,7 +61,6 @@ public class WebAppMessageReceiver implements WebAppMessageProcessor<String> {
                 logger.info("Message Type: " + messageType);
                 userDevice = userAndDeviceDao.getById(uuid);
                 userEmail = userDevice.getUserEmail();
-
             }
             if (userEmail != null) {
                 ChannelService channelService = ChannelServiceFactory.getChannelService();

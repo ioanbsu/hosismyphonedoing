@@ -11,10 +11,10 @@
 package com.artigile.howismyphonedoing.client.mvp.mapview;
 
 import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
+import com.artigile.howismyphonedoing.api.model.IDeviceModel;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.maps.gwt.client.*;
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
@@ -37,8 +37,7 @@ public class MapBodyPresenter extends BasePresenter<MapBodyView, MainEventBus> {
 
     public void onPhoneLocationUpdated(IDeviceLocationModel model) {
         deviceMarkerModelList = prepareMarkers(model);
-        view.showMarker1(deviceMarkerModelList);
-//        view.showMarker(model);
+        view.showMarkers(deviceMarkerModelList);
     }
 
     private List<DeviceMarkerModel> prepareMarkers(IDeviceLocationModel deviceLocationModel) {
@@ -78,7 +77,7 @@ public class MapBodyPresenter extends BasePresenter<MapBodyView, MainEventBus> {
         MarkerOptions newMarkerOpts = MarkerOptions.create();
         LatLng myLatLng = LatLng.create(deviceLocationModel.getLatitude(), deviceLocationModel.getLongitude());
         newMarkerOpts.setPosition(myLatLng);
-        newMarkerOpts.setTitle("Hello World!");
+        newMarkerOpts.setTitle(deviceLocationModel.getDeviceName());
         newMarkerOpts.setMap(view.getMap());
         return Marker.create(newMarkerOpts);
     }

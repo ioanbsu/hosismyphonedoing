@@ -51,32 +51,6 @@ public class MapBodyView extends Composite implements ReverseViewInterface<MapBo
         map.setTilt(45);
     }
 
-    public void showMarker(IDeviceLocationModel deviceLocationModel) {
-        if (marker != null) {
-            marker.setMap((GoogleMap) null);
-        }
-        MarkerOptions newMarkerOpts = MarkerOptions.create();
-        LatLng myLatLng = LatLng.create(deviceLocationModel.getLatitude(), deviceLocationModel.getLongitude());
-        newMarkerOpts.setPosition(myLatLng);
-        newMarkerOpts.setMap(map);
-        newMarkerOpts.setTitle("Hello World!");
-        marker = Marker.create(newMarkerOpts);
-        map.setCenter(myLatLng);
-
-        if (circle != null) {
-            circle.setMap(null);
-        }
-        CircleOptions populationOptions = CircleOptions.create();
-        populationOptions.setStrokeColor("#0000ff");
-        populationOptions.setStrokeOpacity(0.8);
-        populationOptions.setStrokeWeight(2);
-        populationOptions.setFillColor("#0000bb");
-        populationOptions.setFillOpacity(0.35);
-        populationOptions.setMap(map);
-        populationOptions.setCenter(myLatLng);
-        populationOptions.setRadius(deviceLocationModel.getAccuracy());
-        circle = Circle.create(populationOptions);
-    }
 
     @Override
     public MapBodyPresenter getPresenter() {
@@ -92,7 +66,7 @@ public class MapBodyView extends Composite implements ReverseViewInterface<MapBo
         return map;
     }
 
-    public void showMarker1(List<DeviceMarkerModel> deviceMarkerModelList) {
+    public void showMarkers(List<DeviceMarkerModel> deviceMarkerModelList) {
         if (!deviceMarkerModelList.isEmpty()) {
             double averageLat = 0.;
             double averageLon = 0.;

@@ -89,10 +89,10 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
         this.userDeviceModels = userDeviceModels;
         boolean devicesListEmpty = userDeviceModels == null || userDeviceModels.isEmpty();
         sendMessage.setEnabled(!devicesListEmpty);
-        devicesValueListBox.setAcceptableValues(userDeviceModels);
         if (!devicesListEmpty) {
             devicesValueListBox.setValue(userDeviceModels.get(0));
         }
+        devicesValueListBox.setAcceptableValues(userDeviceModels);
     }
 
     @UiHandler("sendMessage")

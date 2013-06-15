@@ -5,6 +5,7 @@ package com.artigile.howismyphonedoing.api.model;
  */
 public class DeviceLocationModel implements IDeviceLocationModel {
     private String deviceId;
+    private String deviceName;
     private String provider;
     private long time = 0;
     private long elapsedRealtimeNanos = 0;
@@ -27,6 +28,16 @@ public class DeviceLocationModel implements IDeviceLocationModel {
     @Override
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    @Override
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    @Override
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
     }
 
     @Override

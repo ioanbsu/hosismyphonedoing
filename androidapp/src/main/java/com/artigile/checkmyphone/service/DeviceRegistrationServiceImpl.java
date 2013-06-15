@@ -144,7 +144,7 @@ public final class DeviceRegistrationServiceImpl {
                     if (messageSendResult == MessageSendResultType.FAILED) {
                         message = context.getString(R.string.failed_to_unregister_device);
                     } else if (messageSendResult == MessageSendResultType.SUCCESS) {
-                        message = context.getString(R.string.server_registered);
+                        message = context.getString(R.string.server_unregistered);
                     }
                     commonUtilities.displayMessage(context, message);
                 }
