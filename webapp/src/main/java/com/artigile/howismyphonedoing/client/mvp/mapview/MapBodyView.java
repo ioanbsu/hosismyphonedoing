@@ -20,6 +20,7 @@ import com.mvp4g.client.view.ReverseViewInterface;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.List;
 
 /**
  * User: ioanbsu
@@ -85,6 +86,23 @@ public class MapBodyView extends Composite implements ReverseViewInterface<MapBo
     @Override
     public void setPresenter(MapBodyPresenter presenter) {
         this.presenter = presenter;
+    }
+
+    public GoogleMap getMap(){
+        return map;
+    }
+
+    public void showMarker1(List<DeviceMarkerModel> deviceMarkerModelList) {
+        if (!deviceMarkerModelList.isEmpty()) {
+            double averageLat = 0.;
+            double averageLon = 0.;
+            for (DeviceMarkerModel deviceMarkerModel : deviceMarkerModelList) {
+                averageLat += deviceMarkerModel.getDeviceLocationModel().getLatitude();
+                averageLon += deviceMarkerModel.getDeviceLocationModel().getLongitude();
+            }
+            LatLng myLatLng = LatLng.create(averageLat / deviceMarkerModelList.size(), averageLon / deviceMarkerModelList.size());
+            map.setCenter(myLatLng);
+        }
     }
 
 

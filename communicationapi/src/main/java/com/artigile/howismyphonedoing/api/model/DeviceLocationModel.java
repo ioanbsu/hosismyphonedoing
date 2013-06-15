@@ -4,6 +4,7 @@ package com.artigile.howismyphonedoing.api.model;
  * @author IoaN, 6/7/13 7:19 AM
  */
 public class DeviceLocationModel implements IDeviceLocationModel {
+    private String deviceId;
     private String provider;
     private long time = 0;
     private long elapsedRealtimeNanos = 0;
@@ -17,6 +18,16 @@ public class DeviceLocationModel implements IDeviceLocationModel {
     private float bearing = 0.0f;
     private boolean hasAccuracy = false;
     private float accuracy = 0.0f;
+
+    @Override
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    @Override
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
 
     @Override
     public String getProvider() {

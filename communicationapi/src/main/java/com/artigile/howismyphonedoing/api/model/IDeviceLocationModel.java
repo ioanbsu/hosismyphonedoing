@@ -59,4 +59,8 @@ public interface IDeviceLocationModel extends Serializable {
     float getAccuracy();
 
     void setAccuracy(float accuracy);
+
+    String getDeviceId();
+
+    void setDeviceId(String deviceId);
 }
