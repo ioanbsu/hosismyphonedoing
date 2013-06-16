@@ -11,6 +11,7 @@
 package com.artigile.howismyphonedoing.client.rpc;
 
 import com.artigile.howismyphonedoing.client.MainEventBus;
+import com.artigile.howismyphonedoing.client.exception.DeviceWasRemovedException;
 import com.artigile.howismyphonedoing.client.exception.UserNotLoggedInException;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -44,6 +45,8 @@ public abstract class AsyncCallbackImpl<T> implements AsyncCallback<T> {
     public final void onFailure(Throwable caught) {
         if (caught instanceof UserNotLoggedInException) {
             eventBus.showLoginWindow(caught.getMessage());
+        }else if(caught instanceof DeviceWasRemovedException){
+            eventBus.updateDevicesList();
         }
         failure(caught);
         doAfterResponse();

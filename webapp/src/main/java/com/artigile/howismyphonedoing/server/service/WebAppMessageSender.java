@@ -13,6 +13,7 @@ package com.artigile.howismyphonedoing.server.service;
 import com.artigile.howismyphonedoing.api.CommonConstants;
 import com.artigile.howismyphonedoing.api.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.api.model.MessageType;
+import com.artigile.howismyphonedoing.client.exception.DeviceWasRemovedException;
 import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.gcmserver.*;
@@ -52,7 +53,7 @@ public class WebAppMessageSender implements WebAppMessageProcessor<Set<UserDevic
     }
 
     @Override
-    public String processMessage(Set<UserDevice> devices, MessageType messageType, String messageStr) {
+    public String processMessage(Set<UserDevice> devices, MessageType messageType, String messageStr) throws DeviceWasRemovedException {
         String status;
         if (devices.isEmpty()) {
             status = "Message ignored as there is no device registered!";
@@ -70,7 +71,7 @@ public class WebAppMessageSender implements WebAppMessageProcessor<Set<UserDevic
                 partialDevices.add(device.getDeviceCloudRegistrationId());
                 int partialSize = partialDevices.size();
                 if (partialSize == MULTICAST_SIZE || counter == total) {
-                    asyncSend(partialDevices, message);
+                    sendMessage(partialDevices, message);
                     partialDevices.clear();
                     tasks++;
                 }
@@ -80,7 +81,7 @@ public class WebAppMessageSender implements WebAppMessageProcessor<Set<UserDevic
         return status;
     }
 
-    private void asyncSend(List<String> partialDevices, final Message message) {
+    private void sendMessage(List<String> partialDevices, final Message message) throws DeviceWasRemovedException {
         // make a copy
         final List<String> devices = new ArrayList<String>(partialDevices);
         MulticastResult multicastResult;
@@ -110,7 +111,11 @@ public class WebAppMessageSender implements WebAppMessageProcessor<Set<UserDevic
                 if (error.equals(Constants.ERROR_NOT_REGISTERED)) {
                     // application has been removed from device - unregister it
                     logger.info("Unregistered device: " + regId);
-                    userAndDeviceDao.unregister(regId);
+                    UserDevice userDevice = userAndDeviceDao.getDeviceByGcmId(regId);
+                    if (userDevice != null) {
+                        userAndDeviceDao.unregister(userDevice.getUuid());
+                        throw new DeviceWasRemovedException();
+                    }
                 } else {
                     logger.severe("Error sending message to " + regId + ": " + error);
                 }

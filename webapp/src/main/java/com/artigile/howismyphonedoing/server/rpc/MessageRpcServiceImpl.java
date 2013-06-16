@@ -51,14 +51,14 @@ public class MessageRpcServiceImpl extends AbstractRpcService implements Message
     }
 
     @Override
-    public String getPhoneInfo() {
+    public String getPhoneInfo() throws DeviceWasRemovedException {
         Set<UserDevice> userDevice = userAndDeviceDao.getDevices(getUserEmailFromSession());
         messageSender.processMessage(userDevice, MessageType.DEVICE_INFO, messageParser.serialize(new DeviceModel()));
         return "message sent for getting phone info";
     }
 
     @Override
-    public String getPhoneLocation() {
+    public String getPhoneLocation() throws DeviceWasRemovedException {
         Set<UserDevice> userDevice = userAndDeviceDao.getDevices(getUserEmailFromSession());
         messageSender.processMessage(userDevice, MessageType.GET_DEVICE_LOCATION, messageParser.serialize(new DeviceModel()));
         return "message sent to get phone location";

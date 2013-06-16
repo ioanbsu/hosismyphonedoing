@@ -68,9 +68,7 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
     public void updateRegistration(String oldDeviceRegistrationId, String newDeviceRegistrationId) {
         PersistenceManager pm = pmfTransationAware.getPersistenceManager();
         try {
-            Query query = pm.newQuery(UserDevice.class, "deviceCloudRegistrationId == deviceCloudRegistrationIdParam");
-            query.declareParameters("String deviceCloudRegistrationIdParam");
-            UserDevice userDevice = (UserDevice) query.execute(oldDeviceRegistrationId);
+            UserDevice userDevice = getUserDeviceByGcmId(oldDeviceRegistrationId, pm);
             userDevice.setUuid(newDeviceRegistrationId);
             pm.makePersistent(userDevice);
         } finally {
@@ -113,6 +111,12 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
         }
     }
 
+    @Override
+    public UserDevice getDeviceByGcmId(String regId) {
+        PersistenceManager pm = pmfTransationAware.getPersistenceManager();
+        return  getUserDeviceByGcmId(regId, pm);
+    }
+
     public void cleanupDatabase() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         com.google.appengine.api.datastore.Query mydeleteq = new com.google.appengine.api.datastore.Query();
@@ -123,6 +127,17 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
             } catch (IllegalArgumentException e) {
             }
         }
+    }
+
+
+    private UserDevice getUserDeviceByGcmId(String gcmId, PersistenceManager pm) {
+        Query query = pm.newQuery(UserDevice.class, "deviceCloudRegistrationId == deviceCloudRegistrationIdParam");
+        query.declareParameters("String deviceCloudRegistrationIdParam");
+        List<UserDevice> devices= (List<UserDevice>) query.execute(gcmId);
+        if(devices!=null&&!devices.isEmpty()){
+            return devices.get(0);
+        }
+        return null;
     }
 
 }

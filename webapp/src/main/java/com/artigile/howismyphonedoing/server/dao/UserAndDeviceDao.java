@@ -30,4 +30,6 @@ public interface UserAndDeviceDao {
     UserDevice getById(String uuid);
 
     void removeAllUserDevices(String userEmailFromSession);
+
+    UserDevice getDeviceByGcmId(String regId);
 }
