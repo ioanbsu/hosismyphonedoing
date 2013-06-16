@@ -68,6 +68,7 @@
                           data-accesstype="offline"
                           data-cookiepolicy="single_host_origin"
                           data-approvalprompt="force"
+                          data-apppackagename="com.artigile.checkmyphone"
                           data-callback="signInCallback"
                           data-height="tall"
                           data-width="wide">
