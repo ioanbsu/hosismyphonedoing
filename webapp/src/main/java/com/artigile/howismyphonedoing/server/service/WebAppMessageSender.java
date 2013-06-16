@@ -11,8 +11,8 @@
 package com.artigile.howismyphonedoing.server.service;
 
 import com.artigile.howismyphonedoing.api.CommonConstants;
-import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.api.WebAppMessageProcessor;
+import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.gcmserver.*;
@@ -22,8 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
