@@ -10,7 +10,6 @@
 
 package com.artigile.howismyphonedoing.client.mvp.mapview;
 
-import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -34,8 +33,6 @@ public class MapBodyView extends Composite implements ReverseViewInterface<MapBo
     SimplePanel mapContainer;
     private GoogleMap map;
     private MapBodyPresenter presenter;
-    private Marker marker;
-    private Circle circle;
 
     @Inject
     public MapBodyView(Binder binder) {
@@ -51,7 +48,6 @@ public class MapBodyView extends Composite implements ReverseViewInterface<MapBo
         map.setTilt(45);
     }
 
-
     @Override
     public MapBodyPresenter getPresenter() {
         return presenter;
@@ -62,21 +58,21 @@ public class MapBodyView extends Composite implements ReverseViewInterface<MapBo
         this.presenter = presenter;
     }
 
-    public GoogleMap getMap(){
+    public GoogleMap getMap() {
         return map;
     }
 
     public void showMarkers(List<DeviceMarkerModel> deviceMarkerModelList) {
         if (!deviceMarkerModelList.isEmpty()) {
-            double averageLat = 0.;
-            double averageLon = 0.;
+            LatLngBounds latLngBounds = LatLngBounds.create();
             for (DeviceMarkerModel deviceMarkerModel : deviceMarkerModelList) {
-                averageLat += deviceMarkerModel.getDeviceLocationModel().getLatitude();
-                averageLon += deviceMarkerModel.getDeviceLocationModel().getLongitude();
+                LatLng myLatLng = LatLng.create(deviceMarkerModel.getDeviceLocationModel().getLatitude(),
+                        deviceMarkerModel.getDeviceLocationModel().getLongitude());
+                latLngBounds.extend(myLatLng);
             }
-            LatLng myLatLng = LatLng.create(averageLat / deviceMarkerModelList.size(), averageLon / deviceMarkerModelList.size());
-            map.setCenter(myLatLng);
+            map.fitBounds(latLngBounds);
         }
+
     }
 
 

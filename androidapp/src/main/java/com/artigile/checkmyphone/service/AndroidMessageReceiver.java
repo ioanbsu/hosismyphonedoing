@@ -93,6 +93,9 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                         deviceLocationModel.setLongitude(location.getLongitude());
                         deviceLocationModel.setSpeed(location.getSpeed());
                         deviceLocationModel.setHasBearing(location.hasBearing());
+                        commonUtilities.displayMessage(context,
+                                "Accuracy: "+location.getAccuracy()+", Bearing:" +location.getBearing()+", Speed:"
+                                        +location.getSpeed());
                         try {
                             messageSender.processMessage(messageType, messageParser.serialize(deviceLocationModel), null);
                         } catch (IOException e) {

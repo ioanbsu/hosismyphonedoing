@@ -11,15 +11,18 @@
 package com.artigile.howismyphonedoing.client.mvp.mapview;
 
 import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
-import com.artigile.howismyphonedoing.api.model.IDeviceModel;
 import com.artigile.howismyphonedoing.client.MainEventBus;
+import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.maps.gwt.client.*;
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +33,8 @@ import java.util.List;
 @Presenter(view = MapBodyView.class)
 public class MapBodyPresenter extends BasePresenter<MapBodyView, MainEventBus> {
     private List<DeviceMarkerModel> deviceMarkerModelList;
+    @Inject
+    private Messages messages;
 
     public void onInitApp() {
         GWT.log("MapBodyPresenter initiated.");
@@ -77,9 +82,11 @@ public class MapBodyPresenter extends BasePresenter<MapBodyView, MainEventBus> {
         MarkerOptions newMarkerOpts = MarkerOptions.create();
         LatLng myLatLng = LatLng.create(deviceLocationModel.getLatitude(), deviceLocationModel.getLongitude());
         newMarkerOpts.setPosition(myLatLng);
-        newMarkerOpts.setTitle(deviceLocationModel.getDeviceName());
+        String timeDeviceUpdated = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM).format(new Date());
+        newMarkerOpts.setTitle(messages.map_view_device_name_on_map(deviceLocationModel.getDeviceName(), timeDeviceUpdated));
         newMarkerOpts.setMap(view.getMap());
         return Marker.create(newMarkerOpts);
+
     }
 
     private Circle createCircle(IDeviceLocationModel deviceLocationModel) {

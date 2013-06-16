@@ -51,7 +51,6 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     @Inject
     private Messages messages;
 
-
     @Inject
     public TopPanelView(Binder binder) {
         initWidget(binder.createAndBindUi(this));
