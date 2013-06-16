@@ -12,3 +12,4 @@ target
 api.key
 WEB-INF
 androidapp/gen
+*.keystore
