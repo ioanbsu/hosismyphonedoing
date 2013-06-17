@@ -16,7 +16,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import com.artigile.checkmyphone.MainActivity;
 import com.artigile.checkmyphone.R;
@@ -56,6 +55,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     private DeviceInfoService deviceInfoService;
     private String TAG = "AndroidMessageReceiver";
     private AndroidMessageResultListener androidMessageResultListener;
+    private int MAX_WAIT_ATTEMPTS = 15;
 
     @Override
     public String processMessage(final MessageType messageType, String message, AndroidMessageResultListener messageResultListener) throws IOException {
@@ -67,11 +67,18 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                 messageSender.processMessage(MessageType.DEVICE_INFO, messageParser.serialize(deviceModel), null);
             } else if (messageType == MessageType.MESSAGE_TO_DEVICE) {
                 MessageToDeviceModel messageToTheDevice = messageParser.parse(messageType, message);
-                Locale locale = parseLocale(messageToTheDevice.getLocale());
-                textToSpeechService.setLanguage(locale);
-                textToSpeechService.talk(messageToTheDevice.getMessage());
-                generateNotification(context, messageToTheDevice.getMessage());
                 messageSender.processMessage(messageType, "Message received", null);
+                generateNotification(messageToTheDevice.getMessage());
+                Locale locale = parseLocale(messageToTheDevice.getLocale());
+                textToSpeechService.say(locale, messageToTheDevice.getMessage());
+                int waitAttempt = 0;
+                while (!textToSpeechService.isMessageSaid()) {
+                    Thread.sleep(500);
+                    waitAttempt++;
+                    if (waitAttempt > MAX_WAIT_ATTEMPTS) {
+                        break;
+                    }
+                }
             } else if (messageType == MessageType.GET_DEVICE_LOCATION) {
                 Log.v(TAG, "got request to return phone location.");
                 locationService.getLocation(new LocationListener() {
@@ -94,8 +101,8 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                         deviceLocationModel.setSpeed(location.getSpeed());
                         deviceLocationModel.setHasBearing(location.hasBearing());
                         commonUtilities.displayMessage(context,
-                                "Accuracy: "+location.getAccuracy()+", Bearing:" +location.getBearing()+", Speed:"
-                                        +location.getSpeed());
+                                "Accuracy: " + location.getAccuracy() + ", Bearing:" + location.getBearing() + ", Speed:"
+                                        + location.getSpeed());
                         try {
                             messageSender.processMessage(messageType, messageParser.serialize(deviceLocationModel), null);
                         } catch (IOException e) {
@@ -105,16 +112,8 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                 });
             } else {
                 commonUtilities.displayMessage(context, message);
-                TextToSpeech textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-                    @Override
-                    public void onInit(int status) {
-
-                    }
-                });
-                textToSpeech.speak(message, TextToSpeech.QUEUE_FLUSH, null);
-                textToSpeech.speak(message, TextToSpeech.QUEUE_ADD, null);
                 // notifies user
-                generateNotification(context, message);
+                generateNotification(message);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -157,7 +156,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     /**
      * Issues a notification to inform the user that server has sent a message.
      */
-    private void generateNotification(Context context, String message) {
+    private void generateNotification(String message) {
         int icon = R.drawable.ic_stat_gcm;
         long when = System.currentTimeMillis();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

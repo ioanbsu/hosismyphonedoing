@@ -10,9 +10,15 @@
 
 package com.artigile.checkmyphone;
 
+import android.content.Context;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
+import android.util.Log;
+import com.google.common.base.Strings;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -21,21 +27,63 @@ import java.util.Locale;
  * Time: 7:14 PM
  */
 @Singleton
-public class TextToSpeechService {
-
+public class TextToSpeechService implements TextToSpeech.OnInitListener {
+    private static final String TAG = "TTS";
+    private static boolean messageSaid = false;
+    @Inject
+    private Context context;
     private TextToSpeech tts;
+    private Locale locale;
+    private String lastMessage;
+    private UtteranceProgressListener utteranceProgressListener = getUtteranceProgressListener();
 
-    public void setTts(TextToSpeech tts) {
-        this.tts = tts;
+    public void say(final Locale locale, final String message) {
+        messageSaid = false;
+        if (Strings.isNullOrEmpty(message)) {
+            return;
+        }
+        this.locale = locale;
+        lastMessage = message;
+        tts = new TextToSpeech(context, this);
     }
 
-    public void talk(String messageStr) {
-        if (messageStr != null) {
-            tts.speak(messageStr, TextToSpeech.QUEUE_ADD, null);
+    public boolean isMessageSaid() {
+        return messageSaid;
+    }
+
+    private void doSay(Locale locale, String message) {
+        tts.setLanguage(locale);
+        HashMap<String, String> map = new HashMap<>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, message);
+        tts.speak(message, TextToSpeech.QUEUE_ADD, map);
+    }
+
+    @Override
+    public void onInit(int status) {
+        tts.setOnUtteranceProgressListener(utteranceProgressListener);
+        if (status == TextToSpeech.SUCCESS) {
+            doSay(locale, lastMessage);
+        } else {
+            Log.e("TTS", "Initilization Failed!");
         }
     }
 
-    public int setLanguage(Locale locale) {
-        return tts.setLanguage(locale);
+    private UtteranceProgressListener getUtteranceProgressListener() {
+        return new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) {
+                messageSaid = true;
+            }
+
+            @Override
+            public void onDone(String utteranceId) {
+                messageSaid = true;
+            }
+
+            @Override
+            public void onError(String utteranceId) {
+                messageSaid = true;
+            }
+        };
     }
 }

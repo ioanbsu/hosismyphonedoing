@@ -68,6 +68,8 @@ public class MapBodyPresenter extends BasePresenter<MapBodyView, MainEventBus> {
             foundModel.setMarker(createMarker(deviceLocationModel));
             deviceMarkerModelList.add(foundModel);
         }
+        String timeDeviceUpdated = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM).format(new Date());
+        foundModel.getMarker().setTitle(messages.map_view_device_name_on_map(deviceLocationModel.getDeviceName(), timeDeviceUpdated));
         return deviceMarkerModelList;
     }
 
@@ -82,8 +84,6 @@ public class MapBodyPresenter extends BasePresenter<MapBodyView, MainEventBus> {
         MarkerOptions newMarkerOpts = MarkerOptions.create();
         LatLng myLatLng = LatLng.create(deviceLocationModel.getLatitude(), deviceLocationModel.getLongitude());
         newMarkerOpts.setPosition(myLatLng);
-        String timeDeviceUpdated = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM).format(new Date());
-        newMarkerOpts.setTitle(messages.map_view_device_name_on_map(deviceLocationModel.getDeviceName(), timeDeviceUpdated));
         newMarkerOpts.setMap(view.getMap());
         return Marker.create(newMarkerOpts);
 

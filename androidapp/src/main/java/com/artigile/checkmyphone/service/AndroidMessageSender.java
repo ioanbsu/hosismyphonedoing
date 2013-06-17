@@ -32,13 +32,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.artigile.checkmyphone.service.CommonUtilities.TAG;
 
 /**
  * @author IoaN, 6/3/13 9:08 PM
  */
 @Singleton
 public class AndroidMessageSender implements AndroidMessageProcessor<String> {
+    private static final String TAG = "AndroidMessageSender";
     private String serverUrl;
     @Inject
     private Context context;

@@ -35,7 +35,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
-import static com.artigile.checkmyphone.service.CommonUtilities.TAG;
 
 
 /**
@@ -47,6 +46,7 @@ public final class DeviceRegistrationServiceImpl {
     private static final int MAX_ATTEMPTS = 5;
     private static final int BACKOFF_MILLI_SECONDS = 2000;
     private static final Random random = new Random();
+    private static final String TAG = "DeviceRegistrationServiceImpl";
     @Inject
     private DeviceUuidResolver deviceUuidResolver;
     @Inject
@@ -63,6 +63,9 @@ public final class DeviceRegistrationServiceImpl {
      * Register this account/device pair within the server.
      */
     public void register(final Context context, final String regId) {
+        if(regId==null||regId.isEmpty()){
+            return;
+        }
         Log.i(TAG, "registering device (regId = " + regId + ")");
 
         long backoff = BACKOFF_MILLI_SECONDS + random.nextInt(1000);

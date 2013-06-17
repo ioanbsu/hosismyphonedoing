@@ -79,4 +79,6 @@ public class UserDevice {
     public int hashCode() {
         return uuid != null ? uuid.hashCode() : 0;
     }
+
+
 }

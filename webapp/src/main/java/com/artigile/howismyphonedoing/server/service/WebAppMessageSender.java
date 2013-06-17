@@ -102,7 +102,7 @@ public class WebAppMessageSender implements WebAppMessageProcessor<Set<UserDevic
                         "; messageId = " + messageId);
                 String canonicalRegId = result.getCanonicalRegistrationId();
                 if (canonicalRegId != null) {
-                    // same device has more than on registration id: update it
+                    // same device has more than one registration id: update it
                     logger.info("canonicalRegId " + canonicalRegId);
                     userAndDeviceDao.updateRegistration(regId, canonicalRegId);
                 }

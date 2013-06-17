@@ -13,7 +13,7 @@
     <string name="app_name">How is my phone doing?(Beta)</string>
     <string name="unregister">Unregister</string>
     <string name="sample_menu_item">clickMe</string>
-    <string name="already_registered">Device had been already registered in GCM</string>
+    <string name="already_registered">Device has been already registered in GCM</string>
     <string name="server_registering">registering server</string>
     <string name="connecting_to_howismyphonedoing_server">connecting to howismyphonedoing server</string>
     <string name="failed_to_register_device">Failed to register your device, please try later</string>

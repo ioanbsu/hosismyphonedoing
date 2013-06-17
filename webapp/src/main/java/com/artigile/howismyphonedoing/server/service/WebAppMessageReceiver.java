@@ -12,18 +12,19 @@ package com.artigile.howismyphonedoing.server.service;
 
 import com.artigile.howismyphonedoing.api.MessageParser;
 import com.artigile.howismyphonedoing.api.WebAppMessageProcessor;
-import com.artigile.howismyphonedoing.api.model.*;
+import com.artigile.howismyphonedoing.api.model.DeviceRegistrationModel;
+import com.artigile.howismyphonedoing.api.model.MessageType;
+import com.artigile.howismyphonedoing.api.model.ResponseFromServer;
+import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
-import com.google.gson.*;
-import org.springframework.beans.BeanUtils;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 /**
@@ -40,12 +41,13 @@ public class WebAppMessageReceiver implements WebAppMessageProcessor<String> {
     private MessageParser messageParser;
 
     @Override
-    public String processMessage(String uuid, MessageType messageType, String serializedObject) throws Exception{
+    public String processMessage(String uuid, MessageType messageType, String serializedObject) throws Exception {
         try {
             String userEmail = null;
             UserDevice userDevice = null;
             if (messageType == MessageType.REGISTER_DEVICE) {
                 logger.info("Registering new device: " + uuid);
+                logger.info("Serialized object: " + serializedObject);
                 DeviceRegistrationModel registrationModel = messageParser.parse(messageType, serializedObject);
                 userDevice = new UserDevice();
                 userEmail = registrationModel.getUserEmail();

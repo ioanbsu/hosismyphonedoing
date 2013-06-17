@@ -15,11 +15,8 @@ import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.*;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,13 +30,11 @@ import com.artigile.checkmyphone.util.GCMRegistrar;
 import com.artigile.howismyphonedoing.api.CommonConstants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationListener;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Locale;
 
 import static com.artigile.checkmyphone.service.CommonUtilities.*;
 
@@ -49,8 +44,7 @@ import static com.artigile.checkmyphone.service.CommonUtilities.*;
  * Time: 3:47 PM
  */
 @Singleton
-public class MainActivity extends RoboActivity implements
-        TextToSpeech.OnInitListener {
+public class MainActivity extends RoboActivity{
 
     private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -84,7 +78,6 @@ public class MainActivity extends RoboActivity implements
         GCMRegistrar.checkManifest(this);
         setContentView(R.layout.main);
         registerPhoneIfNecessary();
-        textToSpeechService.setTts(new TextToSpeech(this, this));
     }
 
     @Override
@@ -196,7 +189,7 @@ public class MainActivity extends RoboActivity implements
         }
     }
 
-    @Override
+ /*   @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
             int result = textToSpeechService.setLanguage(Locale.US);
@@ -207,7 +200,7 @@ public class MainActivity extends RoboActivity implements
             Log.e("TTS", "Initilization Failed!");
         }
     }
-
+*/
     private void checkGooglePlayServiceAvailability(int requestCode) {
         // Query for the status of Google Play services on the device
         int statusCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
