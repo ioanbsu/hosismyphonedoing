@@ -90,7 +90,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                         deviceLocationModel.setAccuracy(location.getAccuracy());
                         deviceLocationModel.setAltitude(location.getAltitude());
                         deviceLocationModel.setBearing(location.getBearing());
-                        deviceLocationModel.setElapsedRealtimeNanos(location.getElapsedRealtimeNanos());
+//                        deviceLocationModel.setElapsedRealtimeNanos(location.getElapsedRealtimeNanos());
                         deviceLocationModel.setHasAccuracy(location.hasAccuracy());
                         deviceLocationModel.setHasAltitude(location.hasAltitude());
                         deviceLocationModel.setHasSpeed(location.hasSpeed());
