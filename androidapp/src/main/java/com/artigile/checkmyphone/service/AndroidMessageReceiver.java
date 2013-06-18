@@ -60,18 +60,18 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     @Override
     public String processMessage(final MessageType messageType, String message, AndroidMessageResultListener messageResultListener) throws IOException {
         this.androidMessageResultListener = messageResultListener;
-        try {
-            commonUtilities.displayMessage(context, messageType + "");
-            if (messageType == MessageType.DEVICE_INFO) {
-                IDeviceModel deviceModel = deviceInfoService.buildPhoneModel();
-                messageSender.processMessage(MessageType.DEVICE_INFO, messageParser.serialize(deviceModel), null);
-            } else if (messageType == MessageType.MESSAGE_TO_DEVICE) {
-                MessageToDeviceModel messageToTheDevice = messageParser.parse(messageType, message);
-                messageSender.processMessage(messageType, "Message received", null);
-                generateNotification(messageToTheDevice.getMessage());
-                Locale locale = parseLocale(messageToTheDevice.getLocale());
-                textToSpeechService.say(locale, messageToTheDevice.getMessage());
-                int waitAttempt = 0;
+        commonUtilities.displayMessage(context, messageType + "");
+        if (messageType == MessageType.DEVICE_INFO) {
+            IDeviceModel deviceModel = deviceInfoService.buildPhoneModel();
+            failsafeSendMessage(MessageType.DEVICE_INFO, messageParser.serialize(deviceModel));
+        } else if (messageType == MessageType.MESSAGE_TO_DEVICE) {
+            MessageToDeviceModel messageToTheDevice = messageParser.parse(messageType, message);
+            failsafeSendMessage(messageType, "Message received");
+            generateNotification(messageToTheDevice.getMessage());
+            Locale locale = parseLocale(messageToTheDevice.getLocale());
+            textToSpeechService.say(locale, messageToTheDevice.getMessage());
+            int waitAttempt = 0;
+            try {
                 while (!textToSpeechService.isMessageSaid()) {
                     Thread.sleep(500);
                     waitAttempt++;
@@ -79,13 +79,18 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                         break;
                     }
                 }
-            } else if (messageType == MessageType.GET_DEVICE_LOCATION) {
-                Log.v(TAG, "got request to return phone location.");
-                locationService.getLocation(new LocationListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "failed to send a message";
+            }
+        } else if (messageType == MessageType.GET_DEVICE_LOCATION) {
+            Log.v(TAG, "got request to return phone location.");
+            locationService.getLocation(new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    DeviceLocationModel deviceLocationModel = new DeviceLocationModel();
+                    try {
                         IDeviceModel deviceModel = deviceInfoService.buildPhoneModel();
-                        DeviceLocationModel deviceLocationModel = new DeviceLocationModel();
                         deviceLocationModel.setDeviceName(deviceModel.getModel());
                         deviceLocationModel.setAccuracy(location.getAccuracy());
                         deviceLocationModel.setAltitude(location.getAltitude());
@@ -103,23 +108,27 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                         commonUtilities.displayMessage(context,
                                 "Accuracy: " + location.getAccuracy() + ", Bearing:" + location.getBearing() + ", Speed:"
                                         + location.getSpeed());
-                        try {
-                            messageSender.processMessage(messageType, messageParser.serialize(deviceLocationModel), null);
-                        } catch (IOException e) {
-                            commonUtilities.displayMessage(context, "Location updates failed to be sent...");
-                        }
+                    } catch (Exception e) {
+                        failsafeSendMessage(MessageType.DEVICE_LOCATION_NOT_POSSIBLE, messageParser.serialize(deviceLocationModel));
                     }
-                });
-            } else {
-                commonUtilities.displayMessage(context, message);
-                // notifies user
-                generateNotification(message);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "failed to send a message";
+                    failsafeSendMessage(messageType, messageParser.serialize(deviceLocationModel));
+                }
+            });
+        } else {
+            commonUtilities.displayMessage(context, message);
+            // notifies user
+            generateNotification(message);
         }
+
         return "message had been successfully sent";
+    }
+
+    private void failsafeSendMessage(MessageType messageType, String selializedObject) {
+        try {
+            messageSender.processMessage(messageType, selializedObject, null);
+        } catch (IOException e) {
+            commonUtilities.displayMessage(context, "Failed to send a message to server: " + messageType);
+        }
     }
 
     private Locale parseLocale(GwtLocale locale) {
