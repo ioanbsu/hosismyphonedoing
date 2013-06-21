@@ -12,6 +12,7 @@ package com.artigile.howismyphonedoing.client.rpc;
 
 import com.artigile.howismyphonedoing.api.model.MessageToDeviceModel;
 import com.artigile.howismyphonedoing.client.exception.DeviceWasRemovedException;
+import com.artigile.howismyphonedoing.client.exception.UserHasNoDevicesException;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -24,7 +25,7 @@ public interface MessageRpcService extends RemoteService {
 
     String getPhoneInfo() throws DeviceWasRemovedException;
 
-    String getPhoneLocation() throws DeviceWasRemovedException;
+    String getPhoneLocation() throws DeviceWasRemovedException, UserHasNoDevicesException;
 
     String removeAllUserDevices();
 }

@@ -15,6 +15,7 @@ import com.artigile.howismyphonedoing.api.model.DeviceModel;
 import com.artigile.howismyphonedoing.api.model.MessageToDeviceModel;
 import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.client.exception.DeviceWasRemovedException;
+import com.artigile.howismyphonedoing.client.exception.UserHasNoDevicesException;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcService;
 import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
@@ -58,9 +59,13 @@ public class MessageRpcServiceImpl extends AbstractRpcService implements Message
     }
 
     @Override
-    public String getPhoneLocation() throws DeviceWasRemovedException {
+    public String getPhoneLocation() throws DeviceWasRemovedException, UserHasNoDevicesException {
         Set<UserDevice> userDevice = userAndDeviceDao.getDevices(getUserEmailFromSession());
-        messageSender.processMessage(userDevice, MessageType.GET_DEVICE_LOCATION, messageParser.serialize(new DeviceModel()));
+        if (userDevice != null && !userDevice.isEmpty()) {
+            messageSender.processMessage(userDevice, MessageType.GET_DEVICE_LOCATION, messageParser.serialize(new DeviceModel()));
+        } else{
+            throw new UserHasNoDevicesException();
+        }
         return "message sent to get phone location";
     }
 

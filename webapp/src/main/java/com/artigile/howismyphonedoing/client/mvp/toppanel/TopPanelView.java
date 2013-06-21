@@ -83,7 +83,6 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     @UiHandler("devicesLocationButton")
     void getPhoneLocationHandler(ClickEvent event) {
         if (!devicesLocationButton.isLoadingShowing()) {
-            devicesLocationButton.showLoading(messages.top_panel_searching_for_your_devices_loading_text());
             presenter.sendRequestToUpdatePhoneLocation();
         }
     }
@@ -117,6 +116,10 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
 
     public void hideDevicesLoading() {
         devicesLocationButton.hideLoading();
+    }
+
+    public void showDevicesLoading() {
+        devicesLocationButton.showLoading(messages.top_panel_searching_for_your_devices_loading_text());
     }
 
 

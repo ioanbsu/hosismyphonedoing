@@ -128,11 +128,16 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
         messageToTheDevice.setLocale(GwtLocale.parse(languagesList.getItemText(languagesList.getSelectedIndex())));
         messageToTheDevice.setMessageId(messageToSend.getText() + "_" + new Date().getTime());
         messageToSend.setText("");
-        LabelWithId labelWithId = new LabelWithId(messageToTheDevice.getMessageId());
+        final LabelWithId labelWithId = new LabelWithId(messageToTheDevice.getMessageId());
         labelWithId.setText(messageToTheDevice.getMessage());
-        messagesAuditTrail.add(labelWithId);
         messageQueuePanel.setVisible(true);
         messageRpcServiceAsync.sendMessageToDevice(messageToTheDevice, new AsyncCallbackImpl<String>(eventBus) {
+
+            @Override
+            public void success(String result) {
+                messagesAuditTrail.add(labelWithId);
+            }
+
             @Override
             public void failure(Throwable caught) {
                 if (caught instanceof DeviceWasRemovedException) {

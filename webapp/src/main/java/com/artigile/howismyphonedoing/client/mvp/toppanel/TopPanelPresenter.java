@@ -15,6 +15,7 @@ import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
+import com.artigile.howismyphonedoing.client.exception.UserHasNoDevicesException;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
@@ -56,7 +57,6 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     private SendMessageWindow sendMessageWindow;
     @Inject
     private YesNoWindow yesNoWindow;
-    private List<UserDeviceModel> devicesList;
 
     public void onInitApp() {
         GWT.log("TopPanelPresenter initiated.");
@@ -86,7 +86,6 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     }
 
     public void onUsersDevicesListReceived(List<UserDeviceModel> result) {
-        devicesList = result;
         view.setMyDevicesCount(result.size());
     }
 
@@ -125,21 +124,26 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     }
 
     public void sendRequestToUpdatePhoneLocation() {
-        if (devicesList == null || devicesList.isEmpty()) {
-            showNoDevicesFoundMessage();
-        } else {
-            messageRpcServiceAsync.getPhoneLocation(new AsyncCallbackImpl<String>(eventBus) {
-                @Override
-                public void success(String result) {
+        view.showDevicesLoading();
+        messageRpcServiceAsync.getPhoneLocation(new AsyncCallbackImpl<String>(eventBus) {
+            @Override
+            public void success(String result) {
 
+            }
+
+            @Override
+            public void failure(Throwable caught) {
+                if (caught instanceof UserHasNoDevicesException) {
+                    showNoDevicesFoundMessage();
                 }
-            });
-        }
+            }
+        });
     }
 
     private void showNoDevicesFoundMessage() {
         Window.alert("you don't have any devices linked to your account. " +
                 "Please register the device first, then try to update devices list.");
+        view.hideDevicesLoading();
     }
 
     public void showDevicesCountWindow() {
