@@ -12,7 +12,7 @@ public class MessageToDeviceModel implements IMessageToDeviceModel {
     private String message;
     private String deviceId;
     private GwtLocale locale;
-    private long timestamp;
+    private String messageId;
 
     @Override
     public String getMessage() {
@@ -44,4 +44,13 @@ public class MessageToDeviceModel implements IMessageToDeviceModel {
         this.locale = locale;
     }
 
+    @Override
+    public String getMessageId() {
+        return messageId;
+    }
+
+    @Override
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
 }

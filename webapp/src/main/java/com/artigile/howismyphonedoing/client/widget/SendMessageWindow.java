@@ -16,7 +16,6 @@ import com.google.gwt.text.shared.AbstractRenderer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ProvidesKey;
 import com.mvp4g.client.annotation.EventHandler;
@@ -103,18 +102,18 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
     }
 
     public void onMessageDelivered(IMessageToDeviceModel messageDeliveredModel) {
-        List<String> newMessagesList = new LinkedList<String>();
+        List<LabelWithId> newMessagesList = new LinkedList<LabelWithId>();
         for (Widget widget : messagesAuditTrail) {
-            Label messageHistoryLabel = (Label) widget;
-            if (!(messageDeliveredModel.getMessage()).equals(messageHistoryLabel.getText())) {
-                newMessagesList.add(messageHistoryLabel.getText());
+            LabelWithId messageHistoryLabel = (LabelWithId) widget;
+            if (!(messageDeliveredModel.getMessageId()).equals(messageHistoryLabel.getId())) {
+                newMessagesList.add(messageHistoryLabel);
             }
         }
         messagesAuditTrail.clear();
-        for (String message : newMessagesList) {
-            messagesAuditTrail.add(new Label(message));
+        for (LabelWithId labelWithId : newMessagesList) {
+            messagesAuditTrail.add(labelWithId);
         }
-        messageQueuePanel.setVisible(messagesAuditTrail.getWidgetCount()!=0);
+        messageQueuePanel.setVisible(messagesAuditTrail.getWidgetCount() != 0);
     }
 
     @UiHandler("sendMessage")
@@ -127,8 +126,11 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
         messageToTheDevice.setDeviceId(devicesValueListBox.getValue().getDeviceId());
         messageToTheDevice.setMessage(messageToSend.getText());
         messageToTheDevice.setLocale(GwtLocale.parse(languagesList.getItemText(languagesList.getSelectedIndex())));
+        messageToTheDevice.setMessageId(messageToSend.getText() + "_" + new Date().getTime());
         messageToSend.setText("");
-        messagesAuditTrail.add(new Label(messageToTheDevice.getMessage()));
+        LabelWithId labelWithId = new LabelWithId(messageToTheDevice.getMessageId());
+        labelWithId.setText(messageToTheDevice.getMessage());
+        messagesAuditTrail.add(labelWithId);
         messageQueuePanel.setVisible(true);
         messageRpcServiceAsync.sendMessageToDevice(messageToTheDevice, new AsyncCallbackImpl<String>(eventBus) {
             @Override
@@ -154,5 +156,18 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
     }
 
     interface Binder extends UiBinder<DialogBox, SendMessageWindow> {
+    }
+
+    private class LabelWithId extends Label {
+        private String id;
+
+        private LabelWithId(String id) {
+            this.id = id;
+        }
+
+        private String getId() {
+            return id;
+        }
+
     }
 }

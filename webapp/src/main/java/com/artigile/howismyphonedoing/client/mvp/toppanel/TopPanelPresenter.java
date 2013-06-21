@@ -73,6 +73,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     public void onUserLoggedIn(StateAndChanelEntity stateAndChanelEntity) {
         view.setLoggedInUserData(stateAndChanelEntity.getEmail());
         onUpdateDevicesList();
+        sendRequestToUpdatePhoneLocation();
     }
 
     public void onUpdateDevicesList() {

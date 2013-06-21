@@ -20,4 +20,7 @@ public interface IMessageToDeviceModel extends Serializable {
 
     void setLocale(GwtLocale locale);
 
+    String getMessageId();
+
+    void setMessageId(String messageId);
 }
