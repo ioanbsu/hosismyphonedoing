@@ -70,7 +70,11 @@ public class MapBodyView extends Composite implements ReverseViewInterface<MapBo
                         deviceMarkerModel.getDeviceLocationModel().getLongitude());
                 latLngBounds.extend(myLatLng);
             }
+            double savedZoom = map.getZoom();
             map.fitBounds(latLngBounds);
+            if (Math.abs(savedZoom - map.getZoom()) > 3) {
+                map.setZoom(savedZoom);
+            }
         }
 
     }

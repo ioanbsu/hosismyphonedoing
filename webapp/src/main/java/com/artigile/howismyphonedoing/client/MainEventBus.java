@@ -49,8 +49,8 @@ public interface MainEventBus extends EventBus {
             SigninWithGooglePlusWindow.class,GaeChannelService.class})
     void userLoggedIn(StateAndChanelEntity stateAndChanelEntity);
 
-    @Event(handlers = MapBodyPresenter.class)
-    void phoneLocationUpdated(IDeviceLocationModel as);
+    @Event(handlers = {MapBodyPresenter.class,TopPanelPresenter.class})
+    void deviceLocationUpdated(IDeviceLocationModel as);
 
     @Event(handlers = {TopPanelPresenter.class, DevicesListWindow.class, SendMessageWindow.class})
     void usersDevicesListReceived(List<UserDeviceModel> result);

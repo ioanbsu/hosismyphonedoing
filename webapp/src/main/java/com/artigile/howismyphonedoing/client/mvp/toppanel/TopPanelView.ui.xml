@@ -9,7 +9,8 @@
   -->
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:toppanel="urn:import:com.artigile.howismyphonedoing.client.mvp.toppanel">
     <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
     <ui:with field="images" type="com.artigile.howismyphonedoing.client.resources.Images"/>
     <ui:style>
@@ -35,22 +36,21 @@
         .topMenuButtonStyle {
             float: left;
             padding: 1.9em;
-            transition: background 0.2s, margin-left 0.2s, margin-right 0.2s, box-shadow 0.2s;
-            -webkit-transition-property: background, margin-left, margin-right, box-shadow;
+            transition:  margin-left 0.2s, margin-right 0.2s, box-shadow 0.2s;
+            -webkit-transition-property: margin-left, margin-right, box-shadow;
             -webkit-transition-duration: 0.2s;
-            background-color: #FFF;
             margin: 0;
             border-radius: 0;
             border: none;
             color: #505050;
+            position: relative;
         }
 
         .topMenuButtonStyle:hover {
             box-shadow: 0px 0px 6px #101010;
             cursor: pointer;
-            margin-left: 5px;
-            margin-right: 5px;
-            background: #eee;
+            margin-left: 0px;
+            margin-right: 0px;
         }
 
         .logOutFloatRight {
@@ -96,14 +96,15 @@
 
     </ui:style>
     <g:FlowPanel>
-        <g:Button ui:field="myDevicesCount" styleName="{style.topMenuButtonStyle}"/>
-        <g:Button text="{msg.top_panel_get_device_location_button}" ui:field="phoneLocation"
+        <toppanel:TopPanelButton ui:field="myDevicesCount" styleName="{style.topMenuButtonStyle}"/>
+        <toppanel:TopPanelButton text="{msg.top_panel_get_device_location_button}" ui:field="devicesLocationButton"
                   styleName="{style.topMenuButtonStyle}"/>
-        <g:Button text="{msg.top_panel_remove_all_my_devices}" ui:field="removeAllDevices"
+        <toppanel:TopPanelButton text="{msg.top_panel_remove_all_my_devices}" ui:field="removeAllDevices"
                   styleName="{style.topMenuButtonStyle}"/>
-        <g:Button text="{msg.top_panel_read_loud_on_my_phone}" ui:field="sendTextToPhone"
+        <toppanel:TopPanelButton text="{msg.top_panel_read_loud_on_my_phone}" ui:field="sendTextToPhone"
                   styleName="{style.topMenuButtonStyle}"/>
-        <g:Button text="{msg.top_panel_log_out}" ui:field="logoutButton"
+        <toppanel:TopPanelButton text="{msg.top_panel_log_out}" styleName="{style.topMenuButtonStyle}"/>
+        <toppanel:TopPanelButton text="{msg.top_panel_log_out}" ui:field="logoutButton"
                   styleName="{style.topMenuButtonStyle} {style.logOutFloatRight}"/>
 
         <g:Label ui:field="loggedInAs" styleName="{style.loggedInLabel}" text="{msg.top_panel_not_logged_in}"/>

@@ -17,7 +17,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.mvp4g.client.view.ReverseViewInterface;
 
 import javax.inject.Inject;
@@ -32,17 +35,17 @@ import javax.inject.Singleton;
 public class TopPanelView extends Composite implements ReverseViewInterface<TopPanelPresenter> {
 
     @UiField
-    Button logoutButton;
+    TopPanelButton logoutButton;
     @UiField
-    Button sendTextToPhone;
+    TopPanelButton sendTextToPhone;
     @UiField
-    Button removeAllDevices;
+    TopPanelButton removeAllDevices;
     @UiField
-    Button phoneLocation;
+    TopPanelButton devicesLocationButton;
     @UiField
     Label loggedInAs;
     @UiField
-    Button myDevicesCount;
+    TopPanelButton myDevicesCount;
     @UiField
     FlowPanel blockWhileConnecting;
     @UiField
@@ -77,9 +80,12 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
         presenter.sendTextToPhone();
     }
 
-    @UiHandler("phoneLocation")
+    @UiHandler("devicesLocationButton")
     void getPhoneLocationHandler(ClickEvent event) {
-        presenter.sendRequestToUpdatePhoneLocation();
+        if (!devicesLocationButton.isLoadingShowing()) {
+            devicesLocationButton.showLoading(messages.top_panel_searching_for_your_devices_loading_text());
+            presenter.sendRequestToUpdatePhoneLocation();
+        }
     }
 
     @UiHandler("removeAllDevices")
@@ -107,7 +113,10 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
 
     public void updateChannelStateIcon(ChannelStateType channelState) {
         blockWhileConnecting.setVisible(channelState == ChannelStateType.CHANNEL_CONNECTING);
-//        channelStateLabel.setText(channelState + "");
+    }
+
+    public void hideDevicesLoading() {
+        devicesLocationButton.hideLoading();
     }
 
 

@@ -99,7 +99,7 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
                         AutoBean<IDeviceLocationModel> phoneLocationModelAutoBean = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IDeviceLocationModel.class, responseFromServer.getSerializedObject());
                         IDeviceLocationModel deviceLocationModel=phoneLocationModelAutoBean.as();
                         deviceLocationModel.setDeviceId(responseFromServer.getUserDeviceModel().getDeviceId());
-                        eventBus.phoneLocationUpdated(deviceLocationModel);
+                        eventBus.deviceLocationUpdated(deviceLocationModel);
                     } else if (responseFromServer.getMessageType() == MessageType.DEVICE_INFO) {
 
                     } else if (responseFromServer.getMessageType() == MessageType.MESSAGE_TO_DEVICE) {

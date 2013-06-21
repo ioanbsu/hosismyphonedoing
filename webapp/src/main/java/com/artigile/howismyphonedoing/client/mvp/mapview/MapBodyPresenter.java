@@ -40,7 +40,7 @@ public class MapBodyPresenter extends BasePresenter<MapBodyView, MainEventBus> {
         GWT.log("MapBodyPresenter initiated.");
     }
 
-    public void onPhoneLocationUpdated(IDeviceLocationModel model) {
+    public void onDeviceLocationUpdated(IDeviceLocationModel model) {
         deviceMarkerModelList = prepareMarkers(model);
         view.showMarkers(deviceMarkerModelList);
     }

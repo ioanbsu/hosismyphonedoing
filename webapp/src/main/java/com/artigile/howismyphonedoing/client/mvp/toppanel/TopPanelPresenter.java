@@ -10,6 +10,7 @@
 
 package com.artigile.howismyphonedoing.client.mvp.toppanel;
 
+import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
@@ -90,6 +91,11 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
 
     public void onChannelStateChanged(ChannelStateType channelState) {
         view.updateChannelStateIcon(channelState);
+    }
+
+
+    public void onDeviceLocationUpdated(IDeviceLocationModel model) {
+        view.hideDevicesLoading();
     }
 
     public void sendTextToPhone() {
