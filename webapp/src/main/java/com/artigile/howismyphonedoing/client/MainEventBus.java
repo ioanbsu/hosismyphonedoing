@@ -10,10 +10,7 @@
 
 package com.artigile.howismyphonedoing.client;
 
-import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
-import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
-import com.artigile.howismyphonedoing.api.model.MessageType;
-import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
+import com.artigile.howismyphonedoing.api.model.*;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
 import com.artigile.howismyphonedoing.client.mvp.mainpage.MainPagePresenter;
 import com.artigile.howismyphonedoing.client.mvp.mapview.MapBodyPresenter;
@@ -24,6 +21,7 @@ import com.artigile.howismyphonedoing.client.widget.DevicesListWindow;
 import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
 import com.artigile.howismyphonedoing.client.widget.SigninWithGooglePlusWindow;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
+import com.google.web.bindery.autobean.shared.AutoBean;
 import com.mvp4g.client.annotation.Event;
 import com.mvp4g.client.annotation.Events;
 import com.mvp4g.client.annotation.Start;
@@ -66,4 +64,7 @@ public interface MainEventBus extends EventBus {
 
     @Event(handlers = MessageNotSupportedProcessor.class)
     void messageNotSupported(IUserDeviceModel userDeviceModel, MessageType messageType);
+
+    @Event(handlers = SendMessageWindow.class)
+    void messageDelivered(IMessageToDeviceModel messageDeliveredModel);
 }

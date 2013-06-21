@@ -55,34 +55,20 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     private DeviceInfoService deviceInfoService;
     private String TAG = "AndroidMessageReceiver";
     private AndroidMessageResultListener androidMessageResultListener;
-    private int MAX_WAIT_ATTEMPTS = 15;
 
     @Override
-    public String processMessage(final MessageType messageType, String message, AndroidMessageResultListener messageResultListener) throws IOException {
+    public String processMessage(final MessageType messageType, String serializedObject, AndroidMessageResultListener messageResultListener) throws IOException {
         this.androidMessageResultListener = messageResultListener;
         commonUtilities.displayMessage(context, messageType + "");
         if (messageType == MessageType.DEVICE_INFO) {
             IDeviceModel deviceModel = deviceInfoService.buildPhoneModel();
             failsafeSendMessage(MessageType.DEVICE_INFO, messageParser.serialize(deviceModel));
         } else if (messageType == MessageType.MESSAGE_TO_DEVICE) {
-            MessageToDeviceModel messageToTheDevice = messageParser.parse(messageType, message);
-            failsafeSendMessage(messageType, "Message received");
+            MessageToDeviceModel messageToTheDevice = messageParser.parse(messageType, serializedObject);
             generateNotification(messageToTheDevice.getMessage());
             Locale locale = parseLocale(messageToTheDevice.getLocale());
             textToSpeechService.say(locale, messageToTheDevice.getMessage());
-            int waitAttempt = 0;
-            try {
-                while (!textToSpeechService.isMessageSaid()) {
-                    Thread.sleep(500);
-                    waitAttempt++;
-                    if (waitAttempt > MAX_WAIT_ATTEMPTS) {
-                        break;
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "failed to send a message";
-            }
+            failsafeSendMessage(messageType, serializedObject);
         } else if (messageType == MessageType.GET_DEVICE_LOCATION) {
             Log.v(TAG, "got request to return phone location.");
             locationService.getLocation(new LocationListener() {
@@ -115,9 +101,9 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                 }
             });
         } else {
-            commonUtilities.displayMessage(context, message);
+            commonUtilities.displayMessage(context, serializedObject);
             // notifies user
-            generateNotification(message);
+            generateNotification(serializedObject);
         }
 
         return "message had been successfully sent";

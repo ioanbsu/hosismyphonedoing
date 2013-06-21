@@ -36,15 +36,32 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
     private Locale locale;
     private String lastMessage;
     private UtteranceProgressListener utteranceProgressListener = getUtteranceProgressListener();
+    private int MAX_WAIT_ATTEMPTS = 15;
 
-    public void say(final Locale locale, final String message) {
+    public String say(final Locale locale, final String message) {
         messageSaid = false;
         if (Strings.isNullOrEmpty(message)) {
-            return;
+            return "nothing to say - message empty";
         }
         this.locale = locale;
         lastMessage = message;
         tts = new TextToSpeech(context, this);
+
+
+        int waitAttempt = 0;
+        try {
+            while (!isMessageSaid()) {
+                Thread.sleep(500);
+                waitAttempt++;
+                if (waitAttempt > MAX_WAIT_ATTEMPTS) {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "failed to send a message";
+        }
+        return "success";
     }
 
     public boolean isMessageSaid() {

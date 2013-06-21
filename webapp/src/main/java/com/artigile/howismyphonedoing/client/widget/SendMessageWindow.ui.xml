@@ -1,7 +1,9 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
+    <ui:with field="images" type="com.artigile.howismyphonedoing.client.resources.Images"/>
     <ui:style>
+        @external .gwt-Label;
         .mainPanelStyle {
             padding: 20px;
         }
@@ -10,6 +12,32 @@
             text-align: justify;
             padding-bottom: 10px;
         }
+
+        .messagesQueue {
+            max-height: 100px;
+            overflow-y: auto;
+            position: relative;
+            padding: 20px;
+        }
+
+        .auditTrailPanel {
+            border-top: 1px solid #AAA;
+            margin-top: 2px;
+            padding-top: 2px;
+        }
+
+        .auditTrailPanel .gwt-Label {
+            font-size: 12px;
+            color: #555;
+            font-style: italic;
+        }
+
+        .loadingIcon {
+            position: absolute;
+            top: 37px;
+            left: 2px;
+        }
+
 
 
     </ui:style>
@@ -40,7 +68,7 @@
                             <g:Label text="{msg.send_message_window_label}"/>
                         </td>
                         <td>
-                           <g:TextBox ui:field="messageToSend"/>
+                            <g:TextBox ui:field="messageToSend"/>
                         </td>
                     </tr>
                     <tr>
@@ -48,6 +76,15 @@
                         <td colspan="2">
                             <g:Button ui:field="sendMessage" text="{msg.send_message_window_send_button}"/>
                             <g:Button ui:field="closeWindow" text="{msg.send_message_window_cancel_button}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <g:FlowPanel styleName="{style.messagesQueue}" ui:field="messageQueuePanel" visible="false">
+                                <g:Image resource="{images.loadingSmallIcon}" stylePrimaryName="{style.loadingIcon}" />
+                                <g:Label text="{msg.send_message_window_messages_queue}"/>
+                                <g:FlowPanel ui:field="messagesAuditTrail" styleName="{style.auditTrailPanel}"/>
+                            </g:FlowPanel>
                         </td>
                     </tr>
                 </table>

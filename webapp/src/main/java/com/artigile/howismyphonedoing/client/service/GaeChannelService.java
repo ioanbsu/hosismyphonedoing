@@ -10,10 +10,7 @@
 
 package com.artigile.howismyphonedoing.client.service;
 
-import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
-import com.artigile.howismyphonedoing.api.model.IMessageNotSupportedByDeviceResponseModel;
-import com.artigile.howismyphonedoing.api.model.IResponseFromServer;
-import com.artigile.howismyphonedoing.api.model.MessageType;
+import com.artigile.howismyphonedoing.api.model.*;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
@@ -97,13 +94,14 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
                     IResponseFromServer responseFromServer = responseFromServerAutoBean.as();
                     if (responseFromServer.getMessageType() == MessageType.GET_DEVICE_LOCATION) {
                         AutoBean<IDeviceLocationModel> phoneLocationModelAutoBean = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IDeviceLocationModel.class, responseFromServer.getSerializedObject());
-                        IDeviceLocationModel deviceLocationModel=phoneLocationModelAutoBean.as();
+                        IDeviceLocationModel deviceLocationModel = phoneLocationModelAutoBean.as();
                         deviceLocationModel.setDeviceId(responseFromServer.getUserDeviceModel().getDeviceId());
                         eventBus.deviceLocationUpdated(deviceLocationModel);
                     } else if (responseFromServer.getMessageType() == MessageType.DEVICE_INFO) {
 
                     } else if (responseFromServer.getMessageType() == MessageType.MESSAGE_TO_DEVICE) {
-
+                        AutoBean<IMessageToDeviceModel> messageDeliveredModel = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IMessageToDeviceModel.class, responseFromServer.getSerializedObject());
+                        eventBus.messageDelivered(messageDeliveredModel.as());
                     } else if (responseFromServer.getMessageType() == MessageType.REGISTER_DEVICE) {
                         eventBus.updateDevicesList();
 

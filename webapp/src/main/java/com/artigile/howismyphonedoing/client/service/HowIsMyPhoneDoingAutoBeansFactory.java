@@ -27,4 +27,6 @@ public interface HowIsMyPhoneDoingAutoBeansFactory extends AutoBeanFactory {
     AutoBean<IDeviceRegistrationModel> deviceRegistrationModel();
 
     AutoBean<IMessageNotSupportedByDeviceResponseModel> messageTypNotSupportedResponseModel();
+
+    AutoBean<IMessageToDeviceModel> messageToDeviceModel();
 }

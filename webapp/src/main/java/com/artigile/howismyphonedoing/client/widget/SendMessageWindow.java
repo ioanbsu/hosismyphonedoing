@@ -1,6 +1,7 @@
 package com.artigile.howismyphonedoing.client.widget;
 
 import com.artigile.howismyphonedoing.api.model.GwtLocale;
+import com.artigile.howismyphonedoing.api.model.IMessageToDeviceModel;
 import com.artigile.howismyphonedoing.api.model.MessageToDeviceModel;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.MainEventBus;
@@ -23,6 +24,8 @@ import com.mvp4g.client.event.BaseEventHandler;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -46,6 +49,10 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
     Button sendMessage;
     @UiField(provided = true)
     ValueListBox<UserDeviceModel> devicesValueListBox;
+    @UiField
+    FlowPanel messagesAuditTrail;
+    @UiField
+    FlowPanel messageQueuePanel;
     @Inject
     private MessageRpcServiceAsync messageRpcServiceAsync;
     @Inject
@@ -60,7 +67,7 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
         devicesValueListBox = new ValueListBox<UserDeviceModel>(new AbstractRenderer<UserDeviceModel>() {
             @Override
             public String render(UserDeviceModel object) {
-                if(object==null){
+                if (object == null) {
                     return "";
                 }
                 return object.getHumanReadableName();
@@ -95,6 +102,21 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
         devicesValueListBox.setAcceptableValues(userDeviceModels);
     }
 
+    public void onMessageDelivered(IMessageToDeviceModel messageDeliveredModel) {
+        List<String> newMessagesList = new LinkedList<String>();
+        for (Widget widget : messagesAuditTrail) {
+            Label messageHistoryLabel = (Label) widget;
+            if (!(messageDeliveredModel.getMessage()).equals(messageHistoryLabel.getText())) {
+                newMessagesList.add(messageHistoryLabel.getText());
+            }
+        }
+        messagesAuditTrail.clear();
+        for (String message : newMessagesList) {
+            messagesAuditTrail.add(new Label(message));
+        }
+        messageQueuePanel.setVisible(messagesAuditTrail.getWidgetCount()!=0);
+    }
+
     @UiHandler("sendMessage")
     void onSendMessageClicked(ClickEvent clickEvent) {
         sendMessageToTheDevice();
@@ -106,6 +128,8 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
         messageToTheDevice.setMessage(messageToSend.getText());
         messageToTheDevice.setLocale(GwtLocale.parse(languagesList.getItemText(languagesList.getSelectedIndex())));
         messageToSend.setText("");
+        messagesAuditTrail.add(new Label(messageToTheDevice.getMessage()));
+        messageQueuePanel.setVisible(true);
         messageRpcServiceAsync.sendMessageToDevice(messageToTheDevice, new AsyncCallbackImpl<String>(eventBus) {
             @Override
             public void failure(Throwable caught) {
