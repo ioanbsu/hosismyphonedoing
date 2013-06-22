@@ -52,6 +52,8 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
     FlowPanel messagesAuditTrail;
     @UiField
     FlowPanel messageQueuePanel;
+    @UiField
+    Label clearPendingMsg;
     @Inject
     private MessageRpcServiceAsync messageRpcServiceAsync;
     @Inject
@@ -119,6 +121,12 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
     @UiHandler("sendMessage")
     void onSendMessageClicked(ClickEvent clickEvent) {
         sendMessageToTheDevice();
+    }
+
+    @UiHandler("clearPendingMsg")
+    void clearPendingMsg(ClickEvent clickEvent) {
+        messagesAuditTrail.clear();
+        messageQueuePanel.setVisible(messagesAuditTrail.getWidgetCount() != 0);
     }
 
     private void sendMessageToTheDevice() {

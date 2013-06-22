@@ -38,6 +38,17 @@
             left: 2px;
         }
 
+        .clearPendingMsg {
+            position: absolute;
+            right: 20px;
+            top: 22px;
+            color: #00f;
+            cursor: pointer;
+        }
+
+        .clearPendingMsg:hover {
+            text-decoration: underline;
+        }
 
 
     </ui:style>
@@ -81,8 +92,10 @@
                     <tr>
                         <td colspan="2">
                             <g:FlowPanel styleName="{style.messagesQueue}" ui:field="messageQueuePanel" visible="false">
-                                <g:Image resource="{images.loadingSmallIcon}" stylePrimaryName="{style.loadingIcon}" />
+                                <g:Image resource="{images.loadingSmallIcon}" stylePrimaryName="{style.loadingIcon}"/>
                                 <g:Label text="{msg.send_message_window_messages_queue}"/>
+                                <g:Label text="{msg.send_message_window_clear_pending_messages}"
+                                         ui:field="clearPendingMsg" styleName="{style.clearPendingMsg}"/>
                                 <g:FlowPanel ui:field="messagesAuditTrail" styleName="{style.auditTrailPanel}"/>
                             </g:FlowPanel>
                         </td>
