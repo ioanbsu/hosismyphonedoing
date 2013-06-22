@@ -5,10 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.*;
 
 /**
  * User: ioanbsu
@@ -51,6 +48,13 @@ public class TopPanelButton extends Composite {
 
     public boolean isLoadingShowing(){
         return loadingIcon.isVisible();
+    }
+
+    public void showTooltip(String tooltipText){
+        PopupPanel panel=new PopupPanel(true,false);
+        panel.add(new Label(tooltipText));
+        panel.setPopupPosition(mainPanel.getAbsoluteLeft(),mainPanel.getAbsoluteTop()+65);
+        panel.show();
     }
 
     public static interface Binder extends UiBinder<FocusPanel, TopPanelButton> {

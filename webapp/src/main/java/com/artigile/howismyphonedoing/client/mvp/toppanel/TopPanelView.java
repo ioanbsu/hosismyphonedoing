@@ -122,6 +122,10 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
         devicesLocationButton.showLoading(messages.top_panel_searching_for_your_devices_loading_text());
     }
 
+    public void displayDevicesLocationTooltip(String message) {
+        devicesLocationButton.showTooltip(message);
+    }
+
 
     public static interface Binder extends UiBinder<FlowPanel, TopPanelView> {
     }

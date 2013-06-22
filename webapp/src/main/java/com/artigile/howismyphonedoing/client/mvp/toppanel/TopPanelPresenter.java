@@ -21,12 +21,14 @@ import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.ApplicationState;
 import com.artigile.howismyphonedoing.client.widget.DevicesListWindow;
+import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
 import com.artigile.howismyphonedoing.client.widget.YesNoWindow;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
@@ -57,6 +59,13 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     private SendMessageWindow sendMessageWindow;
     @Inject
     private YesNoWindow yesNoWindow;
+    @Inject
+    private MessageWindow messageWindow;
+
+    public static final int MAX_LOCATION_RESPONSE_WAIT = 60 * 1000;
+
+
+    private Timer locationDetectTimer;
 
     public void onInitApp() {
         GWT.log("TopPanelPresenter initiated.");
@@ -93,8 +102,8 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
         view.updateChannelStateIcon(channelState);
     }
 
-
     public void onDeviceLocationUpdated(IDeviceLocationModel model) {
+        cancelTimer();
         view.hideDevicesLoading();
     }
 
@@ -124,6 +133,15 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     }
 
     public void sendRequestToUpdatePhoneLocation() {
+        cancelTimer();
+        locationDetectTimer = new Timer() {
+            @Override
+            public void run() {
+                view.hideDevicesLoading();
+                view.displayDevicesLocationTooltip(messages.top_panel_devices_location_detection_delay());
+            }
+        };
+        locationDetectTimer.schedule(MAX_LOCATION_RESPONSE_WAIT);
         view.showDevicesLoading();
         messageRpcServiceAsync.getPhoneLocation(new AsyncCallbackImpl<String>(eventBus) {
             @Override
@@ -134,16 +152,22 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
             @Override
             public void failure(Throwable caught) {
                 if (caught instanceof UserHasNoDevicesException) {
+                    cancelTimer();
                     showNoDevicesFoundMessage();
+                    view.hideDevicesLoading();
                 }
             }
         });
     }
 
+    private void cancelTimer() {
+        if (locationDetectTimer != null) {
+            locationDetectTimer.cancel();
+        }
+    }
+
     private void showNoDevicesFoundMessage() {
-        Window.alert("you don't have any devices linked to your account. " +
-                "Please register the device first, then try to update devices list.");
-        view.hideDevicesLoading();
+        messageWindow.show(messages.top_panel_user_has_no_devices());
     }
 
     public void showDevicesCountWindow() {

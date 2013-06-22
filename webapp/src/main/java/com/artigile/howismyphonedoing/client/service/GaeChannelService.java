@@ -18,6 +18,7 @@ import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.gwt.appengine.channel.client.*;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.web.bindery.autobean.shared.AutoBean;
@@ -118,6 +119,9 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
                 @Override
                 public void onError(ChannelError error) {
                     GWT.log("Channel error: " + error.getCode() + " : " + error.getDescription());
+                    if (DebugUtil.isDebugMode()) {
+                        Window.alert("Channel error. please investigate");
+                    }
                 }
 
                 @Override
