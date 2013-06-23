@@ -14,7 +14,6 @@ import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.ApplicationState;
-import com.artigile.howismyphonedoing.client.service.GaeChannelService;
 import com.artigile.howismyphonedoing.client.widget.SigninWithGooglePlusWindow;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.gwt.core.shared.GWT;
@@ -23,10 +22,12 @@ import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * @author IoaN, 5/26/13 9:07 AM
  */
+@Singleton
 @Presenter(view = MainPageView.class)
 public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus> {
 

@@ -1,4 +1,4 @@
-package com.artigile.howismyphonedoing.api;
+package com.artigile.howismyphonedoing.api.shared;
 
 import com.artigile.howismyphonedoing.api.model.MessageType;
 

@@ -137,7 +137,7 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
         messageToTheDevice.setMessageId(messageToSend.getText() + "_" + new Date().getTime());
         messageToSend.setText("");
         final LabelWithId labelWithId = new LabelWithId(messageToTheDevice.getMessageId());
-        labelWithId.setText(messageToTheDevice.getMessage());
+        labelWithId.setText(devicesValueListBox.getValue().getHumanReadableName() + ": " + messageToTheDevice.getMessage());
         messageQueuePanel.setVisible(true);
         messageRpcServiceAsync.sendMessageToDevice(messageToTheDevice, new AsyncCallbackImpl<String>(eventBus) {
 

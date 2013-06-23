@@ -1,0 +1,66 @@
+<!--
+  ~ Copyright (c) 2007-2013 Artigile.
+  ~ Software development company.
+  ~ All Rights Reserved.
+  ~
+  ~ This software is the confidential and proprietary information of Artigile. ("Confidential Information").
+  ~ You shall not disclose such Confidential Information and shall use it only in accordance with the terms of the
+  ~ license agreement you entered into with Artigile software company.
+  -->
+
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:cellview="urn:import:com.google.gwt.user.cellview.client">
+    <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
+    <ui:with field="images" type="com.artigile.howismyphonedoing.client.resources.Images"/>
+
+    <ui:style>{
+    }
+    .settingsDialogBox {
+        width: auto;
+    }
+    </ui:style>
+
+    <g:DialogBox ui:field="mainDialogBox" modal="false" glassEnabled="false" animationEnabled="true" width="500px"
+                 text="{msg.device_settings_title}" addStyleNames="{style.settingsDialogBox}">
+        <g:DockLayoutPanel unit='EM' height="20em" width="500px">
+            <g:west size='10'>
+                <g:FlowPanel>
+                    <cellview:CellList ui:field="addableDevicesList" pageSize="50"/>
+                </g:FlowPanel>
+            </g:west>
+            <g:center>
+                <g:HTMLPanel>
+                    <table>
+                        <tr>
+                            <td>Battery Level:</td>
+                            <td>55</td>
+                        </tr>
+                        <tr>
+                            <td>Reception level:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Wi-fi enabled:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Bluetooth enabled:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <g:Button ui:field="closeSettings" text="{msg.device_settings_close_window_button}"/>
+                            </td>
+                        </tr>
+                    </table>
+                </g:HTMLPanel>
+            </g:center>
+        </g:DockLayoutPanel>
+    </g:DialogBox>
+</ui:UiBinder>

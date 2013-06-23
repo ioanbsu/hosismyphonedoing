@@ -1,0 +1,58 @@
+package com.artigile.howismyphonedoing.client.service;
+
+import com.artigile.howismyphonedoing.api.model.*;
+import com.artigile.howismyphonedoing.api.shared.WebAppMessageProcessor;
+import com.artigile.howismyphonedoing.client.MainEventBus;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.mvp4g.client.annotation.EventHandler;
+import com.mvp4g.client.event.BaseEventHandler;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+/**
+ * Date: 6/22/13
+ * Time: 7:29 PM
+ *
+ * @author ioanbsu
+ */
+@EventHandler
+@Singleton
+public class MessageReceivedProcessor extends BaseEventHandler<MainEventBus> implements WebAppMessageProcessor<IUserDeviceModel> {
+
+    @Inject
+    private HowIsMyPhoneDoingAutoBeansFactory howIsMyPhoneDoingFactory;
+
+    @Override
+    public String processMessage(IUserDeviceModel userDevice, MessageType messageType, String serializedObject) {
+        if (messageType == MessageType.GET_DEVICE_LOCATION) {
+            AutoBean<IDeviceLocationModel> phoneLocationModelAutoBean = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IDeviceLocationModel.class, serializedObject);
+            IDeviceLocationModel deviceLocationModel = phoneLocationModelAutoBean.as();
+            deviceLocationModel.setDeviceId(userDevice.getDeviceId());
+            eventBus.deviceLocationUpdated(deviceLocationModel);
+        } else if (messageType == MessageType.DEVICE_INFO) {
+
+        } else if (messageType == MessageType.MESSAGE_TO_DEVICE) {
+            AutoBean<IMessageToDeviceModel> messageDeliveredModel = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IMessageToDeviceModel.class, serializedObject);
+            eventBus.messageDelivered(messageDeliveredModel.as());
+        } else if (messageType == MessageType.REGISTER_DEVICE) {
+            eventBus.updateDevicesList();
+        } else if (messageType == MessageType.UNREGISTER_DEVICE) {
+            eventBus.updateDevicesList();
+        } else if (messageType == MessageType.MESSAGE_TYPE_IS_NOT_SUPPORTED) {
+            AutoBean<IMessageNotSupportedByDeviceResponseModel> messageNotSupported = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IMessageNotSupportedByDeviceResponseModel.class, serializedObject);
+            MessageType notSupportedMessageType = MessageType.valueOf(messageNotSupported.as().getMessageType());
+            eventBus.messageNotSupported(userDevice, notSupportedMessageType);
+        }
+        return "succeedded";
+    }
+
+    public void onMessageFromServerReceived(String encodedData) {
+        AutoBean<IResponseFromServer> responseFromServerAutoBean = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IResponseFromServer.class, encodedData);
+        IResponseFromServer responseFromServer = responseFromServerAutoBean.as();
+        processMessage(responseFromServer.getUserDeviceModel(),responseFromServer.getMessageType(),responseFromServer.getSerializedObject());
+
+    }
+
+}

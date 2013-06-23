@@ -11,7 +11,7 @@
 package com.artigile.howismyphonedoing.server.service;
 
 import com.artigile.howismyphonedoing.api.CommonConstants;
-import com.artigile.howismyphonedoing.api.WebAppMessageProcessor;
+import com.artigile.howismyphonedoing.api.shared.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.client.exception.DeviceWasRemovedException;
 import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;

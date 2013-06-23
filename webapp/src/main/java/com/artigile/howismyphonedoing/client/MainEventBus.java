@@ -14,14 +14,15 @@ import com.artigile.howismyphonedoing.api.model.*;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
 import com.artigile.howismyphonedoing.client.mvp.mainpage.MainPagePresenter;
 import com.artigile.howismyphonedoing.client.mvp.mapview.MapBodyPresenter;
+import com.artigile.howismyphonedoing.client.mvp.settings.SettingsPresenter;
 import com.artigile.howismyphonedoing.client.mvp.toppanel.TopPanelPresenter;
 import com.artigile.howismyphonedoing.client.service.GaeChannelService;
 import com.artigile.howismyphonedoing.client.service.MessageNotSupportedProcessor;
+import com.artigile.howismyphonedoing.client.service.MessageReceivedProcessor;
 import com.artigile.howismyphonedoing.client.widget.DevicesListWindow;
 import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
 import com.artigile.howismyphonedoing.client.widget.SigninWithGooglePlusWindow;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
-import com.google.web.bindery.autobean.shared.AutoBean;
 import com.mvp4g.client.annotation.Event;
 import com.mvp4g.client.annotation.Events;
 import com.mvp4g.client.annotation.Start;
@@ -35,19 +36,18 @@ import java.util.List;
 @Events(startPresenter = MainPagePresenter.class)
 public interface MainEventBus extends EventBus {
 
-
     @Start
-    @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class})
+    @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class, SettingsPresenter.class})
     void initApp();
 
     @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class, GaeChannelService.class})
     void userLogout();
 
     @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class,
-            SigninWithGooglePlusWindow.class,GaeChannelService.class})
+            SigninWithGooglePlusWindow.class, GaeChannelService.class})
     void userLoggedIn(StateAndChanelEntity stateAndChanelEntity);
 
-    @Event(handlers = {MapBodyPresenter.class,TopPanelPresenter.class})
+    @Event(handlers = {MapBodyPresenter.class, TopPanelPresenter.class})
     void deviceLocationUpdated(IDeviceLocationModel as);
 
     @Event(handlers = {TopPanelPresenter.class, DevicesListWindow.class, SendMessageWindow.class})
@@ -67,4 +67,7 @@ public interface MainEventBus extends EventBus {
 
     @Event(handlers = SendMessageWindow.class)
     void messageDelivered(IMessageToDeviceModel messageDeliveredModel);
+
+    @Event(handlers = MessageReceivedProcessor.class)
+    void messageFromServerReceived(String encodedData);
 }

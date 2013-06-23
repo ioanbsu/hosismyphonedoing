@@ -16,10 +16,12 @@ import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
 import com.artigile.howismyphonedoing.client.exception.UserHasNoDevicesException;
+import com.artigile.howismyphonedoing.client.mvp.settings.SettingsPresenter;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.ApplicationState;
+import com.artigile.howismyphonedoing.client.service.DebugUtil;
 import com.artigile.howismyphonedoing.client.widget.DevicesListWindow;
 import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
@@ -34,6 +36,7 @@ import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +45,7 @@ import java.util.List;
  * Date: 6/11/13
  * Time: 12:11 PM
  */
+@Singleton
 @Presenter(view = TopPanelView.class)
 public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus> {
 
@@ -61,6 +65,8 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     private YesNoWindow yesNoWindow;
     @Inject
     private MessageWindow messageWindow;
+    @Inject
+    private SettingsPresenter settingsPresenter;
 
     public static final int MAX_LOCATION_RESPONSE_WAIT = 60 * 1000;
 
@@ -152,10 +158,12 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
             @Override
             public void failure(Throwable caught) {
                 if (caught instanceof UserHasNoDevicesException) {
-                    cancelTimer();
                     showNoDevicesFoundMessage();
-                    view.hideDevicesLoading();
+                } else {
+
                 }
+                cancelTimer();
+                view.hideDevicesLoading();
             }
         });
     }
@@ -167,10 +175,16 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     }
 
     private void showNoDevicesFoundMessage() {
-        messageWindow.show(messages.top_panel_user_has_no_devices());
+        if (!DebugUtil.isDebugMode()) {
+            messageWindow.show(messages.top_panel_user_has_no_devices());
+        }
     }
 
     public void showDevicesCountWindow() {
         devicesListWindow.show();
+    }
+
+    public void showDeviceSettings() {
+        settingsPresenter.show();
     }
 }

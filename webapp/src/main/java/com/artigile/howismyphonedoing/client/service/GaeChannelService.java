@@ -90,35 +90,18 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
 
                 @Override
                 public void onMessage(String encodedData) {
-                    AutoBean<IResponseFromServer> responseFromServerAutoBean = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IResponseFromServer.class, encodedData);
-                    IResponseFromServer responseFromServer = responseFromServerAutoBean.as();
-                    if (responseFromServer.getMessageType() == MessageType.GET_DEVICE_LOCATION) {
-                        AutoBean<IDeviceLocationModel> phoneLocationModelAutoBean = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IDeviceLocationModel.class, responseFromServer.getSerializedObject());
-                        IDeviceLocationModel deviceLocationModel = phoneLocationModelAutoBean.as();
-                        deviceLocationModel.setDeviceId(responseFromServer.getUserDeviceModel().getDeviceId());
-                        eventBus.deviceLocationUpdated(deviceLocationModel);
-                    } else if (responseFromServer.getMessageType() == MessageType.DEVICE_INFO) {
-
-                    } else if (responseFromServer.getMessageType() == MessageType.MESSAGE_TO_DEVICE) {
-                        AutoBean<IMessageToDeviceModel> messageDeliveredModel = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IMessageToDeviceModel.class, responseFromServer.getSerializedObject());
-                        eventBus.messageDelivered(messageDeliveredModel.as());
-                    } else if (responseFromServer.getMessageType() == MessageType.REGISTER_DEVICE) {
-                        eventBus.updateDevicesList();
-                    } else if (responseFromServer.getMessageType() == MessageType.UNREGISTER_DEVICE) {
-                        eventBus.updateDevicesList();
-                    } else if (responseFromServer.getMessageType() == MessageType.MESSAGE_TYPE_IS_NOT_SUPPORTED) {
-                        AutoBean<IMessageNotSupportedByDeviceResponseModel> messageNotSupported = AutoBeanCodex.decode(howIsMyPhoneDoingFactory, IMessageNotSupportedByDeviceResponseModel.class, responseFromServer.getSerializedObject());
-                        MessageType messageType = MessageType.valueOf(messageNotSupported.as().getMessageType());
-                        eventBus.messageNotSupported(responseFromServer.getUserDeviceModel(), messageType);
-                    }
-
+                    eventBus.messageFromServerReceived(encodedData);
                 }
 
                 @Override
                 public void onError(ChannelError error) {
                     GWT.log("Channel error: " + error.getCode() + " : " + error.getDescription());
                     if (DebugUtil.isDebugMode()) {
-                        Window.alert("Channel error. please investigate");
+                        messageWindow.show("Channel error. please investigate" + error.getCode() + " " + error.getDescription());
+                    }
+                    if (userLoggedIn) {
+                        eventBus.channelStateChanged(ChannelStateType.CHANNEL_CONNECTING);
+                        reOpenChannel();
                     }
                 }
 

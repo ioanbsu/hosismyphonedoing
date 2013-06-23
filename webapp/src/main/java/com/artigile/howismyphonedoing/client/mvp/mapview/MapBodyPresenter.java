@@ -21,6 +21,7 @@ import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
  * Date: 6/11/13
  * Time: 1:00 PM
  */
+@Singleton
 @Presenter(view = MapBodyView.class)
 public class MapBodyPresenter extends BasePresenter<MapBodyView, MainEventBus> {
     private List<DeviceMarkerModel> deviceMarkerModelList;

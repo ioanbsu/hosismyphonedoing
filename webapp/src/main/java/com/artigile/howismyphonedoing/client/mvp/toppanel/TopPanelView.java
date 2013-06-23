@@ -50,6 +50,8 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     FlowPanel blockWhileConnecting;
     @UiField
     Image reloadPage;
+    @UiField
+    TopPanelButton devicesSettings;
     private TopPanelPresenter presenter;
     @Inject
     private Messages messages;
@@ -100,6 +102,11 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     @UiHandler("reloadPage")
     void onReloadPageClick(ClickEvent event) {
         Window.Location.reload();
+    }
+
+    @UiHandler("devicesSettings")
+    void onDeviceSettingsClick(ClickEvent event){
+        presenter.showDeviceSettings();
     }
 
     public void setLoggedInUserData(String email) {
