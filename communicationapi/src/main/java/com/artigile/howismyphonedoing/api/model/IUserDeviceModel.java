@@ -15,4 +15,8 @@ public interface IUserDeviceModel extends Serializable {
     String getHumanReadableName();
 
     void setHumanReadableName(String humanReadableName);
+
+    Float getBatteryLevel();
+
+    void setBatteryLevel(Float batteryLevel);
 }

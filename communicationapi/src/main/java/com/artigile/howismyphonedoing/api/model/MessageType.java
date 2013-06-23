@@ -44,6 +44,12 @@ public enum MessageType {
             return DeviceLocationModel.class;
         }
     },
+    DEVICE_DETAILS_INFO {
+        @Override
+        public Class<? extends Serializable> getDeserializedClass() {
+            return UserDeviceModel.class;
+        }
+    },
     MESSAGE_TYPE_IS_NOT_SUPPORTED {
         @Override
         public Class<? extends Serializable> getDeserializedClass() {

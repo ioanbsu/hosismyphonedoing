@@ -2,13 +2,14 @@ package com.artigile.howismyphonedoing.client.widget;
 
 import com.artigile.howismyphonedoing.api.model.GwtLocale;
 import com.artigile.howismyphonedoing.api.model.IMessageToDeviceModel;
-import com.artigile.howismyphonedoing.api.model.MessageToDeviceModel;
+import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.exception.DeviceWasRemovedException;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
+import com.artigile.howismyphonedoing.client.service.HowIsMyPhoneDoingAutoBeansFactory;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -18,6 +19,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ProvidesKey;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.mvp4g.client.annotation.EventHandler;
 import com.mvp4g.client.event.BaseEventHandler;
 
@@ -60,6 +63,8 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
     private MessageWindow messageWindow;
     @Inject
     private Messages messages;
+    @Inject
+    private HowIsMyPhoneDoingAutoBeansFactory howIsMyPhoneDoingBeansFactory;
     private List<UserDeviceModel> userDeviceModels;
 
 
@@ -130,17 +135,19 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
     }
 
     private void sendMessageToTheDevice() {
-        MessageToDeviceModel messageToTheDevice = new MessageToDeviceModel();
-        messageToTheDevice.setDeviceId(devicesValueListBox.getValue().getDeviceId());
-        messageToTheDevice.setMessage(messageToSend.getText());
-        messageToTheDevice.setLocale(GwtLocale.parse(languagesList.getItemText(languagesList.getSelectedIndex())));
-        messageToTheDevice.setMessageId(messageToSend.getText() + "_" + new Date().getTime());
-        messageToSend.setText("");
-        final LabelWithId labelWithId = new LabelWithId(messageToTheDevice.getMessageId());
-        labelWithId.setText(devicesValueListBox.getValue().getHumanReadableName() + ": " + messageToTheDevice.getMessage());
-        messageQueuePanel.setVisible(true);
-        messageRpcServiceAsync.sendMessageToDevice(messageToTheDevice, new AsyncCallbackImpl<String>(eventBus) {
+        AutoBean<IMessageToDeviceModel> messageToTheDeviceAutoBean = howIsMyPhoneDoingBeansFactory.create(IMessageToDeviceModel.class);
+        messageToTheDeviceAutoBean.as().setDeviceId(devicesValueListBox.getValue().getDeviceId());
+        messageToTheDeviceAutoBean.as().setMessage(messageToSend.getText());
+        messageToTheDeviceAutoBean.as().setLocale(GwtLocale.parse(languagesList.getItemText(languagesList.getSelectedIndex())));
+        messageToTheDeviceAutoBean.as().setMessageId(messageToSend.getText() + "_" + new Date().getTime());
 
+        messageToSend.setText("");
+        final LabelWithId labelWithId = new LabelWithId(messageToTheDeviceAutoBean.as().getMessageId());
+        labelWithId.setText(devicesValueListBox.getValue().getHumanReadableName() + ": " + messageToTheDeviceAutoBean.as().getMessage());
+        messageQueuePanel.setVisible(true);
+
+        String serializedMessage = AutoBeanCodex.encode(messageToTheDeviceAutoBean).getPayload();
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.MESSAGE_TO_DEVICE, devicesValueListBox.getValue().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
             @Override
             public void success(String result) {
                 messagesAuditTrail.add(labelWithId);
@@ -154,6 +161,22 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
                 }
             }
         });
+
+     /*   messageRpcServiceAsync.sendMessageToDevice(messageToTheDevice, new AsyncCallbackImpl<String>(eventBus) {
+
+            @Override
+            public void success(String result) {
+                messagesAuditTrail.add(labelWithId);
+            }
+
+            @Override
+            public void failure(Throwable caught) {
+                if (caught instanceof DeviceWasRemovedException) {
+                    messageWindow.show(messages.send_message_window_device_no_longer_exist_label());
+                    eventBus.updateDevicesList();
+                }
+            }
+        });*/
     }
 
     @UiHandler("messageToSend")

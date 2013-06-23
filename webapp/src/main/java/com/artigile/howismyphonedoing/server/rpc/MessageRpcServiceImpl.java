@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * The server side implementation of the RPC service.
@@ -40,30 +41,14 @@ public class MessageRpcServiceImpl extends AbstractRpcService implements Message
     private WebAppMessageSender messageSender;
     @Autowired
     private MessageParser messageParser;
-
-    public String sendMessageToDevice(MessageToDeviceModel messageContent) throws Exception {
-        UserDevice userDevice = userAndDeviceDao.getById(messageContent.getDeviceId());
-        if (userDevice == null) {
-            throw new DeviceWasRemovedException();
-        }
-        messageSender.processMessage(new HashSet<UserDevice>(Arrays.asList(userDevice)),
-                MessageType.MESSAGE_TO_DEVICE, messageParser.serialize(messageContent));
-        return "Message has been successfully sent";
-    }
+    protected final Logger logger = Logger.getLogger(getClass().getName());
 
     @Override
-    public String getPhoneInfo() throws DeviceWasRemovedException {
-        Set<UserDevice> userDevice = userAndDeviceDao.getDevices(getUserEmailFromSession());
-        messageSender.processMessage(userDevice, MessageType.DEVICE_INFO, messageParser.serialize(new DeviceModel()));
-        return "message sent for getting phone info";
-    }
-
-    @Override
-    public String getPhoneLocation() throws DeviceWasRemovedException, UserHasNoDevicesException {
+    public String getDevicesLodations() throws DeviceWasRemovedException, UserHasNoDevicesException {
         Set<UserDevice> userDevice = userAndDeviceDao.getDevices(getUserEmailFromSession());
         if (userDevice != null && !userDevice.isEmpty()) {
             messageSender.processMessage(userDevice, MessageType.GET_DEVICE_LOCATION, messageParser.serialize(new DeviceModel()));
-        } else{
+        } else {
             throw new UserHasNoDevicesException();
         }
         return "message sent to get phone location";
@@ -74,5 +59,19 @@ public class MessageRpcServiceImpl extends AbstractRpcService implements Message
         userAndDeviceDao.removeAllUserDevices(getUserEmailFromSession());
         return "successfully removed";
     }
+
+    @Override
+    public String sendMessageToDevice(MessageType messageType, String deviceId, String serializedObject) throws DeviceWasRemovedException {
+        logger.info("Sending messages to device with id = " + deviceId + ", message type = " + messageType);
+        UserDevice userDevice = userAndDeviceDao.getById(deviceId);
+        if (userDevice == null) {
+            throw new DeviceWasRemovedException();
+        }
+        HashSet<UserDevice> userDevices = new HashSet<>();
+        userDevices.add(userDevice);
+        messageSender.processMessage(userDevices, messageType, serializedObject);
+        return "success";
+    }
+
 
 }

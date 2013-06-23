@@ -27,39 +27,64 @@
             <g:west size='10'>
                 <g:FlowPanel>
                     <cellview:CellList ui:field="addableDevicesList" pageSize="50"/>
+                    <g:Button ui:field="closeSettings" text="{msg.device_settings_close_window_button}"/>
+                    <g:Button ui:field="refreshDeviceInfo" text="{msg.device_settings_refresh_device_info_button}"/>
                 </g:FlowPanel>
             </g:west>
             <g:center>
-                <g:HTMLPanel>
-                    <table>
-                        <tr>
-                            <td>Battery Level:</td>
-                            <td>55</td>
-                        </tr>
-                        <tr>
-                            <td>Reception level:</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Wi-fi enabled:</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Bluetooth enabled:</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <g:Button ui:field="closeSettings" text="{msg.device_settings_close_window_button}"/>
-                            </td>
-                        </tr>
-                    </table>
-                </g:HTMLPanel>
+                <g:TabLayoutPanel barUnit='EM' barHeight='2.4' animationDuration="200">
+                    <g:tab>
+                        <g:header size='7'>
+                            <b>Device</b>
+                            info
+                        </g:header>
+                        <g:SimplePanel ui:field="deviceInfo"/>
+                    </g:tab>
+                    <g:tab>
+                        <g:customHeader size='7'>
+                            <g:Label>Settings</g:Label>
+                        </g:customHeader>
+                        <g:HTMLPanel>
+                            <table>
+                                <tr>
+                                    <td>Silent Mode</td>
+                                    <td>
+                                        <g:RadioButton name="silentMode" text="On" enabled="false"/>
+                                        <g:RadioButton name="silentMode" text="Off" enabled="false"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Alarms</td>
+                                    <td>
+                                        <g:ListBox enabled="false"/>
+                                        <g:Button text="Add alarm time" enabled="false"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Bluetooth</td>
+                                    <td>
+                                        <g:RadioButton name="bluetooth" text="On" enabled="false"/>
+                                        <g:RadioButton name="bluetooth" text="Off" enabled="false"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Wi-fi</td>
+                                    <td>
+                                        <g:RadioButton name="wifi" text="On" enabled="false"/>
+                                        <g:RadioButton name="wifi" text="Off" enabled="false"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <g:Button text="Save Settings" enabled="false"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </g:HTMLPanel>
+                    </g:tab>
+                </g:TabLayoutPanel>
+
             </g:center>
         </g:DockLayoutPanel>
     </g:DialogBox>

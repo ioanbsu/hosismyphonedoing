@@ -149,7 +149,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
         };
         locationDetectTimer.schedule(MAX_LOCATION_RESPONSE_WAIT);
         view.showDevicesLoading();
-        messageRpcServiceAsync.getPhoneLocation(new AsyncCallbackImpl<String>(eventBus) {
+        messageRpcServiceAsync.getDevicesLodations(new AsyncCallbackImpl<String>(eventBus) {
             @Override
             public void success(String result) {
 

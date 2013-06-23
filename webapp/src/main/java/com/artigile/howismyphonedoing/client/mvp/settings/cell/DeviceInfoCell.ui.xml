@@ -1,0 +1,37 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        >
+    <ui:with field='deviceName' type='java.lang.String'/>
+
+    <ui:style>
+        .deviceInfo {
+            background-color: pink;
+        }
+
+    </ui:style>
+
+    <table class="{style.deviceInfo}">
+        <tr>
+            <td>Battery Level:</td>
+            <td>55  <ui:text from='{deviceName}'/></td>
+        </tr>
+        <tr>
+            <td>Reception level:</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Wi-fi enabled:</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Bluetooth enabled:</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+
+            </td>
+        </tr>
+    </table>
+</ui:UiBinder>

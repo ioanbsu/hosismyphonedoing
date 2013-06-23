@@ -1,7 +1,5 @@
 package com.artigile.howismyphonedoing.api.model;
 
-import java.io.Serializable;
-
 /**
  * User: ioanbsu
  * Date: 6/11/13
@@ -12,6 +10,8 @@ public class UserDeviceModel implements IUserDeviceModel {
     private String deviceId;
 
     private String humanReadableName;
+
+    private Float batteryLevel;
 
     @Override
     public String getDeviceId() {
@@ -31,5 +31,15 @@ public class UserDeviceModel implements IUserDeviceModel {
     @Override
     public void setHumanReadableName(String humanReadableName) {
         this.humanReadableName = humanReadableName;
+    }
+
+    @Override
+    public Float getBatteryLevel() {
+        return batteryLevel;
+    }
+
+    @Override
+    public void setBatteryLevel(Float batteryLevel) {
+        this.batteryLevel = batteryLevel;
     }
 }
