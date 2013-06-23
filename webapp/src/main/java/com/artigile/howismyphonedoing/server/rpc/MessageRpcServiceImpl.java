@@ -44,7 +44,7 @@ public class MessageRpcServiceImpl extends AbstractRpcService implements Message
     protected final Logger logger = Logger.getLogger(getClass().getName());
 
     @Override
-    public String getDevicesLodations() throws DeviceWasRemovedException, UserHasNoDevicesException {
+    public String getDevicesLocations() throws DeviceWasRemovedException, UserHasNoDevicesException {
         Set<UserDevice> userDevice = userAndDeviceDao.getDevices(getUserEmailFromSession());
         if (userDevice != null && !userDevice.isEmpty()) {
             messageSender.processMessage(userDevice, MessageType.GET_DEVICE_LOCATION, messageParser.serialize(new DeviceModel()));
