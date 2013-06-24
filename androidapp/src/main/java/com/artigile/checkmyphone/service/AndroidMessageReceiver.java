@@ -53,6 +53,10 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     private CommonUtilities commonUtilities;
     @Inject
     private DeviceInfoService deviceInfoService;
+    @Inject
+    private DeviceDetailsReader UserPhoneDetailsReader;
+    @Inject
+    private DeviceDetailsReader deviceDetailsReader;
     private String TAG = "AndroidMessageReceiver";
     private AndroidMessageResultListener androidMessageResultListener;
 
@@ -100,6 +104,9 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                     failsafeSendMessage(messageType, messageParser.serialize(deviceLocationModel));
                 }
             });
+        } else if (messageType == MessageType.DEVICE_DETAILS_INFO) {
+            UserDeviceModel userDeviceModel = deviceDetailsReader.getUserDeviceDetails(null);
+            failsafeSendMessage(messageType, messageParser.serialize(userDeviceModel));
         } else {
             commonUtilities.displayMessage(context, serializedObject);
             // notifies user

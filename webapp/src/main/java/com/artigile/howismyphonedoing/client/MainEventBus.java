@@ -23,6 +23,7 @@ import com.artigile.howismyphonedoing.client.widget.DevicesListWindow;
 import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
 import com.artigile.howismyphonedoing.client.widget.SigninWithGooglePlusWindow;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
+import com.google.web.bindery.autobean.shared.AutoBean;
 import com.mvp4g.client.annotation.Event;
 import com.mvp4g.client.annotation.Events;
 import com.mvp4g.client.annotation.Start;
@@ -50,7 +51,7 @@ public interface MainEventBus extends EventBus {
     @Event(handlers = {MapBodyPresenter.class, TopPanelPresenter.class})
     void deviceLocationUpdated(IDeviceLocationModel as);
 
-    @Event(handlers = {TopPanelPresenter.class, DevicesListWindow.class, SendMessageWindow.class})
+    @Event(handlers = {TopPanelPresenter.class, DevicesListWindow.class, SendMessageWindow.class,SettingsPresenter.class})
     void usersDevicesListReceived(List<UserDeviceModel> result);
 
     @Event(handlers = {TopPanelPresenter.class})
@@ -70,4 +71,7 @@ public interface MainEventBus extends EventBus {
 
     @Event(handlers = MessageReceivedProcessor.class)
     void messageFromServerReceived(String encodedData);
+
+    @Event(handlers = SettingsPresenter.class)
+    void deviceDetailsReceived(IUserDeviceModel deviceDetails);
 }

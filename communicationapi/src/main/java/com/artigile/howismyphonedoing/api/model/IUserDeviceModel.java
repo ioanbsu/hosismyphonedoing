@@ -1,5 +1,9 @@
 package com.artigile.howismyphonedoing.api.model;
 
+import com.artigile.howismyphonedoing.api.model.battery.BatteryHealthType;
+import com.artigile.howismyphonedoing.api.model.battery.BatteryPluggedType;
+import com.artigile.howismyphonedoing.api.model.battery.BatteryStatusType;
+
 import java.io.Serializable;
 
 /**
@@ -19,4 +23,16 @@ public interface IUserDeviceModel extends Serializable {
     Float getBatteryLevel();
 
     void setBatteryLevel(Float batteryLevel);
+
+    BatteryHealthType getBatteryHealthType();
+
+    void setBatteryHealthType(BatteryHealthType batteryHealthType);
+
+    BatteryPluggedType getBatteryPluggedType();
+
+    void setBatteryPluggedType(BatteryPluggedType batteryPluggedType);
+
+    BatteryStatusType getBatteryStatusType();
+
+    void setBatteryStatusType(BatteryStatusType batteryStatusType);
 }

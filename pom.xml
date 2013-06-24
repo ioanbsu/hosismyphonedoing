@@ -110,7 +110,7 @@
             <dependency>
                 <groupId>com.artigile.howismyphonedoing</groupId>
                 <artifactId>communicationapi</artifactId>
-                <version>${version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.gwt.google-apis</groupId>
@@ -183,12 +183,6 @@
                 <groupId>org.aspectj</groupId>
                 <artifactId>aspectjweaver</artifactId>
                 <version>${aspectjrt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.validation</groupId>
-                <artifactId>validation-api</artifactId>
-                <version>${validation-api.version}</version>
-                <classifier>sources</classifier>
             </dependency>
             <dependency>
                 <groupId>javax.validation</groupId>

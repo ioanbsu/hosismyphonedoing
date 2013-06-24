@@ -1,5 +1,6 @@
 package com.artigile.howismyphonedoing.client.mvp.settings.cell;
 
+import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.resources.CellStyles;
 import com.google.gwt.cell.client.AbstractCell;
@@ -21,7 +22,7 @@ import com.google.gwt.uibinder.client.UiRenderer;
  * @author ioanbsu
  */
 
-public class DeviceListCell extends AbstractCell<UserDeviceModel> {
+public class DeviceListCell extends AbstractCell<IUserDeviceModel> {
 
     interface MyUiRenderer extends UiRenderer {
         void render(SafeHtmlBuilder sb, String deviceName);
@@ -39,7 +40,7 @@ public class DeviceListCell extends AbstractCell<UserDeviceModel> {
 
 
     @Override
-    public void render(Context context, UserDeviceModel value, SafeHtmlBuilder sb) {
+    public void render(Context context, IUserDeviceModel value, SafeHtmlBuilder sb) {
         if (value == null) {
             return;
         }

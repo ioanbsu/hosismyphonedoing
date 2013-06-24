@@ -38,7 +38,7 @@
                             <b>Device</b>
                             info
                         </g:header>
-                        <g:SimplePanel ui:field="deviceInfo"/>
+                        <cellview:CellWidget ui:field="deviceInfo"/>
                     </g:tab>
                     <g:tab>
                         <g:customHeader size='7'>

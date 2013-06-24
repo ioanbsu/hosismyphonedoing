@@ -24,10 +24,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.artigile.checkmyphone.service.CommonUtilities;
+import com.artigile.checkmyphone.service.DeviceDetailsReader;
 import com.artigile.checkmyphone.service.DeviceRegistrationServiceImpl;
 import com.artigile.checkmyphone.service.LocationService;
 import com.artigile.checkmyphone.util.GCMRegistrar;
 import com.artigile.howismyphonedoing.api.CommonConstants;
+import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import roboguice.activity.RoboActivity;
@@ -44,7 +46,7 @@ import static com.artigile.checkmyphone.service.CommonUtilities.*;
  * Time: 3:47 PM
  */
 @Singleton
-public class MainActivity extends RoboActivity{
+public class MainActivity extends RoboActivity {
 
     private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -64,6 +66,8 @@ public class MainActivity extends RoboActivity{
     private LocationService locationService;
     @Inject
     private CommonUtilities commonUtilities;
+    @Inject
+    private DeviceDetailsReader deviceDetailsReader;
     private Dialog errorDialog;
 
     @Override
@@ -138,6 +142,15 @@ public class MainActivity extends RoboActivity{
         mDisplay.setText("");
     }
 
+    public void testButton(View v) {
+        UserDeviceModel userDeviceModel = deviceDetailsReader.getUserDeviceDetails(null);
+        commonUtilities.displayMessage(this, "===========");
+        commonUtilities.displayMessage(this, userDeviceModel.getBatteryLevel() + "");
+        commonUtilities.displayMessage(this, userDeviceModel.getBatteryHealthType() + "");
+        commonUtilities.displayMessage(this, userDeviceModel.getBatteryStatusType() + "");
+        commonUtilities.displayMessage(this, userDeviceModel.getBatteryPluggedType() + "");
+    }
+
     @Override
     protected void onDestroy() {
         if (mRegisterTask != null) {
@@ -189,18 +202,18 @@ public class MainActivity extends RoboActivity{
         }
     }
 
- /*   @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeechService.setLanguage(Locale.US);
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            }
-        } else {
-            Log.e("TTS", "Initilization Failed!");
-        }
-    }
-*/
+    /*   @Override
+       public void onInit(int status) {
+           if (status == TextToSpeech.SUCCESS) {
+               int result = textToSpeechService.setLanguage(Locale.US);
+               if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                   Log.e("TTS", "This Language is not supported");
+               }
+           } else {
+               Log.e("TTS", "Initilization Failed!");
+           }
+       }
+   */
     private void checkGooglePlayServiceAvailability(int requestCode) {
         // Query for the status of Google Play services on the device
         int statusCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());

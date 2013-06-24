@@ -11,6 +11,9 @@
 package com.artigile.howismyphonedoing.server.service;
 
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
+import com.artigile.howismyphonedoing.api.model.battery.BatteryHealthType;
+import com.artigile.howismyphonedoing.api.model.battery.BatteryPluggedType;
+import com.artigile.howismyphonedoing.api.model.battery.BatteryStatusType;
 import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,28 @@ public class UserInfoService {
             userDeviceModel.setHumanReadableName(userDevice.getHumanReadableName());
             userDeviceModelList.add(userDeviceModel);
         }
+
+//        fakeDevices(userDeviceModelList);
         return userDeviceModelList;
+    }
+
+    private void fakeDevices(List<UserDeviceModel> userDeviceModelList) {
+        UserDeviceModel userDeviceModel1=new UserDeviceModel();
+        userDeviceModel1.setBatteryHealthType(BatteryHealthType.BATTERY_HEALTH_UNKNOWN);
+        userDeviceModel1.setBatteryLevel(55F);
+        userDeviceModel1.setDeviceId("1");
+        userDeviceModel1.setBatteryStatusType(BatteryStatusType.BATTERY_STATUS_NOT_CHARGING);
+        userDeviceModel1.setBatteryPluggedType(BatteryPluggedType.BATTERY_PLUGGED_WIRELESS);
+        userDeviceModel1.setHumanReadableName("MyDevice 1");
+
+        UserDeviceModel userDeviceModel2=new UserDeviceModel();
+        userDeviceModel2.setBatteryHealthType(BatteryHealthType.BATTERY_HEALTH_UNSPECIFIED_FAILURE);
+        userDeviceModel2.setBatteryLevel(5F);
+        userDeviceModel2.setBatteryStatusType(BatteryStatusType.BATTERY_STATUS_FULL);
+        userDeviceModel2.setDeviceId("2");
+        userDeviceModel2.setBatteryPluggedType(BatteryPluggedType.BATTERY_PLUGGED_USB);
+        userDeviceModel2.setHumanReadableName("MyDevice 2");
+        userDeviceModelList.add(userDeviceModel1);
+        userDeviceModelList.add(userDeviceModel2);
     }
 }

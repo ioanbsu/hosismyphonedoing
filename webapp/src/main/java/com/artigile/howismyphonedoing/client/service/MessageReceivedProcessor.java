@@ -44,6 +44,10 @@ public class MessageReceivedProcessor extends BaseEventHandler<MainEventBus> imp
             AutoBean<IMessageNotSupportedByDeviceResponseModel> messageNotSupported = AutoBeanCodex.decode(howIsMyPhoneDoingBeansFactory, IMessageNotSupportedByDeviceResponseModel.class, serializedObject);
             MessageType notSupportedMessageType = MessageType.valueOf(messageNotSupported.as().getMessageType());
             eventBus.messageNotSupported(userDevice, notSupportedMessageType);
+        } else if (messageType == MessageType.DEVICE_DETAILS_INFO) {
+            AutoBean<IUserDeviceModel> deviceDetails = AutoBeanCodex.decode(howIsMyPhoneDoingBeansFactory, IUserDeviceModel.class, serializedObject);
+            deviceDetails.as().setDeviceId(userDevice.getDeviceId());
+            eventBus.deviceDetailsReceived(deviceDetails.as());
         }
         return "succeedded";
     }

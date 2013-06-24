@@ -1,8 +1,10 @@
 package com.artigile.howismyphonedoing.client.mvp.settings;
 
+import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoCell;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceListCell;
+import com.artigile.howismyphonedoing.client.service.DebugUtil;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -12,7 +14,6 @@ import com.google.gwt.user.cellview.client.CellWidget;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -39,19 +40,20 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
     @UiField
     Button closeSettings;
     @UiField(provided = true)
-    CellList<UserDeviceModel> addableDevicesList;
-    @UiField
-    SimplePanel deviceInfo;
+    CellList<IUserDeviceModel> addableDevicesList;
+    @UiField(provided = true)
+    CellWidget<IUserDeviceModel> deviceInfo;
     @UiField
     Button refreshDeviceInfo;
 
-    protected ListDataProvider<UserDeviceModel> dataProvider = new ListDataProvider<UserDeviceModel>();
-    final SingleSelectionModel<UserDeviceModel> selectionModel = new SingleSelectionModel<UserDeviceModel>();
+    protected ListDataProvider<IUserDeviceModel> dataProvider = new ListDataProvider<IUserDeviceModel>();
+    final SingleSelectionModel<IUserDeviceModel> selectionModel = new SingleSelectionModel<IUserDeviceModel>();
 
 
     @Inject
     public SettingsView(Binder binder) {
-        addableDevicesList = new CellList<UserDeviceModel>(new DeviceListCell(), getUserDeviceModelProvidesKey());
+        deviceInfo = new CellWidget<IUserDeviceModel>(new DeviceInfoCell());
+        addableDevicesList = new CellList<IUserDeviceModel>(new DeviceListCell(), getUserDeviceModelProvidesKey());
         addableDevicesList.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
         dataProvider.addDataDisplay(addableDevicesList);
 
@@ -59,27 +61,10 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
         selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent event) {
-                presenter.onDeviceSelected(selectionModel.getSelectedObject());
-                CellWidget<UserDeviceModel> cellWidget=new CellWidget<UserDeviceModel>(new DeviceInfoCell());
-                cellWidget.setValue(selectionModel.getSelectedObject());
-                deviceInfo.setWidget(cellWidget);
+                deviceInfo.setValue(selectionModel.getSelectedObject());
             }
         });
         binder.createAndBindUi(this);
-        initFake();
-    }
-
-    private void initFake() {
-        List<UserDeviceModel> userDeviceModels = new ArrayList<UserDeviceModel>();
-        UserDeviceModel userDeviceModel1 = new UserDeviceModel();
-        UserDeviceModel userDeviceModel2 = new UserDeviceModel();
-        userDeviceModel1.setDeviceId("1");
-        userDeviceModel1.setHumanReadableName("name1");
-        userDeviceModel2.setDeviceId("2");
-        userDeviceModel2.setHumanReadableName("name2");
-        userDeviceModels.add(userDeviceModel1);
-        userDeviceModels.add(userDeviceModel2);
-        dataProvider.setList(userDeviceModels);
     }
 
     @Override
@@ -107,17 +92,36 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
 
     @UiHandler("refreshDeviceInfo")
     void onRefreshDeviceInfo(ClickEvent event) {
-        presenter.requestRefreshDeficeInfo(selectionModel.getSelectedObject());
+        presenter.requestRefreshDeviceInfo(selectionModel.getSelectedObject());
     }
 
 
-    protected ProvidesKey<UserDeviceModel> getUserDeviceModelProvidesKey() {
-        return new ProvidesKey<UserDeviceModel>() {
+    protected ProvidesKey<IUserDeviceModel> getUserDeviceModelProvidesKey() {
+        return new ProvidesKey<IUserDeviceModel>() {
             @Override
-            public Object getKey(UserDeviceModel item) {
+            public Object getKey(IUserDeviceModel item) {
                 return item.getDeviceId();
             }
         };
+    }
+
+    public void updateDeviceDetails(IUserDeviceModel deviceDetails) {
+        for (IUserDeviceModel userDeviceModel : dataProvider.getList()) {
+            if (userDeviceModel.getDeviceId().equals(deviceDetails.getDeviceId())) {
+                userDeviceModel.setBatteryLevel(deviceDetails.getBatteryLevel());
+                userDeviceModel.setBatteryStatusType(deviceDetails.getBatteryStatusType());
+                userDeviceModel.setBatteryPluggedType(deviceDetails.getBatteryPluggedType());
+                userDeviceModel.setBatteryHealthType(deviceDetails.getBatteryHealthType());
+            }
+        }
+        if (deviceInfo.getValue().getDeviceId().equals(deviceDetails)) {
+            deviceInfo.setValue(deviceDetails);
+        }
+    }
+
+    public void setDevicesList(List<UserDeviceModel> result) {
+        dataProvider.getList().clear();
+        dataProvider.getList().addAll(result);
     }
 
     public static interface Binder extends UiBinder<DialogBox, SettingsView> {

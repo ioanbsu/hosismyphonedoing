@@ -104,7 +104,7 @@
         <toppanel:TopPanelButton text="{msg.top_panel_read_loud_on_my_phone}" ui:field="sendTextToPhone"
                   styleName="{style.topMenuButtonStyle}"/>
         <toppanel:TopPanelButton text="{msg.device_settings_title}" ui:field="devicesSettings"
-                                 styleName="{style.topMenuButtonStyle}" visible="false"/>
+                                 styleName="{style.topMenuButtonStyle}" />
         <toppanel:TopPanelButton text="{msg.top_panel_log_out}" ui:field="logoutButton"
                   styleName="{style.topMenuButtonStyle} {style.logOutFloatRight}"/>
 

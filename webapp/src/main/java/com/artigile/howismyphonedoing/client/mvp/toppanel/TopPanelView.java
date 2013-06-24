@@ -12,6 +12,7 @@ package com.artigile.howismyphonedoing.client.mvp.toppanel;
 
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
+import com.artigile.howismyphonedoing.client.service.DebugUtil;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -60,6 +61,7 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     public TopPanelView(Binder binder) {
         initWidget(binder.createAndBindUi(this));
         blockWhileConnecting.setVisible(false);
+        devicesSettings.setVisible(DebugUtil.isDebugMode());
     }
 
     @Override
@@ -105,7 +107,7 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     }
 
     @UiHandler("devicesSettings")
-    void onDeviceSettingsClick(ClickEvent event){
+    void onDeviceSettingsClick(ClickEvent event) {
         presenter.showDeviceSettings();
     }
 

@@ -1,5 +1,9 @@
 package com.artigile.howismyphonedoing.api.model;
 
+import com.artigile.howismyphonedoing.api.model.battery.BatteryHealthType;
+import com.artigile.howismyphonedoing.api.model.battery.BatteryPluggedType;
+import com.artigile.howismyphonedoing.api.model.battery.BatteryStatusType;
+
 /**
  * User: ioanbsu
  * Date: 6/11/13
@@ -12,6 +16,12 @@ public class UserDeviceModel implements IUserDeviceModel {
     private String humanReadableName;
 
     private Float batteryLevel;
+
+    private BatteryHealthType batteryHealthType;
+
+    private BatteryPluggedType batteryPluggedType;
+
+    private BatteryStatusType batteryStatusType;
 
     @Override
     public String getDeviceId() {
@@ -41,5 +51,35 @@ public class UserDeviceModel implements IUserDeviceModel {
     @Override
     public void setBatteryLevel(Float batteryLevel) {
         this.batteryLevel = batteryLevel;
+    }
+
+    @Override
+    public BatteryHealthType getBatteryHealthType() {
+        return batteryHealthType;
+    }
+
+    @Override
+    public void setBatteryHealthType(BatteryHealthType batteryHealthType) {
+        this.batteryHealthType = batteryHealthType;
+    }
+
+    @Override
+    public BatteryPluggedType getBatteryPluggedType() {
+        return batteryPluggedType;
+    }
+
+    @Override
+    public void setBatteryPluggedType(BatteryPluggedType batteryPluggedType) {
+        this.batteryPluggedType = batteryPluggedType;
+    }
+
+    @Override
+    public BatteryStatusType getBatteryStatusType() {
+        return batteryStatusType;
+    }
+
+    @Override
+    public void setBatteryStatusType(BatteryStatusType batteryStatusType) {
+        this.batteryStatusType = batteryStatusType;
     }
 }
