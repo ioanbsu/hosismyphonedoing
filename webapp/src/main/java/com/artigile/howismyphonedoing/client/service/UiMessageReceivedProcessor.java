@@ -19,7 +19,7 @@ import javax.inject.Singleton;
  */
 @EventHandler
 @Singleton
-public class MessageReceivedProcessor extends BaseEventHandler<MainEventBus> implements WebAppMessageProcessor<IUserDeviceModel> {
+public class UiMessageReceivedProcessor extends BaseEventHandler<MainEventBus> implements WebAppMessageProcessor<IUserDeviceModel> {
 
     @Inject
     private HowIsMyPhoneDoingAutoBeansFactory howIsMyPhoneDoingBeansFactory;
@@ -47,9 +47,10 @@ public class MessageReceivedProcessor extends BaseEventHandler<MainEventBus> imp
         } else if (messageType == MessageType.DEVICE_DETAILS_INFO) {
             AutoBean<IUserDeviceModel> deviceDetails = AutoBeanCodex.decode(howIsMyPhoneDoingBeansFactory, IUserDeviceModel.class, serializedObject);
             deviceDetails.as().setDeviceId(userDevice.getDeviceId());
+            deviceDetails.as().setHumanReadableName(userDevice.getHumanReadableName());
             eventBus.deviceDetailsReceived(deviceDetails.as());
         }
-        return "succeedded";
+        return "succeeded";
     }
 
     public void onMessageFromServerReceived(String encodedData) {

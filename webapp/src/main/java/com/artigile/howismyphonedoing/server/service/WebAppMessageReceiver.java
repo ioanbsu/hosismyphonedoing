@@ -72,6 +72,7 @@ public class WebAppMessageReceiver implements WebAppMessageProcessor<String> {
                 if (userDevice != null) {
                     UserDeviceModel userDeviceModel = new UserDeviceModel();
                     userDeviceModel.setDeviceId(userDevice.getUuid());
+                    userDeviceModel.setDeviceId(userDevice.getHumanReadableName());
                     responseFromServer.setUserDeviceModel(userDeviceModel);
                 }
                 channelService.sendMessage(new ChannelMessage(userEmail, new Gson().toJson(responseFromServer)));

@@ -68,16 +68,16 @@ public class DeviceDetailsReader {
             userDeviceModel.setBatteryPluggedType(BatteryPluggedType.BATTERY_PLUGGED_WIRELESS);
         }
 
-        //=====Battery Plugged======
-        if (batteryPlugged == BatteryManager.BATTERY_STATUS_CHARGING) {
+        //=====Battery Status======
+        if (batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
             userDeviceModel.setBatteryStatusType(BatteryStatusType.BATTERY_STATUS_CHARGING);
-        } else if (batteryPlugged == BatteryManager.BATTERY_STATUS_DISCHARGING) {
+        } else if (batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING) {
             userDeviceModel.setBatteryStatusType(BatteryStatusType.BATTERY_STATUS_DISCHARGING);
-        } else if (batteryPlugged == BatteryManager.BATTERY_STATUS_FULL) {
+        } else if (batteryStatus == BatteryManager.BATTERY_STATUS_FULL) {
             userDeviceModel.setBatteryStatusType(BatteryStatusType.BATTERY_STATUS_FULL);
-        } else if (batteryPlugged == BatteryManager.BATTERY_STATUS_NOT_CHARGING) {
+        } else if (batteryStatus == BatteryManager.BATTERY_STATUS_NOT_CHARGING) {
             userDeviceModel.setBatteryStatusType(BatteryStatusType.BATTERY_STATUS_NOT_CHARGING);
-        } else if (batteryPlugged == BatteryManager.BATTERY_STATUS_UNKNOWN) {
+        } else if (batteryStatus == BatteryManager.BATTERY_STATUS_UNKNOWN) {
             userDeviceModel.setBatteryStatusType(BatteryStatusType.BATTERY_STATUS_UNKNOWN);
         }
 

@@ -63,6 +63,7 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
             @Override
             public void onSelectionChange(SelectionChangeEvent event) {
                 deviceInfo.setValue(selectionModel.getSelectedObject());
+                presenter.requestRefreshDeviceInfo(selectionModel.getSelectedObject());
             }
         });
         binder.createAndBindUi(this);

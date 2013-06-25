@@ -17,6 +17,7 @@ import android.app.Dialog;
 import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.telephony.SignalStrength;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;

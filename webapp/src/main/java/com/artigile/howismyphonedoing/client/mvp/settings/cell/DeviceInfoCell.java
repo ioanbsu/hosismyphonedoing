@@ -95,18 +95,18 @@ public class DeviceInfoCell extends AbstractCell<IUserDeviceModel> {
     }
 
     private String calculateWidth(IUserDeviceModel deviceModelData) {
-        if (deviceModelData != null) {
+        if (deviceModelData != null&&deviceModelData.getBatteryLevel()!=null) {
             return templates.widthTemplate(SafeHtmlUtils.fromString(deviceModelData.getBatteryLevel() / 100 * 96 + "")).asString();
         }
         return "";
     }
 
-    private String calculateColor(IUserDeviceModel value) {
+    private String calculateColor(IUserDeviceModel iUserDeviceModel) {
 
-        if (value.getBatteryLevel() != null) {
+        if (iUserDeviceModel.getBatteryLevel() != null) {
             double maxColorIntencity = 200.;
-            int green = (int) (maxColorIntencity * value.getBatteryLevel() / 100);
-            int red = (int) (maxColorIntencity - (maxColorIntencity * value.getBatteryLevel() / 100));
+            int green = (int) (maxColorIntencity * iUserDeviceModel.getBatteryLevel() / 100);
+            int red = (int) (maxColorIntencity - (maxColorIntencity * iUserDeviceModel.getBatteryLevel() / 100));
             SafeHtml safeHtml = templates.colorTemplate(SafeHtmlUtils.fromString(red + ""), SafeHtmlUtils.fromString(green + ""), SafeHtmlUtils.fromTrustedString("0"));
             return safeHtml.asString();
         }

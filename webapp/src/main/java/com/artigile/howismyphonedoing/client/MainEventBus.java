@@ -18,12 +18,11 @@ import com.artigile.howismyphonedoing.client.mvp.settings.SettingsPresenter;
 import com.artigile.howismyphonedoing.client.mvp.toppanel.TopPanelPresenter;
 import com.artigile.howismyphonedoing.client.service.GaeChannelService;
 import com.artigile.howismyphonedoing.client.service.MessageNotSupportedProcessor;
-import com.artigile.howismyphonedoing.client.service.MessageReceivedProcessor;
+import com.artigile.howismyphonedoing.client.service.UiMessageReceivedProcessor;
 import com.artigile.howismyphonedoing.client.widget.DevicesListWindow;
 import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
 import com.artigile.howismyphonedoing.client.widget.SigninWithGooglePlusWindow;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
-import com.google.web.bindery.autobean.shared.AutoBean;
 import com.mvp4g.client.annotation.Event;
 import com.mvp4g.client.annotation.Events;
 import com.mvp4g.client.annotation.Start;
@@ -69,7 +68,7 @@ public interface MainEventBus extends EventBus {
     @Event(handlers = SendMessageWindow.class)
     void messageDelivered(IMessageToDeviceModel messageDeliveredModel);
 
-    @Event(handlers = MessageReceivedProcessor.class)
+    @Event(handlers = UiMessageReceivedProcessor.class)
     void messageFromServerReceived(String encodedData);
 
     @Event(handlers = SettingsPresenter.class)
