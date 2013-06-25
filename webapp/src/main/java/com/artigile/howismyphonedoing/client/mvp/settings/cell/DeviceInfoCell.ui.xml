@@ -6,6 +6,7 @@
     <ui:with field='batteryLevel' type='java.lang.String'/>
     <ui:with field='width' type='java.lang.String'/>
     <ui:with field='additionalBatteryInfo' type='java.lang.String'/>
+    <ui:with field='chargingShadow' type='java.lang.String'/>
 
     <ui:style>
         .deviceInfo {
@@ -19,10 +20,11 @@
             height: 19px;
             font-size: 11px;
             background: #ccc;
+            white-space: nowrap;
         }
 
         .batteryLevelBar {
-            background: red;
+            background: #000;
             position: absolute;
             top: 3px;
             height: 14px;
@@ -47,8 +49,8 @@
             </td>
             <td>
                 <div class="{style.batteryLevelWraper}" title="{additionalBatteryInfo}">
-                    <div class="{style.batteryLevelBar}" style='{color};{width}'>
-                        <ui:text from='{batteryLevel}%'/>
+                    <div class="{style.batteryLevelBar}" style='{color};{width};{chargingShadow}'>
+                        <ui:text from='{batteryLevel}'/>
                     </div>
                 </div>
             </td>

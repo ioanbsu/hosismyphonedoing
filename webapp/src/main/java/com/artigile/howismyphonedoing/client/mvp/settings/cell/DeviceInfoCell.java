@@ -27,23 +27,32 @@ import java.util.ArrayList;
 @Singleton
 public class DeviceInfoCell extends AbstractCell<IUserDeviceModel> {
     private MyUiRenderer renderer = GWT.create(MyUiRenderer.class);
-
     @Inject
     private Messages messages;
-
     private Templates templates = GWT.create(Templates.class);
 
     @Override
     public void render(Context context, IUserDeviceModel deviceModelData, SafeHtmlBuilder sb) {
         if (deviceModelData == null) {
+            sb.append(templates.selectDevice(SafeHtmlUtils.fromTrustedString(messages.device_settings_select_device_label())));
             return;
         }
         String batteryInfo = getDeviceBatteryInfo(deviceModelData);
 
         String color = calculateColor(deviceModelData);
         String width = calculateWidth(deviceModelData);
-        renderer.render(sb, batteryInfo, color, SafeHtmlUtils.fromString(deviceModelData.getBatteryLevel() + "").asString(),
-                width, SafeHtmlUtils.fromString(batteryInfo).asString());
+        String batteryLevel = deviceModelData.getBatteryLevel() == null ? messages.device_settings_data_is_loading() : messages.device_settings_battery_level_template(deviceModelData.getBatteryLevel() + "");
+        SafeHtml chargingShadow = SafeHtmlUtils.EMPTY_SAFE_HTML;
+        if (deviceModelData.getBatteryStatusType() != null && deviceModelData.getBatteryStatusType() == BatteryStatusType.BATTERY_STATUS_CHARGING) {
+            batteryLevel += " " + messages.device_settings_battery_charging_icon();
+            chargingShadow = templates.deviceCharging();
+        } else if (deviceModelData.getBatteryStatusType() != null && deviceModelData.getBatteryStatusType() == BatteryStatusType.BATTERY_STATUS_DISCHARGING) {
+            chargingShadow = templates.deviceDischarging();
+            batteryLevel += " " + messages.device_settings_battery_discharghing_icon();
+
+        }
+        renderer.render(sb, batteryInfo, color, SafeHtmlUtils.fromTrustedString(batteryLevel).asString(),
+                width, SafeHtmlUtils.fromString(batteryInfo).asString(), chargingShadow.asString());
     }
 
     private String getDeviceBatteryInfo(IUserDeviceModel deviceModelData) {
@@ -95,7 +104,7 @@ public class DeviceInfoCell extends AbstractCell<IUserDeviceModel> {
     }
 
     private String calculateWidth(IUserDeviceModel deviceModelData) {
-        if (deviceModelData != null&&deviceModelData.getBatteryLevel()!=null) {
+        if (deviceModelData != null && deviceModelData.getBatteryLevel() != null) {
             return templates.widthTemplate(SafeHtmlUtils.fromString(deviceModelData.getBatteryLevel() / 100 * 96 + "")).asString();
         }
         return "";
@@ -115,7 +124,7 @@ public class DeviceInfoCell extends AbstractCell<IUserDeviceModel> {
 
 
     interface MyUiRenderer extends UiRenderer {
-        void render(SafeHtmlBuilder sb, String batteryInfo, String color, String batteryLevel, String width, String additionalBatteryInfo);
+        void render(SafeHtmlBuilder sb, String batteryInfo, String color, String batteryLevel, String width, String additionalBatteryInfo, String chargingShadow);
     }
 
     interface Templates extends SafeHtmlTemplates {
@@ -125,6 +134,15 @@ public class DeviceInfoCell extends AbstractCell<IUserDeviceModel> {
 
         @SafeHtmlTemplates.Template("width: {0}%")
         SafeHtml widthTemplate(SafeHtml width);
+
+        @SafeHtmlTemplates.Template("box-shadow: 0px 0px 5px #ff0")
+        SafeHtml deviceCharging();
+
+        @SafeHtmlTemplates.Template("box-shadow: 0px 0px 5px #f00")
+        SafeHtml deviceDischarging();
+
+        @SafeHtmlTemplates.Template("<div>{0}</div>")
+        SafeHtml selectDevice(SafeHtml safeHtml);
     }
 
 }
