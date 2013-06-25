@@ -74,4 +74,7 @@ public interface MainEventBus extends EventBus {
 
     @Event(handlers = SettingsPresenter.class)
     void deviceDetailsReceived(IUserDeviceModel deviceDetails);
+
+    @Event(handlers = MapBodyPresenter.class)
+    void devicesLocationUpdateRequestSent();
 }

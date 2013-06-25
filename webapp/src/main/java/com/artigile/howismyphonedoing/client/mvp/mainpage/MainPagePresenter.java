@@ -40,7 +40,7 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
 
     public void onInitApp() {
         signinWithGooglePlusWindow.show();
-        authRpcService.getLoggedInUser(new AsyncCallbackImpl<StateAndChanelEntity>(eventBus) {
+        authRpcService.getLoggedInUserAndCreateChannel(new AsyncCallbackImpl<StateAndChanelEntity>(eventBus) {
             @Override
             public void success(StateAndChanelEntity token) {
                 eventBus.userLoggedIn(token);

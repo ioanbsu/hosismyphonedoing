@@ -19,7 +19,6 @@ import com.mvp4g.client.view.ReverseViewInterface;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.List;
 
 /**
  * User: ioanbsu
@@ -62,21 +61,8 @@ public class MapBodyView extends Composite implements ReverseViewInterface<MapBo
         return map;
     }
 
-    public void showMarkers(List<DeviceMarkerModel> deviceMarkerModelList) {
-        if (!deviceMarkerModelList.isEmpty()) {
-            LatLngBounds latLngBounds = LatLngBounds.create();
-            for (DeviceMarkerModel deviceMarkerModel : deviceMarkerModelList) {
-                LatLng myLatLng = LatLng.create(deviceMarkerModel.getDeviceLocationModel().getLatitude(),
-                        deviceMarkerModel.getDeviceLocationModel().getLongitude());
-                latLngBounds.extend(myLatLng);
-            }
-            double savedZoom = map.getZoom();
-            map.fitBounds(latLngBounds);
-            if (Math.abs(savedZoom - map.getZoom()) > 3) {
-                map.setZoom(savedZoom);
-            }
-        }
-
+    public void showMarkers(LatLngBounds deviceMarkerModelList) {
+        map.fitBounds(deviceMarkerModelList);
     }
 
 

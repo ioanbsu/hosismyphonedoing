@@ -114,7 +114,7 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
                 userDeviceModel.setBatteryHealthType(deviceDetails.getBatteryHealthType());
             }
         }
-        if (deviceInfo.getValue().getDeviceId().equals(deviceDetails)) {
+        if (deviceInfo.getValue().getDeviceId().equals(deviceDetails.getDeviceId())) {
             deviceInfo.setValue(deviceDetails);
         }
     }

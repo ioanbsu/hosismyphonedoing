@@ -1,7 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
         >
-    <ui:with field='deviceModel' type='com.artigile.howismyphonedoing.api.model.IUserDeviceModel'/>
+    <ui:with field='batteryInfo' type='java.lang.String'/>
 
     <ui:style>
         .deviceInfo {
@@ -13,7 +13,7 @@
     <table class="{style.deviceInfo}">
         <tr>
             <td>Battery Level:</td>
-            <td><ui:text from='{deviceModel.getHumanReadableName} {deviceModel.getBatteryLevel.toString}'/></td>
+            <td><ui:text from='{batteryInfo}'/></td>
         </tr>
         <tr>
             <td>Reception level:</td>

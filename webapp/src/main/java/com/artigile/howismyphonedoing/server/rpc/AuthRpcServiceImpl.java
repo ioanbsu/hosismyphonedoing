@@ -25,6 +25,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Tokeninfo;
+import com.google.appengine.api.channel.ChannelPresence;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.gson.Gson;
@@ -64,7 +65,7 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
     private KeysResolver keysResolver;
 
     @Override
-    public StateAndChanelEntity getLoggedInUser() throws UserNotLoggedInException {
+    public StateAndChanelEntity getLoggedInUserAndCreateChannel() throws UserNotLoggedInException {
         StateAndChanelEntity stateAndChanelEntity = new StateAndChanelEntity();
         stateAndChanelEntity.setEmail(getUserEmailFromSession());
         stateAndChanelEntity.setChanelToken(initServerGaeChanel(stateAndChanelEntity.getEmail()));
@@ -124,7 +125,7 @@ public class AuthRpcServiceImpl extends AbstractRpcService implements AuthRpcSer
             request.getSession().setAttribute(SESSION_USER_ATTR_NAME, googlePlusAuthenticatedUser);
             request.getSession().setAttribute(SecurityAspect.USER_IN_SESSION_EMAIL, tokenInfo.getEmail());
             logger.info("User had been saved into session");
-            return getLoggedInUser();
+            return getLoggedInUserAndCreateChannel();
         } catch (TokenResponseException e) {
             response.setStatus(500);
             e.printStackTrace();

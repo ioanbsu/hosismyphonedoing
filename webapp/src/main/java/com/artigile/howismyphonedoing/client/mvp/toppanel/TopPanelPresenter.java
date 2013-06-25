@@ -152,7 +152,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
         messageRpcServiceAsync.getDevicesLocations(new AsyncCallbackImpl<String>(eventBus) {
             @Override
             public void success(String result) {
-
+                eventBus.devicesLocationUpdateRequestSent();
             }
 
             @Override

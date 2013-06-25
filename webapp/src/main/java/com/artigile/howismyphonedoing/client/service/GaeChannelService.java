@@ -10,18 +10,17 @@
 
 package com.artigile.howismyphonedoing.client.service;
 
-import com.artigile.howismyphonedoing.api.model.*;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
+import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
+import com.artigile.howismyphonedoing.client.rpc.AuthRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.gwt.appengine.channel.client.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.web.bindery.autobean.shared.AutoBean;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.mvp4g.client.annotation.EventHandler;
 import com.mvp4g.client.event.BaseEventHandler;
 
@@ -48,6 +47,8 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
     private MessageWindow messageWindow;
     @Inject
     private Messages messages;
+    @Inject
+    private AuthRpcServiceAsync authRpcServiceAsync;
     private Channel channel;
     private int channelOpenAttempt;
     private Timer timer;
@@ -99,7 +100,12 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
                     if (DebugUtil.isDebugMode()) {
                         messageWindow.show("Channel error. please investigate" + error.getCode() + " " + error.getDescription());
                     }
+
                     if (userLoggedIn) {
+                        if (error.getCode().contains("Token+timed+out")) {//todo: find out the code for timeout.
+                            reconnectAfterTimeOut();
+                            return;
+                        }
                         eventBus.channelStateChanged(ChannelStateType.CHANNEL_CONNECTING);
                         reOpenChannel();
                     }
@@ -114,6 +120,17 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
                 }
             });
         }
+    }
+
+    private void reconnectAfterTimeOut() {
+        socket.close();
+        authRpcServiceAsync.getLoggedInUserAndCreateChannel(new AsyncCallbackImpl<StateAndChanelEntity>(eventBus) {
+            @Override
+            public void success(StateAndChanelEntity result) {
+                initGaeChannel(result.getChanelToken());
+            }
+        });
+
     }
 
     private void stopTryingToReconnect() {

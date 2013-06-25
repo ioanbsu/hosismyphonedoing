@@ -37,6 +37,7 @@ public class MapBodyPresenter extends BasePresenter<MapBodyView, MainEventBus> {
     private List<DeviceMarkerModel> deviceMarkerModelList;
     @Inject
     private Messages messages;
+    private boolean autoFitBoundsOnDevicesLocationFound;
 
     public void onInitApp() {
         GWT.log("MapBodyPresenter initiated.");
@@ -44,7 +45,22 @@ public class MapBodyPresenter extends BasePresenter<MapBodyView, MainEventBus> {
 
     public void onDeviceLocationUpdated(IDeviceLocationModel model) {
         deviceMarkerModelList = prepareMarkers(model);
-        view.showMarkers(deviceMarkerModelList);
+        if (!deviceMarkerModelList.isEmpty()) {
+            LatLngBounds latLngBounds = LatLngBounds.create();
+            for (DeviceMarkerModel deviceMarkerModel : deviceMarkerModelList) {
+                LatLng myLatLng = LatLng.create(deviceMarkerModel.getDeviceLocationModel().getLatitude(),
+                        deviceMarkerModel.getDeviceLocationModel().getLongitude());
+                latLngBounds.extend(myLatLng);
+            }
+            if (autoFitBoundsOnDevicesLocationFound) {
+                view.showMarkers(latLngBounds);
+            }
+        }
+        autoFitBoundsOnDevicesLocationFound = false;
+    }
+
+    public void onDevicesLocationUpdateRequestSent() {
+        autoFitBoundsOnDevicesLocationFound = true;
     }
 
     private List<DeviceMarkerModel> prepareMarkers(IDeviceLocationModel deviceLocationModel) {
