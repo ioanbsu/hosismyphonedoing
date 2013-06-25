@@ -11,17 +11,19 @@
 package com.artigile.howismyphonedoing.client.mvp.toppanel;
 
 import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
+import com.artigile.howismyphonedoing.api.model.IDeviceModel;
+import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
-import com.artigile.howismyphonedoing.client.exception.UserHasNoDevicesException;
 import com.artigile.howismyphonedoing.client.mvp.settings.SettingsPresenter;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.ApplicationState;
 import com.artigile.howismyphonedoing.client.service.DebugUtil;
+import com.artigile.howismyphonedoing.client.service.HowIsMyPhoneDoingAutoBeansFactory;
 import com.artigile.howismyphonedoing.client.widget.DevicesListWindow;
 import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
@@ -32,6 +34,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
 
@@ -67,6 +71,8 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     private MessageWindow messageWindow;
     @Inject
     private SettingsPresenter settingsPresenter;
+    @Inject
+    private HowIsMyPhoneDoingAutoBeansFactory howIsMyPhoneDoingAutoBeansFactory;
 
     public static final int MAX_LOCATION_RESPONSE_WAIT = 60 * 1000;
 
@@ -149,23 +155,21 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
         };
         locationDetectTimer.schedule(MAX_LOCATION_RESPONSE_WAIT);
         view.showDevicesLoading();
-        messageRpcServiceAsync.getDevicesLocations(new AsyncCallbackImpl<String>(eventBus) {
+        userInfoRpcService.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>(eventBus) {
             @Override
-            public void success(String result) {
-                eventBus.devicesLocationUpdateRequestSent();
-            }
-
-            @Override
-            public void failure(Throwable caught) {
-                if (caught instanceof UserHasNoDevicesException) {
-                    showNoDevicesFoundMessage();
-                } else {
-
-                }
-                cancelTimer();
-                view.hideDevicesLoading();
+            public void success(List<UserDeviceModel> result) {
+                sendRequestForDeviceLocations(result);
             }
         });
+    }
+
+    private void sendRequestForDeviceLocations(List<UserDeviceModel> result) {
+        AutoBean<IDeviceModel> iDeviceModelAutoBean = howIsMyPhoneDoingAutoBeansFactory.create(IDeviceModel.class);
+        String serializedMessage = AutoBeanCodex.encode(iDeviceModelAutoBean).getPayload();
+        for (UserDeviceModel userDeviceModel : result) {
+            messageRpcServiceAsync.sendMessageToDevice(MessageType.GET_DEVICE_LOCATION, userDeviceModel.getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
+            });
+        }
     }
 
     private void cancelTimer() {

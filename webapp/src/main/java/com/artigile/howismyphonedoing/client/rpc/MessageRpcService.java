@@ -23,8 +23,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("../remoteService/mainHowIsMyPhoneDoing")
 public interface MessageRpcService extends RemoteService {
 
-    String getDevicesLocations() throws DeviceWasRemovedException, UserHasNoDevicesException;
-
     String removeAllUserDevices();
 
     String sendMessageToDevice(MessageType deviceDetailsInfo, String deviceId, String serializedObject) throws DeviceWasRemovedException;
