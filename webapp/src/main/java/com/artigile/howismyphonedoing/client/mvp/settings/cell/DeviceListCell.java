@@ -1,19 +1,18 @@
 package com.artigile.howismyphonedoing.client.mvp.settings.cell;
 
-import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
-import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.resources.CellStyles;
+import com.artigile.howismyphonedoing.client.resources.Images;
 import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BrowserEvents;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiRenderer;
+import com.google.gwt.user.client.ui.ImageResourceRenderer;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Date: 6/22/13
@@ -21,30 +20,37 @@ import com.google.gwt.uibinder.client.UiRenderer;
  *
  * @author ioanbsu
  */
+@Singleton
+public class DeviceListCell extends AbstractCell<DeviceInfoWithLoadingInfo> {
 
-public class DeviceListCell extends AbstractCell<IUserDeviceModel> {
-
-    interface MyUiRenderer extends UiRenderer {
-        void render(SafeHtmlBuilder sb, String deviceName);
-
-        CellStyles getCellStyles();
-    }
-
+    @Inject
+    private Images images;
     private MyUiRenderer renderer = GWT.create(MyUiRenderer.class);
-
 
     public DeviceListCell() {
         super(BrowserEvents.CLICK, BrowserEvents.CHANGE);
     }
 
-
-
     @Override
-    public void render(Context context, IUserDeviceModel value, SafeHtmlBuilder sb) {
+    public void render(Context context, DeviceInfoWithLoadingInfo value, SafeHtmlBuilder sb) {
         if (value == null) {
             return;
         }
-        renderer.render(sb, value.getHumanReadableName());
+        ImageResourceRenderer imageRenderer = new ImageResourceRenderer();
+        SafeHtml imageSafeHtml = SafeHtmlUtils.EMPTY_SAFE_HTML;
+        if (value.getLoadingState() == DeviceInfoWithLoadingInfo.LoadingState.LOADING) {
+            imageSafeHtml = imageRenderer.render(images.loadingSmallIcon());
+        } else if (value.getLoadingState() == DeviceInfoWithLoadingInfo.LoadingState.LOADED) {
+            imageSafeHtml = imageRenderer.render(images.checkOk());
+        }
+        renderer.render(sb, value.getiUserDeviceModel().getHumanReadableName(), imageSafeHtml);
+    }
+
+
+    interface MyUiRenderer extends UiRenderer {
+        void render(SafeHtmlBuilder sb, String deviceName, SafeHtml loadingIcon);
+
+        CellStyles getCellStyles();
     }
 
 

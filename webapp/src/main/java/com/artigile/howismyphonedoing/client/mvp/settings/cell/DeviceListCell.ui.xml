@@ -1,5 +1,6 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'>
     <ui:with field='deviceName' type='java.lang.String'/>
+    <ui:with field="loadingIcon" type="com.google.gwt.safehtml.shared.SafeHtml"/>
 
     <ui:style field="cellStyles" type="com.artigile.howismyphonedoing.client.resources.CellStyles">
         .deviceNameStyle {
@@ -22,6 +23,8 @@
     <span class="{cellStyles.deviceNameStyle}">
         <span>
             <ui:text from='{deviceName}'/>
+            <ui:safehtml from='{loadingIcon}'/>
+
         </span>
     </span>
 </ui:UiBinder>

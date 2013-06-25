@@ -2,10 +2,9 @@ package com.artigile.howismyphonedoing.client.mvp.settings;
 
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
-import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoCell;
+import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceListCell;
-import com.artigile.howismyphonedoing.client.service.DebugUtil;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -35,47 +34,46 @@ import java.util.List;
 @Singleton
 public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
 
-    private SettingsPresenter presenter;
+    final SingleSelectionModel<DeviceInfoWithLoadingInfo> selectionModel = new SingleSelectionModel<DeviceInfoWithLoadingInfo>();
+    protected ListDataProvider<DeviceInfoWithLoadingInfo> dataProvider = new ListDataProvider<DeviceInfoWithLoadingInfo>();
     @UiField
     DialogBox mainDialogBox;
     @UiField
     Button closeSettings;
     @UiField(provided = true)
-    CellList<IUserDeviceModel> addableDevicesList;
+    CellList<DeviceInfoWithLoadingInfo> addableDevicesList;
     @UiField(provided = true)
     CellWidget<IUserDeviceModel> deviceInfo;
     @UiField
     Button refreshDeviceInfo;
-
-    protected ListDataProvider<IUserDeviceModel> dataProvider = new ListDataProvider<IUserDeviceModel>();
-    final SingleSelectionModel<IUserDeviceModel> selectionModel = new SingleSelectionModel<IUserDeviceModel>();
+    private SettingsPresenter presenter;
 
 
     @Inject
-    public SettingsView(Binder binder,DeviceInfoCell deviceInfoCell) {
+    public SettingsView(Binder binder, DeviceInfoCell deviceInfoCell, DeviceListCell deviceListCell) {
         deviceInfo = new CellWidget<IUserDeviceModel>(deviceInfoCell);
-        addableDevicesList = new CellList<IUserDeviceModel>(new DeviceListCell(), getUserDeviceModelProvidesKey());
+        addableDevicesList = new CellList<DeviceInfoWithLoadingInfo>(deviceListCell, getUserDeviceModelProvidesKey());
         addableDevicesList.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
         dataProvider.addDataDisplay(addableDevicesList);
         addableDevicesList.setSelectionModel(selectionModel);
         selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent event) {
-                deviceInfo.setValue(selectionModel.getSelectedObject());
-                presenter.requestRefreshDeviceInfo(selectionModel.getSelectedObject());
+                deviceInfo.setValue(selectionModel.getSelectedObject().getiUserDeviceModel());
+                requestDeviceInfoUpdate();
             }
         });
         binder.createAndBindUi(this);
     }
 
     @Override
-    public void setPresenter(SettingsPresenter presenter) {
-        this.presenter = presenter;
+    public SettingsPresenter getPresenter() {
+        return presenter;
     }
 
     @Override
-    public SettingsPresenter getPresenter() {
-        return presenter;
+    public void setPresenter(SettingsPresenter presenter) {
+        this.presenter = presenter;
     }
 
     public void show() {
@@ -93,26 +91,33 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
 
     @UiHandler("refreshDeviceInfo")
     void onRefreshDeviceInfo(ClickEvent event) {
-        presenter.requestRefreshDeviceInfo(selectionModel.getSelectedObject());
+        requestDeviceInfoUpdate();
     }
 
+    private void requestDeviceInfoUpdate() {
+        presenter.requestRefreshDeviceInfo(selectionModel.getSelectedObject().getiUserDeviceModel());
+        selectionModel.getSelectedObject().setLoadingState(DeviceInfoWithLoadingInfo.LoadingState.LOADING);
+        addableDevicesList.redraw();
+    }
 
-    protected ProvidesKey<IUserDeviceModel> getUserDeviceModelProvidesKey() {
-        return new ProvidesKey<IUserDeviceModel>() {
+    protected ProvidesKey<DeviceInfoWithLoadingInfo> getUserDeviceModelProvidesKey() {
+        return new ProvidesKey<DeviceInfoWithLoadingInfo>() {
             @Override
-            public Object getKey(IUserDeviceModel item) {
-                return item.getDeviceId();
+            public Object getKey(DeviceInfoWithLoadingInfo item) {
+                return item.getiUserDeviceModel().getDeviceId();
             }
         };
     }
 
     public void updateDeviceDetails(IUserDeviceModel deviceDetails) {
-        for (IUserDeviceModel userDeviceModel : dataProvider.getList()) {
-            if (userDeviceModel.getDeviceId().equals(deviceDetails.getDeviceId())) {
-                userDeviceModel.setBatteryLevel(deviceDetails.getBatteryLevel());
-                userDeviceModel.setBatteryStatusType(deviceDetails.getBatteryStatusType());
-                userDeviceModel.setBatteryPluggedType(deviceDetails.getBatteryPluggedType());
-                userDeviceModel.setBatteryHealthType(deviceDetails.getBatteryHealthType());
+        for (DeviceInfoWithLoadingInfo userDeviceModel : dataProvider.getList()) {
+            if (userDeviceModel.getiUserDeviceModel().getDeviceId().equals(deviceDetails.getDeviceId())) {
+                userDeviceModel.getiUserDeviceModel().setBatteryLevel(deviceDetails.getBatteryLevel());
+                userDeviceModel.getiUserDeviceModel().setBatteryStatusType(deviceDetails.getBatteryStatusType());
+                userDeviceModel.getiUserDeviceModel().setBatteryPluggedType(deviceDetails.getBatteryPluggedType());
+                userDeviceModel.getiUserDeviceModel().setBatteryHealthType(deviceDetails.getBatteryHealthType());
+                userDeviceModel.setLoadingState(DeviceInfoWithLoadingInfo.LoadingState.LOADED);
+                addableDevicesList.redraw();
             }
         }
         if (deviceInfo.getValue().getDeviceId().equals(deviceDetails.getDeviceId())) {
@@ -122,7 +127,14 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
 
     public void setDevicesList(List<UserDeviceModel> result) {
         dataProvider.getList().clear();
-        dataProvider.getList().addAll(result);
+        List<DeviceInfoWithLoadingInfo> deviceInfoWithLoadingInfoList = new ArrayList<DeviceInfoWithLoadingInfo>();
+        for (UserDeviceModel userDeviceModel : result) {
+            DeviceInfoWithLoadingInfo deviceInfoWithLoadingInfo = new DeviceInfoWithLoadingInfo();
+            deviceInfoWithLoadingInfo.setiUserDeviceModel(userDeviceModel);
+            deviceInfoWithLoadingInfo.setLoadingState(DeviceInfoWithLoadingInfo.LoadingState.UNKNOWN);
+            deviceInfoWithLoadingInfoList.add(deviceInfoWithLoadingInfo);
+        }
+        dataProvider.getList().addAll(deviceInfoWithLoadingInfoList);
     }
 
     public static interface Binder extends UiBinder<DialogBox, SettingsView> {

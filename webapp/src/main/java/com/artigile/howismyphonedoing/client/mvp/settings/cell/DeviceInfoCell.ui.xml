@@ -1,5 +1,6 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
         >
+    <ui:with field="images" type="com.artigile.howismyphonedoing.client.resources.Images"/>
     <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
     <ui:with field='batteryInfo' type='java.lang.String'/>
     <ui:with field='color' type='java.lang.String'/>
