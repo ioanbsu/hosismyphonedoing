@@ -3,6 +3,8 @@ package com.artigile.checkmyphone.service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.BatteryManager;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.api.model.battery.BatteryHealthType;
@@ -31,8 +33,10 @@ public class DeviceDetailsReader {
             userDeviceModel = new UserDeviceModel();
         }
         populateBatteryData(userDeviceModel);
+        userDeviceModel.setWifiEnabled(detectWifiEnabled());
         return userDeviceModel;
     }
+
 
     private void populateBatteryData(UserDeviceModel userDeviceModel) {
         Intent batteryIntent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -86,5 +90,16 @@ public class DeviceDetailsReader {
             userDeviceModel.setBatteryLevel(50.0f);
         }
         userDeviceModel.setBatteryLevel(((float) level / (float) scale) * 100.0f);
+    }
+
+
+    private boolean detectWifiEnabled() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = null;
+        if (connectivityManager != null) {
+            networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        }
+        return networkInfo != null && networkInfo.isConnected();
     }
 }

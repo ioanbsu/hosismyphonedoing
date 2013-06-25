@@ -23,6 +23,8 @@ public class UserDeviceModel implements IUserDeviceModel {
 
     private BatteryStatusType batteryStatusType;
 
+    private boolean wifiEnabled;
+
     @Override
     public String getDeviceId() {
         return deviceId;
@@ -81,5 +83,15 @@ public class UserDeviceModel implements IUserDeviceModel {
     @Override
     public void setBatteryStatusType(BatteryStatusType batteryStatusType) {
         this.batteryStatusType = batteryStatusType;
+    }
+
+    @Override
+    public boolean isWifiEnabled() {
+        return wifiEnabled;
+    }
+
+    @Override
+    public void setWifiEnabled(boolean wifiEnabled) {
+        this.wifiEnabled = wifiEnabled;
     }
 }
