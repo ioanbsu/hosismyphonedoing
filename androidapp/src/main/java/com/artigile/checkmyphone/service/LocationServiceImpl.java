@@ -13,6 +13,7 @@ package com.artigile.checkmyphone.service;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -116,6 +117,7 @@ public class LocationServiceImpl implements LocationService {
 
     private void stopRequestingLocationUpdates() {
         Log.v(TAG, "Accuracy is very precise");
+        locationClient.removeLocationUpdates(internalLocationListener);
         locationClient.disconnect();
         locationRequestsAreInProgress = false;
     }
@@ -189,12 +191,21 @@ public class LocationServiceImpl implements LocationService {
                 if (location != null) {
                     internalLocationListener.onLocationChanged(location);
                 }
-                requestLocationUpdates();
+                if (locationClient.isConnected()) {
+                    requestLocationUpdates();
+                }
             } catch (IllegalStateException e) {
                 Log.e(TAG, "Location can not be achieved. trying to reconnect");
-                if (reconnectAttempt < MAX_RECONNECT_ATTEMPS) {
-                    connectToLocationClient();
-                }
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        if (reconnectAttempt < MAX_RECONNECT_ATTEMPS) {
+                            reconnectAttempt++;
+                            connectToLocationClient();
+                        }
+                    }
+                }, 2000);
+
             }
         }
 
