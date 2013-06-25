@@ -158,6 +158,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
         userInfoRpcService.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>(eventBus) {
             @Override
             public void success(List<UserDeviceModel> result) {
+                eventBus.devicesLocationUpdateRequestSent();
                 sendRequestForDeviceLocations(result);
             }
         });
