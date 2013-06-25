@@ -33,6 +33,8 @@
     <inherits name='com.google.maps.gwt.GoogleMaps'/>
     <inherits name="com.google.gwt.ajaxloader.AjaxLoader" />
     <inherits name="com.google.web.bindery.autobean.AutoBean"/>
+    <inherits name="com.google.common.base.Base"/>
+    
     <!-- Specify the app entry point class.                         -->
     <entry-point class='com.artigile.howismyphonedoing.client.WebApp'/>
 

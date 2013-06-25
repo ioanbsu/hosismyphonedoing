@@ -52,8 +52,8 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
 
 
     @Inject
-    public SettingsView(Binder binder) {
-        deviceInfo = new CellWidget<IUserDeviceModel>(new DeviceInfoCell());
+    public SettingsView(Binder binder,DeviceInfoCell deviceInfoCell) {
+        deviceInfo = new CellWidget<IUserDeviceModel>(deviceInfoCell);
         addableDevicesList = new CellList<IUserDeviceModel>(new DeviceListCell(), getUserDeviceModelProvidesKey());
         addableDevicesList.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
         dataProvider.addDataDisplay(addableDevicesList);

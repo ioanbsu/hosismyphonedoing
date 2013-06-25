@@ -46,8 +46,8 @@
                 <ui:text from='{msg.device_settings_battery_label}'/>
             </td>
             <td>
-                <div class="{style.batteryLevelWraper}">
-                    <div class="{style.batteryLevelBar}" style='{color};{width}' title="{additionalBatteryInfo}">
+                <div class="{style.batteryLevelWraper}" title="{additionalBatteryInfo}">
+                    <div class="{style.batteryLevelBar}" style='{color};{width}'>
                         <ui:text from='{batteryLevel}%'/>
                     </div>
                 </div>
