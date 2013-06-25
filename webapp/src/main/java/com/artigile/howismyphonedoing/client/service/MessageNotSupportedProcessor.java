@@ -27,7 +27,7 @@ public class MessageNotSupportedProcessor extends BaseEventHandler<MainEventBus>
     private Messages messages;
 
     public void onMessageNotSupported(IUserDeviceModel userDeviceModel, MessageType messageType) {
-        messageWindow.show(messages.global_message_type_does_not_supported(userDeviceModel.getDeviceId(), convertMessageTypeToString(messageType)));
+        messageWindow.show(messages.global_message_type_does_not_supported(userDeviceModel.getHumanReadableName(), convertMessageTypeToString(messageType)));
     }
 
     private String convertMessageTypeToString(MessageType messageType) {

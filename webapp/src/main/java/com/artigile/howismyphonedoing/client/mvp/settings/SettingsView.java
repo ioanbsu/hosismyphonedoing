@@ -2,6 +2,7 @@ package com.artigile.howismyphonedoing.client.mvp.settings;
 
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
+import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoCell;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceListCell;
 import com.artigile.howismyphonedoing.client.service.DebugUtil;

@@ -14,11 +14,25 @@
     <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
     <ui:with field="images" type="com.artigile.howismyphonedoing.client.resources.Images"/>
 
-    <ui:style>{
-    }
-    .settingsDialogBox {
-        width: auto;
-    }
+    <ui:style>
+        @external gwt-Button;
+
+        .settingsDialogBox {
+            width: auto;
+        }
+
+        .devicesList {
+            height: 200px;
+        }
+
+        .buttonsPanel {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .buttonsPanel .gwt-Button {
+            margin: 4px;
+        }
     </ui:style>
 
     <g:DialogBox ui:field="mainDialogBox" modal="false" glassEnabled="false" animationEnabled="true" width="500px"
@@ -26,9 +40,13 @@
         <g:DockLayoutPanel unit='EM' height="20em" width="500px">
             <g:west size='10'>
                 <g:FlowPanel>
-                    <cellview:CellList ui:field="addableDevicesList" pageSize="50"/>
-                    <g:Button ui:field="closeSettings" text="{msg.device_settings_close_window_button}"/>
-                    <g:Button ui:field="refreshDeviceInfo" text="{msg.device_settings_refresh_device_info_button}"/>
+                    <g:ScrollPanel styleName="{style.devicesList}">
+                        <cellview:CellList ui:field="addableDevicesList" pageSize="50"/>
+                    </g:ScrollPanel>
+                    <g:FlowPanel styleName="{style.buttonsPanel}">
+                        <g:Button ui:field="closeSettings" text="{msg.device_settings_close_window_button}"/>
+                        <g:Button ui:field="refreshDeviceInfo" text="{msg.device_settings_refresh_device_info_button}"/>
+                    </g:FlowPanel>
                 </g:FlowPanel>
             </g:west>
             <g:center>

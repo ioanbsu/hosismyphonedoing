@@ -49,7 +49,7 @@ public class UserInfoService {
     private void fakeDevices(List<UserDeviceModel> userDeviceModelList) {
         UserDeviceModel userDeviceModel1=new UserDeviceModel();
         userDeviceModel1.setBatteryHealthType(BatteryHealthType.BATTERY_HEALTH_UNKNOWN);
-        userDeviceModel1.setBatteryLevel(55F);
+        userDeviceModel1.setBatteryLevel((float)Math.random()*100);
         userDeviceModel1.setDeviceId("1");
         userDeviceModel1.setBatteryStatusType(BatteryStatusType.BATTERY_STATUS_NOT_CHARGING);
         userDeviceModel1.setBatteryPluggedType(BatteryPluggedType.BATTERY_PLUGGED_WIRELESS);
@@ -57,7 +57,7 @@ public class UserInfoService {
 
         UserDeviceModel userDeviceModel2=new UserDeviceModel();
         userDeviceModel2.setBatteryHealthType(BatteryHealthType.BATTERY_HEALTH_UNSPECIFIED_FAILURE);
-        userDeviceModel2.setBatteryLevel(5F);
+        userDeviceModel2.setBatteryLevel((float)Math.random()*100);
         userDeviceModel2.setBatteryStatusType(BatteryStatusType.BATTERY_STATUS_FULL);
         userDeviceModel2.setDeviceId("2");
         userDeviceModel2.setBatteryPluggedType(BatteryPluggedType.BATTERY_PLUGGED_USB);
