@@ -35,4 +35,8 @@ public interface IUserDeviceModel extends Serializable {
     BatteryStatusType getBatteryStatusType();
 
     void setBatteryStatusType(BatteryStatusType batteryStatusType);
+
+    boolean isWifiEnabled();
+
+    void setWifiEnabled(boolean wifiEnabled);
 }
