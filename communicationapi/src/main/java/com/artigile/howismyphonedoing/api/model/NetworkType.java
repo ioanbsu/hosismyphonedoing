@@ -6,6 +6,7 @@ package com.artigile.howismyphonedoing.api.model;
  * Time: 1:32 PM
  */
 public enum NetworkType {
+    /** Network type is unknown */
     NETWORK_TYPE_UNKNOWN ,
     /** Current network is GPRS */
     NETWORK_TYPE_GPRS ,

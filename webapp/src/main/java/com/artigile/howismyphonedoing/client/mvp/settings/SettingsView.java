@@ -18,6 +18,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.mvp4g.client.view.ReverseViewInterface;
 
 import javax.inject.Inject;
@@ -116,6 +117,10 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
                 userDeviceModel.getiUserDeviceModel().setBatteryStatusType(deviceDetails.getBatteryStatusType());
                 userDeviceModel.getiUserDeviceModel().setBatteryPluggedType(deviceDetails.getBatteryPluggedType());
                 userDeviceModel.getiUserDeviceModel().setBatteryHealthType(deviceDetails.getBatteryHealthType());
+                userDeviceModel.getiUserDeviceModel().setOperator(deviceDetails.getOperator());
+                userDeviceModel.getiUserDeviceModel().setNetworkType(deviceDetails.getNetworkType());
+                userDeviceModel.getiUserDeviceModel().setWifiEnabled(deviceDetails.isWifiEnabled());
+                userDeviceModel.getiUserDeviceModel().setBluetoothEnabled(deviceDetails.isBluetoothEnabled());
                 userDeviceModel.setLoadingState(DeviceInfoWithLoadingInfo.LoadingState.LOADED);
                 addableDevicesList.redraw();
             }

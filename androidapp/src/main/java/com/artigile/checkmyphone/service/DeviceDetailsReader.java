@@ -166,7 +166,7 @@ public class DeviceDetailsReader {
         } else if (networkType == TelephonyManager.NETWORK_TYPE_UNKNOWN) {
             return NetworkType.NETWORK_TYPE_UNKNOWN;
         }
-        return null;
+        return NetworkType.NETWORK_TYPE_UNKNOWN;
     }
 
 

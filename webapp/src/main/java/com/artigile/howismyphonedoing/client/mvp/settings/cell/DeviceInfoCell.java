@@ -1,6 +1,7 @@
 package com.artigile.howismyphonedoing.client.mvp.settings.cell;
 
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
+import com.artigile.howismyphonedoing.api.model.NetworkType;
 import com.artigile.howismyphonedoing.api.model.battery.BatteryHealthType;
 import com.artigile.howismyphonedoing.api.model.battery.BatteryPluggedType;
 import com.artigile.howismyphonedoing.api.model.battery.BatteryStatusType;
@@ -52,8 +53,8 @@ public class DeviceInfoCell extends AbstractCell<IUserDeviceModel> {
         }
         String wifiEnabled = deviceModelData.isWifiEnabled() ? messages.device_settings_battery_wifi_enabled_label() : messages.device_settings_battery_wifi_disabled_label();
         String bluetoothEnabled = deviceModelData.isBluetoothEnabled() ? messages.device_settings_battery_bluetooth_enabled_label() : messages.device_settings_battery_bluetooth_disabled_label();
-        String operator = deviceModelData.getOperator();
-        String networkType = deviceModelData.getNetworkType() == null ? "not detected" : deviceModelData.getNetworkType().toString();
+        String operator = deviceModelData.getOperator() == null ? messages.device_settings_operator_unknown() : deviceModelData.getOperator();
+        String networkType = parseNetworkType(deviceModelData.getNetworkType());
         renderer.render(sb,
                 batteryInfo,
                 operator,
@@ -64,6 +65,41 @@ public class DeviceInfoCell extends AbstractCell<IUserDeviceModel> {
                 SafeHtmlUtils.fromTrustedString(batteryLevel).asString(),
                 width, SafeHtmlUtils.fromString(batteryInfo).asString(),
                 chargingShadow.asString());
+    }
+
+    private String parseNetworkType(NetworkType networkType) {
+        if (networkType == NetworkType.NETWORK_TYPE_1xRTT) {
+            return messages.device_settings_network_type_network_type_1xrtt();
+        } else if (networkType == NetworkType.NETWORK_TYPE_CDMA) {
+            return messages.device_settings_network_type_network_type_cdma();
+        } else if (networkType == NetworkType.NETWORK_TYPE_EDGE) {
+            return messages.device_settings_network_type_network_type_edge();
+        } else if (networkType == NetworkType.NETWORK_TYPE_EHRPD) {
+            return messages.device_settings_network_type_network_type_ehrpd();
+        } else if (networkType == NetworkType.NETWORK_TYPE_EVDO_0) {
+            return messages.device_settings_network_type_network_type_evdo_0();
+        } else if (networkType == NetworkType.NETWORK_TYPE_EVDO_A) {
+            return messages.device_settings_network_type_network_type_evdo_a();
+        } else if (networkType == NetworkType.NETWORK_TYPE_EVDO_B) {
+            return messages.device_settings_network_type_network_type_evdo_b();
+        } else if (networkType == NetworkType.NETWORK_TYPE_GPRS) {
+            return messages.device_settings_network_type_network_type_gprs();
+        } else if (networkType == NetworkType.NETWORK_TYPE_HSDPA) {
+            return messages.device_settings_network_type_network_type_hsdpa();
+        } else if (networkType == NetworkType.NETWORK_TYPE_HSPA) {
+            return messages.device_settings_network_type_network_type_hspa();
+        } else if (networkType == NetworkType.NETWORK_TYPE_HSPAP) {
+            return messages.device_settings_network_type_network_type_hspap();
+        } else if (networkType == NetworkType.NETWORK_TYPE_HSUPA) {
+            return messages.device_settings_network_type_network_type_hsupa();
+        } else if (networkType == NetworkType.NETWORK_TYPE_IDEN) {
+            return messages.device_settings_network_type_network_type_iden();
+        } else if (networkType == NetworkType.NETWORK_TYPE_UMTS) {
+            return messages.device_settings_network_type_network_type_umts();
+        } else if (networkType == NetworkType.NETWORK_TYPE_UNKNOWN) {
+            return messages.device_settings_network_type_network_type_unknown();
+        }
+        return messages.device_settings_network_type_network_type_unknown();
     }
 
     private String getDeviceBatteryInfo(IUserDeviceModel deviceModelData) {

@@ -12,8 +12,8 @@
 <manifest
     package="com.artigile.checkmyphone"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="9"
-    android:versionName="1.0.2">
+    android:versionCode="10"
+    android:versionName="1.0.3">
 
     <!-- GCM requires Android SDK version 2.2 (API level 8) or above. -->
     <!-- The targetSdkVersion is optional, but it's always a good practice
