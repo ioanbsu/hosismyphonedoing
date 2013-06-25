@@ -1,11 +1,15 @@
 package com.artigile.checkmyphone.service;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.BatteryManager;
+import android.telephony.SignalStrength;
+import android.telephony.TelephonyManager;
+import com.artigile.howismyphonedoing.api.model.NetworkType;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.api.model.battery.BatteryHealthType;
 import com.artigile.howismyphonedoing.api.model.battery.BatteryPluggedType;
@@ -26,17 +30,22 @@ public class DeviceDetailsReader {
 
     @Inject
     private Context context;
-
+    private SignalStrength signalStrength;
 
     public UserDeviceModel getUserDeviceDetails(UserDeviceModel userDeviceModel) {
+        signalStrength = null;
         if (userDeviceModel == null) {
             userDeviceModel = new UserDeviceModel();
         }
         populateBatteryData(userDeviceModel);
         userDeviceModel.setWifiEnabled(detectWifiEnabled());
+        userDeviceModel.setBluetoothEnabled(detectBluetoothEnabled());
+        TelephonyManager tel = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        userDeviceModel.setOperator(detectSignalStrenghtLevel(tel));
+        userDeviceModel.setNetworkType(detectNetworkType(tel));
         return userDeviceModel;
     }
-
 
     private void populateBatteryData(UserDeviceModel userDeviceModel) {
         Intent batteryIntent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -92,14 +101,73 @@ public class DeviceDetailsReader {
         userDeviceModel.setBatteryLevel(((float) level / (float) scale) * 100.0f);
     }
 
-
     private boolean detectWifiEnabled() {
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = null;
-        if (connectivityManager != null) {
-            networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        try {
+            ConnectivityManager connectivityManager = (ConnectivityManager)
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = null;
+            if (connectivityManager != null) {
+                networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            }
+            return networkInfo != null && networkInfo.isConnected();
+        } catch (Exception e) {
+            return false;
         }
-        return networkInfo != null && networkInfo.isConnected();
     }
+
+    private boolean detectBluetoothEnabled() {
+        try {
+            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (mBluetoothAdapter == null) {
+                return false;
+            } else {
+                return mBluetoothAdapter.isEnabled();
+
+            }
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String detectSignalStrenghtLevel(TelephonyManager tel) {
+        return tel.getSimOperatorName();
+    }
+
+    private NetworkType detectNetworkType(TelephonyManager tel) {
+        int networkType = tel.getNetworkType();
+        if (networkType == TelephonyManager.NETWORK_TYPE_1xRTT) {
+            return NetworkType.NETWORK_TYPE_1xRTT;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_CDMA) {
+            return NetworkType.NETWORK_TYPE_CDMA;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_EDGE) {
+            return NetworkType.NETWORK_TYPE_EDGE;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_EHRPD) {
+            return NetworkType.NETWORK_TYPE_EHRPD;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_EVDO_0) {
+            return NetworkType.NETWORK_TYPE_EVDO_0;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_EVDO_A) {
+            return NetworkType.NETWORK_TYPE_EVDO_A;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_EVDO_B) {
+            return NetworkType.NETWORK_TYPE_EVDO_B;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_GPRS) {
+            return NetworkType.NETWORK_TYPE_GPRS;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_HSDPA) {
+            return NetworkType.NETWORK_TYPE_HSDPA;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_HSPA) {
+            return NetworkType.NETWORK_TYPE_HSPA;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_HSPAP) {
+            return NetworkType.NETWORK_TYPE_HSPAP;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_HSUPA) {
+            return NetworkType.NETWORK_TYPE_HSUPA;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_IDEN) {
+            return NetworkType.NETWORK_TYPE_LTE;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_UMTS) {
+            return NetworkType.NETWORK_TYPE_UMTS;
+        } else if (networkType == TelephonyManager.NETWORK_TYPE_UNKNOWN) {
+            return NetworkType.NETWORK_TYPE_UNKNOWN;
+        }
+        return null;
+    }
+
+
 }

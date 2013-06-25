@@ -39,4 +39,16 @@ public interface IUserDeviceModel extends Serializable {
     boolean isWifiEnabled();
 
     void setWifiEnabled(boolean wifiEnabled);
+
+    boolean isBluetoothEnabled();
+
+    void setBluetoothEnabled(boolean bluetoothEnabled);
+
+    String getOperator();
+
+    void setOperator(String signalStrenghtLevel);
+
+    NetworkType getNetworkType();
+
+    void setNetworkType(NetworkType networkType);
 }

@@ -25,6 +25,12 @@ public class UserDeviceModel implements IUserDeviceModel {
 
     private boolean wifiEnabled;
 
+    private boolean bluetoothEnabled;
+
+    private String operator;
+
+    private NetworkType networkType;
+
     @Override
     public String getDeviceId() {
         return deviceId;
@@ -93,5 +99,35 @@ public class UserDeviceModel implements IUserDeviceModel {
     @Override
     public void setWifiEnabled(boolean wifiEnabled) {
         this.wifiEnabled = wifiEnabled;
+    }
+
+    @Override
+    public boolean isBluetoothEnabled() {
+        return bluetoothEnabled;
+    }
+
+    @Override
+    public void setBluetoothEnabled(boolean bluetoothEnabled) {
+        this.bluetoothEnabled = bluetoothEnabled;
+    }
+
+    @Override
+    public String getOperator() {
+        return operator;
+    }
+
+    @Override
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
+
+    @Override
+    public NetworkType getNetworkType() {
+        return networkType;
+    }
+
+    @Override
+    public void setNetworkType(NetworkType networkType) {
+        this.networkType = networkType;
     }
 }

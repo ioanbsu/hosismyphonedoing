@@ -5,19 +5,14 @@ import com.artigile.howismyphonedoing.api.model.battery.BatteryHealthType;
 import com.artigile.howismyphonedoing.api.model.battery.BatteryPluggedType;
 import com.artigile.howismyphonedoing.api.model.battery.BatteryStatusType;
 import com.artigile.howismyphonedoing.client.Messages;
-import com.artigile.howismyphonedoing.client.resources.Images;
 import com.google.common.base.Joiner;
 import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.SafeImageCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiRenderer;
-import com.google.gwt.user.client.ui.Image;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -44,7 +39,7 @@ public class DeviceInfoCell extends AbstractCell<IUserDeviceModel> {
         }
         String batteryInfo = getDeviceBatteryInfo(deviceModelData);
 
-        String color = calculateColor(deviceModelData);
+        String batteryLevelBarColor = calculateColor(deviceModelData);
         String width = calculateWidth(deviceModelData);
         String batteryLevel = deviceModelData.getBatteryLevel() == null ? messages.device_settings_data_is_loading() : messages.device_settings_battery_level_template(deviceModelData.getBatteryLevel() + "");
         SafeHtml chargingShadow = SafeHtmlUtils.EMPTY_SAFE_HTML;
@@ -54,10 +49,21 @@ public class DeviceInfoCell extends AbstractCell<IUserDeviceModel> {
         } else if (deviceModelData.getBatteryStatusType() != null && deviceModelData.getBatteryStatusType() == BatteryStatusType.BATTERY_STATUS_DISCHARGING) {
             chargingShadow = templates.deviceDischarging();
             batteryLevel += " " + messages.device_settings_battery_discharghing_icon();
-
         }
-        renderer.render(sb, batteryInfo, color, SafeHtmlUtils.fromTrustedString(batteryLevel).asString(),
-                width, SafeHtmlUtils.fromString(batteryInfo).asString(), chargingShadow.asString());
+        String wifiEnabled = deviceModelData.isWifiEnabled() ? messages.device_settings_battery_wifi_enabled_label() : messages.device_settings_battery_wifi_disabled_label();
+        String bluetoothEnabled = deviceModelData.isBluetoothEnabled() ? messages.device_settings_battery_bluetooth_enabled_label() : messages.device_settings_battery_bluetooth_disabled_label();
+        String operator = deviceModelData.getOperator();
+        String networkType = deviceModelData.getNetworkType() == null ? "not detected" : deviceModelData.getNetworkType().toString();
+        renderer.render(sb,
+                batteryInfo,
+                operator,
+                networkType,
+                wifiEnabled,
+                bluetoothEnabled,
+                batteryLevelBarColor,
+                SafeHtmlUtils.fromTrustedString(batteryLevel).asString(),
+                width, SafeHtmlUtils.fromString(batteryInfo).asString(),
+                chargingShadow.asString());
     }
 
     private String getDeviceBatteryInfo(IUserDeviceModel deviceModelData) {
@@ -129,7 +135,12 @@ public class DeviceInfoCell extends AbstractCell<IUserDeviceModel> {
 
 
     interface MyUiRenderer extends UiRenderer {
-        void render(SafeHtmlBuilder sb, String batteryInfo, String color, String batteryLevel, String width, String additionalBatteryInfo, String chargingShadow);
+        void render(SafeHtmlBuilder sb,
+                    String batteryInfo,
+                    String operator,
+                    String networkType,
+                    String wifiEnabled,
+                    String bluetoothEnabled, String batteryLevelBarColor, String batteryLevel, String width, String additionalBatteryInfo, String chargingShadow);
     }
 
     interface Templates extends SafeHtmlTemplates {

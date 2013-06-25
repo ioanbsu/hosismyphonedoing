@@ -47,6 +47,8 @@ public class LocationServiceImpl implements LocationService {
     private int reconnectAttempt = 0;
     private Location currentBestLocation;
 
+    private Timer stopLocationRequestsTimer;
+
     @Override
     public void getLocation(LocationListener locationListener) {
         this.locationListener = locationListener;
@@ -55,7 +57,8 @@ public class LocationServiceImpl implements LocationService {
             locationRequestsAreInProgress = true;
             init();
             connectToLocationClient();
-            new Timer().schedule(new TimerTask() {
+            stopLocationRequestsTimer=new Timer();
+            stopLocationRequestsTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     stopRequestingLocationUpdates();
@@ -117,6 +120,7 @@ public class LocationServiceImpl implements LocationService {
 
     private void stopRequestingLocationUpdates() {
         Log.v(TAG, "Accuracy is very precise");
+        stopLocationRequestsTimer.cancel();
         locationClient.removeLocationUpdates(internalLocationListener);
         locationClient.disconnect();
         locationRequestsAreInProgress = false;

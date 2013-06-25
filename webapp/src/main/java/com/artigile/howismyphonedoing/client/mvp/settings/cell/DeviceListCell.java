@@ -49,8 +49,6 @@ public class DeviceListCell extends AbstractCell<DeviceInfoWithLoadingInfo> {
 
     interface MyUiRenderer extends UiRenderer {
         void render(SafeHtmlBuilder sb, String deviceName, SafeHtml loadingIcon);
-
-        CellStyles getCellStyles();
     }
 
 

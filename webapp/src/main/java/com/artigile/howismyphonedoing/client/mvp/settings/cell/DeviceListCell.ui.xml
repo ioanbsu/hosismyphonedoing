@@ -2,7 +2,7 @@
     <ui:with field='deviceName' type='java.lang.String'/>
     <ui:with field="loadingIcon" type="com.google.gwt.safehtml.shared.SafeHtml"/>
 
-    <ui:style field="cellStyles" type="com.artigile.howismyphonedoing.client.resources.CellStyles">
+    <ui:style>
         .deviceNameStyle {
             cursor: pointer;
             padding: 10px;
@@ -18,10 +18,16 @@
             background-color: #628cd5;
             color: #fff;
         }
+
+        .imageStyle img{
+            vertical-align: middle;
+            padding-top: 5px;
+        }
     </ui:style>
 
-    <span class="{cellStyles.deviceNameStyle}">
-        <span>
+
+    <span class="{style.deviceNameStyle}">
+        <span class="{style.imageStyle}">
             <ui:text from='{deviceName}'/>
             <ui:safehtml from='{loadingIcon}'/>
 
