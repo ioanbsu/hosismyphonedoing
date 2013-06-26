@@ -55,6 +55,7 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
         authRpcService.logout(new AsyncCallbackImpl<Void>(eventBus) {
             @Override
             public void success(Void result) {
+                Window.Location.reload();
             }
 
             @Override

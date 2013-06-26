@@ -105,6 +105,8 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
                         if (error.getCode().contains("Token+timed+out")) {//todo: find out the code for timeout.
                             reconnectAfterTimeOut();
                             return;
+                        }else if("0".equals(error.getCode())){
+                            eventBus.userLogout();
                         }
                         eventBus.channelStateChanged(ChannelStateType.CHANNEL_CONNECTING);
                         reOpenChannel();
