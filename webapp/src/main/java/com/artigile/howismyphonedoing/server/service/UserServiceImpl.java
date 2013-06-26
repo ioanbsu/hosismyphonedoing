@@ -17,6 +17,7 @@ import com.artigile.howismyphonedoing.api.model.battery.BatteryStatusType;
 import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,11 +29,12 @@ import java.util.List;
  * Time: 4:38 PM
  */
 @Service
-public class UserInfoService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserAndDeviceDao userAndDeviceDao;
 
+    @Override
     public List<UserDeviceModel> getUsersDevicesList(String userEmail) {
         List<UserDeviceModel> userDeviceModelList = new ArrayList<UserDeviceModel>();
         for (UserDevice userDevice : userAndDeviceDao.getDevices(userEmail)) {
@@ -41,28 +43,42 @@ public class UserInfoService {
             userDeviceModel.setHumanReadableName(userDevice.getHumanReadableName());
             userDeviceModelList.add(userDeviceModel);
         }
-
-//        fakeDevices(userDeviceModelList);
         return userDeviceModelList;
     }
 
-    private void fakeDevices(List<UserDeviceModel> userDeviceModelList) {
-        UserDeviceModel userDeviceModel1=new UserDeviceModel();
-        userDeviceModel1.setBatteryHealthType(BatteryHealthType.BATTERY_HEALTH_UNKNOWN);
-        userDeviceModel1.setBatteryLevel((float)Math.random()*100);
-        userDeviceModel1.setDeviceId("1");
-        userDeviceModel1.setBatteryStatusType(BatteryStatusType.BATTERY_STATUS_NOT_CHARGING);
-        userDeviceModel1.setBatteryPluggedType(BatteryPluggedType.BATTERY_PLUGGED_WIRELESS);
-        userDeviceModel1.setHumanReadableName("MyDevice 1");
-
-        UserDeviceModel userDeviceModel2=new UserDeviceModel();
-        userDeviceModel2.setBatteryHealthType(BatteryHealthType.BATTERY_HEALTH_UNSPECIFIED_FAILURE);
-        userDeviceModel2.setBatteryLevel((float)Math.random()*100);
-        userDeviceModel2.setBatteryStatusType(BatteryStatusType.BATTERY_STATUS_FULL);
-        userDeviceModel2.setDeviceId("2");
-        userDeviceModel2.setBatteryPluggedType(BatteryPluggedType.BATTERY_PLUGGED_USB);
-        userDeviceModel2.setHumanReadableName("MyDevice 2");
-        userDeviceModelList.add(userDeviceModel1);
-        userDeviceModelList.add(userDeviceModel2);
+    @Override
+    public void registerUserDevice(UserDevice userDevice) {
+        userAndDeviceDao.register(userDevice);
     }
+
+    @Override
+    public String unregisterDeviceByUuid(String uuid) {
+        return userAndDeviceDao.unregister(uuid);
+    }
+
+    @Override
+    public UserDevice findUserDeviceByUuid(String uuid) {
+        return userAndDeviceDao.getById(uuid);
+    }
+
+    @Override
+    public void updateDeviceGcmRegistration(String currentRegistrationId, String newRegistrationId) {
+        userAndDeviceDao.updateRegistration(currentRegistrationId, newRegistrationId);
+    }
+
+    @Override
+    public UserDevice getDeviceByGcmRegId(String gcmRegistrationId) {
+        return userAndDeviceDao.getDeviceByGcmId(gcmRegistrationId);
+    }
+
+    @Override
+    public void unregisterDevice(String userDeviceUuid) {
+        userAndDeviceDao.unregister(userDeviceUuid);
+    }
+
+    @Override
+    public void removeAllDevices(String userEmail) {
+        userAndDeviceDao.removeAllUserDevices(userEmail);
+    }
+
 }

@@ -114,7 +114,7 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
     @Override
     public UserDevice getDeviceByGcmId(String regId) {
         PersistenceManager pm = pmfTransationAware.getPersistenceManager();
-        return  getUserDeviceByGcmId(regId, pm);
+        return getUserDeviceByGcmId(regId, pm);
     }
 
     public void cleanupDatabase() {
@@ -133,8 +133,8 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
     private UserDevice getUserDeviceByGcmId(String gcmId, PersistenceManager pm) {
         Query query = pm.newQuery(UserDevice.class, "deviceCloudRegistrationId == deviceCloudRegistrationIdParam");
         query.declareParameters("String deviceCloudRegistrationIdParam");
-        List<UserDevice> devices= (List<UserDevice>) query.execute(gcmId);
-        if(devices!=null&&!devices.isEmpty()){
+        List<UserDevice> devices = (List<UserDevice>) query.execute(gcmId);
+        if (devices != null && !devices.isEmpty()) {
             return devices.get(0);
         }
         return null;

@@ -11,21 +11,17 @@
 package com.artigile.howismyphonedoing.server.service;
 
 import com.artigile.howismyphonedoing.client.exception.UserNotLoggedInException;
-import com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver;
 import com.artigile.howismyphonedoing.shared.entity.GooglePlusAuthenticatedUser;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.gwtwidgets.server.spring.ServletUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.security.SecureRandom;
 
 /**
  * @author IoaN, 5/27/13 8:21 PM
@@ -33,7 +29,7 @@ import java.security.SecureRandom;
 @Aspect
 @Component
 @Scope(value = WebApplicationContext.SCOPE_SESSION)
-public class SecurityAspect implements Serializable{
+public class SecurityAspect implements Serializable {
     public static final String SESSION_USER_ATTR_NAME = "googlePlusLoggedInUser";
     public static final String USER_IN_SESSION_EMAIL = "userInSessionEmail";
 

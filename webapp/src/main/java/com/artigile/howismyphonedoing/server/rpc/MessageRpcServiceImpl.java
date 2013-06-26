@@ -14,7 +14,8 @@ import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.api.shared.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.client.exception.DeviceWasRemovedException;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcService;
-import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
+import com.artigile.howismyphonedoing.server.service.UserService;
+import com.artigile.howismyphonedoing.server.service.WebAppMessageSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -29,15 +30,14 @@ import java.util.logging.Logger;
 public class MessageRpcServiceImpl extends AbstractRpcService implements MessageRpcService {
 
     @Autowired
-    private UserAndDeviceDao userAndDeviceDao;
+    private UserService userService;
     @Autowired
-    @Qualifier("webappSender")
-    private WebAppMessageProcessor<String> messageSender;
+    private WebAppMessageSender messageSender;
     protected final Logger logger = Logger.getLogger(getClass().getName());
 
     @Override
     public String removeAllUserDevices() {
-        userAndDeviceDao.removeAllUserDevices(getUserEmailFromSession());
+        userService.removeAllDevices(getUserEmailFromSession());
         return "successfully removed";
     }
 

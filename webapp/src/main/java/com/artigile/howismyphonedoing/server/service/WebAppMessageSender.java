@@ -14,7 +14,6 @@ import com.artigile.howismyphonedoing.api.CommonConstants;
 import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.api.shared.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.client.exception.DeviceWasRemovedException;
-import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.gcmserver.*;
 import com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver;
@@ -37,7 +36,6 @@ import java.util.logging.Logger;
  * Time: 9:22 AM
  */
 @Service
-@Qualifier("webappSender")
 public class WebAppMessageSender implements WebAppMessageProcessor<String> {
     private static final Executor threadPool = Executors.newFixedThreadPool(5);
     private static final int MULTICAST_SIZE = 1000;
@@ -46,7 +44,7 @@ public class WebAppMessageSender implements WebAppMessageProcessor<String> {
     @Autowired
     private KeysResolver apiKeyResolver;
     @Autowired
-    private UserAndDeviceDao userAndDeviceDao;
+    private UserService userService;
 
     @PostConstruct
     private void init() {
@@ -56,7 +54,7 @@ public class WebAppMessageSender implements WebAppMessageProcessor<String> {
     @Override
     public String processMessage(String deviceId, MessageType messageType, String messageStr) throws DeviceWasRemovedException {
         logger.info("Sending messages to device with id = " + deviceId + ", message type = " + messageType);
-        UserDevice device = userAndDeviceDao.getById(deviceId);
+        UserDevice device = userService.findUserDeviceByUuid(deviceId);
         if (device == null) {
             throw new DeviceWasRemovedException();
         }
@@ -94,30 +92,30 @@ public class WebAppMessageSender implements WebAppMessageProcessor<String> {
         List<Result> results = multicastResult.getResults();
         // analyze the results
         for (int i = 0; i < devices.size(); i++) {
-            String regId = devices.get(i);
+            String currentRegistrationId = devices.get(i);
             Result result = results.get(i);
             String messageId = result.getMessageId();
             if (messageId != null) {
-                logger.fine("Succesfully sent message to device: " + regId +
+                logger.fine("Succesfully sent message to device: " + currentRegistrationId +
                         "; messageId = " + messageId);
-                String canonicalRegId = result.getCanonicalRegistrationId();
-                if (canonicalRegId != null) {
+                String newRegistrationId = result.getCanonicalRegistrationId();
+                if (newRegistrationId != null) {
                     // same device has more than one registration id: update it
-                    logger.info("canonicalRegId " + canonicalRegId);
-                    userAndDeviceDao.updateRegistration(regId, canonicalRegId);
+                    logger.info("canonicalRegId " + newRegistrationId);
+                    userService.updateDeviceGcmRegistration(currentRegistrationId, newRegistrationId);
                 }
             } else {
                 String error = result.getErrorCodeName();
                 if (error.equals(Constants.ERROR_NOT_REGISTERED)) {
                     // application has been removed from device - unregister it
-                    logger.info("Unregistered device: " + regId);
-                    UserDevice userDevice = userAndDeviceDao.getDeviceByGcmId(regId);
+                    logger.info("Unregistered device: " + currentRegistrationId);
+                    UserDevice userDevice = userService.getDeviceByGcmRegId(currentRegistrationId);
                     if (userDevice != null) {
-                        userAndDeviceDao.unregister(userDevice.getUuid());
+                        userService.unregisterDevice(userDevice.getUuid());
                         throw new DeviceWasRemovedException();
                     }
                 } else {
-                    logger.severe("Error sending message to " + regId + ": " + error);
+                    logger.severe("Error sending message to " + currentRegistrationId + ": " + error);
                 }
             }
         }

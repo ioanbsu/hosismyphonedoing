@@ -11,12 +11,11 @@
 package com.artigile.howismyphonedoing.server.service;
 
 import com.artigile.howismyphonedoing.api.MessageParser;
-import com.artigile.howismyphonedoing.api.shared.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.api.model.DeviceRegistrationModel;
 import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.api.model.ResponseFromServer;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
-import com.artigile.howismyphonedoing.server.dao.UserAndDeviceDao;
+import com.artigile.howismyphonedoing.api.shared.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
@@ -36,7 +35,7 @@ import java.util.logging.Logger;
 public class WebAppMessageReceiver implements WebAppMessageProcessor<String> {
     protected final Logger logger = Logger.getLogger(getClass().getName());
     @Autowired
-    private UserAndDeviceDao userAndDeviceDao;
+    private UserService userInfoService;
     @Autowired
     private MessageParser messageParser;
 
@@ -55,13 +54,13 @@ public class WebAppMessageReceiver implements WebAppMessageProcessor<String> {
                 userDevice.setUuid(uuid);
                 userDevice.setDeviceCloudRegistrationId(registrationModel.getDeviceCloudRegistrationId());
                 userDevice.setHumanReadableName(registrationModel.getDeviceModel().getModel());
-                userAndDeviceDao.register(userDevice);
+                userInfoService.registerUserDevice(userDevice);
             } else if (messageType == MessageType.UNREGISTER_DEVICE) {
                 logger.info("Unregistering device: " + uuid);
-                userEmail = userAndDeviceDao.unregister(uuid);
+                userEmail = userInfoService.unregisterDeviceByUuid(uuid);
             } else {
                 logger.info("Message Type: " + messageType);
-                userDevice = userAndDeviceDao.getById(uuid);
+                userDevice = userInfoService.findUserDeviceByUuid(uuid);
                 userEmail = userDevice.getUserEmail();
             }
             if (userEmail != null) {
@@ -77,8 +76,6 @@ public class WebAppMessageReceiver implements WebAppMessageProcessor<String> {
                 }
                 channelService.sendMessage(new ChannelMessage(userEmail, new Gson().toJson(responseFromServer)));
             }
-
-
         } catch (Exception e) {
             logger.warning("unexpected error happened, please investigate!!!!!!!!!!!!!!!!");
             throw e;
