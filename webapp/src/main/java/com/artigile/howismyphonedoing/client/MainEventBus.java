@@ -76,4 +76,7 @@ public interface MainEventBus extends EventBus {
 
     @Event(handlers = MapBodyPresenter.class)
     void devicesLocationUpdateRequestSent();
+
+    @Event(handlers = MapBodyPresenter.class)
+    void centerDeviceLocationOnScreen(IUserDeviceModel iUserDeviceModel);
 }

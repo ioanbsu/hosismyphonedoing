@@ -5,7 +5,7 @@ package com.artigile.howismyphonedoing.api.model;
  * Date: 6/25/13
  * Time: 5:45 PM
  */
-public class DeviceSettings implements IDeviceSettings {
+public class DeviceSettingsModel implements IDeviceSettingsModel {
 
     private RingerMode ringerMode;
 

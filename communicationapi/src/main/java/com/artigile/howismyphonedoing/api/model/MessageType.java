@@ -53,7 +53,7 @@ public enum MessageType {
     DEVICE_SETTINGS_UPDATE {
         @Override
         public Class<? extends Serializable> getDeserializedClass() {
-            return DeviceSettings.class;
+            return DeviceSettingsModel.class;
         }
     },
     MESSAGE_TYPE_IS_NOT_SUPPORTED {

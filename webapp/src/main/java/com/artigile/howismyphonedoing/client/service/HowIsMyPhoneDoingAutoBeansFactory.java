@@ -30,5 +30,5 @@ public interface HowIsMyPhoneDoingAutoBeansFactory extends AutoBeanFactory {
 
     AutoBean<IMessageToDeviceModel> messageToDeviceModel();
 
-    AutoBean<IDeviceSettings> deviceSettings();
+    AutoBean<IDeviceSettingsModel> deviceSettings();
 }

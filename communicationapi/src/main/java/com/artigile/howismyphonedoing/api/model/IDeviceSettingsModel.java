@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Date: 6/25/13
  * Time: 5:47 PM
  */
-public interface IDeviceSettings extends Serializable{
+public interface IDeviceSettingsModel extends Serializable{
     RingerMode getRingerMode();
 
     void setRingerMode(RingerMode ringerMode);

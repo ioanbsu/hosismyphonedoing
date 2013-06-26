@@ -1,6 +1,6 @@
 package com.artigile.howismyphonedoing.client.mvp.settings.cell;
 
-import com.artigile.howismyphonedoing.api.model.DeviceSettings;
+import com.artigile.howismyphonedoing.api.model.DeviceSettingsModel;
 import com.artigile.howismyphonedoing.api.model.RingerMode;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -8,10 +8,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.TakesValue;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,7 +19,7 @@ import javax.inject.Singleton;
  * Time: 5:32 PM
  */
 @Singleton
-public class DeviceSettingsWidget extends Composite implements TakesValue<DeviceSettings> {
+public class DeviceSettingsWidget extends Composite implements TakesValue<DeviceSettingsModel> {
 
     @UiField
     RadioButton ringerModeSilent;
@@ -32,6 +29,10 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<Device
     RadioButton ringerModeSilentVibrate;
     @UiField
     Button saveButton;
+    @UiField
+    HTMLPanel settingsPanel;
+    @UiField
+    Label selectDeviceMsg;
     @Inject
     private Messages messages;
     private SaveSettingsListener saveSettingsListener;
@@ -42,20 +43,20 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<Device
     }
 
     @Override
-    public DeviceSettings getValue() {
-        DeviceSettings deviceSettings = new DeviceSettings();
+    public DeviceSettingsModel getValue() {
+        DeviceSettingsModel deviceSettingsModel = new DeviceSettingsModel();
         if (ringerModeSilent.getValue()) {
-            deviceSettings.setRingerMode(RingerMode.RINGER_MODE_SILENT);
+            deviceSettingsModel.setRingerMode(RingerMode.RINGER_MODE_SILENT);
         } else if (ringerModeSilentNormal.getValue()) {
-            deviceSettings.setRingerMode(RingerMode.RINGER_MODE_NORMAL);
+            deviceSettingsModel.setRingerMode(RingerMode.RINGER_MODE_NORMAL);
         } else if (ringerModeSilentVibrate.getValue()) {
-            deviceSettings.setRingerMode(RingerMode.RINGER_MODE_VIBRATE);
+            deviceSettingsModel.setRingerMode(RingerMode.RINGER_MODE_VIBRATE);
         }
-        return deviceSettings;
+        return deviceSettingsModel;
     }
 
     @Override
-    public void setValue(DeviceSettings value) {
+    public void setValue(DeviceSettingsModel value) {
         ringerModeSilentNormal.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_NORMAL);
         ringerModeSilent.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_SILENT);
     }
@@ -67,14 +68,19 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<Device
     @UiHandler("saveButton")
     void onSaveButtonClicked(ClickEvent clickEvent) {
         if (saveSettingsListener != null) {
-            saveSettingsListener.onSaveClicked(getValue());
+            saveSettingsListener.onSaveClicked();
         }
     }
 
-    public static interface Binder extends UiBinder<HTMLPanel, DeviceSettingsWidget> {
+    public void enable(boolean enabled) {
+        selectDeviceMsg.setVisible(!enabled);
+        settingsPanel.setVisible(enabled);
+    }
+
+    public static interface Binder extends UiBinder<FlowPanel, DeviceSettingsWidget> {
     }
 
     public static interface SaveSettingsListener {
-        void onSaveClicked(DeviceSettings deviceSettings);
+        void onSaveClicked();
     }
 }

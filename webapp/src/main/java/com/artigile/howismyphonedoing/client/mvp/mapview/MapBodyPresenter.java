@@ -11,6 +11,7 @@
 package com.artigile.howismyphonedoing.client.mvp.mapview;
 
 import com.artigile.howismyphonedoing.api.model.IDeviceLocationModel;
+import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
@@ -61,6 +62,19 @@ public class MapBodyPresenter extends BasePresenter<MapBodyView, MainEventBus> {
 
     public void onDevicesLocationUpdateRequestSent() {
         autoFitBoundsOnDevicesLocationFound = true;
+    }
+
+    public void onCenterDeviceLocationOnScreen(IUserDeviceModel iUserDeviceModel){
+        if(deviceMarkerModelList==null){
+            return;
+        }
+        for (DeviceMarkerModel deviceMarkerModel : deviceMarkerModelList) {
+            if(deviceMarkerModel.getDeviceLocationModel().getDeviceId().equals(iUserDeviceModel.getDeviceId())){
+                getView().getMap().setCenter(deviceMarkerModel.getMarker().getPosition());
+                return;
+            }
+        }
+
     }
 
     private List<DeviceMarkerModel> prepareMarkers(IDeviceLocationModel deviceLocationModel) {

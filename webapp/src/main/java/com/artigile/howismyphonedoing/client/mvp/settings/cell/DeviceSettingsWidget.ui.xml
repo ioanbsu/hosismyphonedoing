@@ -8,22 +8,30 @@
     <ui:style>
     </ui:style>
 
-    <g:HTMLPanel>
-        <table>
-            <tr>
-                <td><g:Label text="{msg.device_settings_ringer_mode_label}"/></td>
-                <td>
-                    <g:RadioButton name="ringerMode" text="{msg.device_settings_ringer_mode_normal}" ui:field="ringerModeSilentNormal"/>
-                    <g:RadioButton name="ringerMode" text="{msg.device_settings_ringer_mode_vibrate}" ui:field="ringerModeSilentVibrate"/>
-                    <g:RadioButton name="ringerMode" text="{msg.device_settings_ringer_mode_silent}" ui:field="ringerModeSilent"/>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <g:Button ui:field="saveButton" text="Save"/>
-                </td>
+    <g:FlowPanel>
+        <g:Label text="{msg.device_settings_select_device_label}" ui:field="selectDeviceMsg" />
+        <g:HTMLPanel ui:field="settingsPanel" visible="false">
+            <table>
+                <tr>
+                    <td>
+                        <g:Label text="{msg.device_settings_ringer_mode_label}"/>
+                    </td>
+                    <td>
+                        <g:RadioButton name="ringerMode" text="{msg.device_settings_ringer_mode_normal}"
+                                       ui:field="ringerModeSilentNormal"/>
+                        <g:RadioButton name="ringerMode" text="{msg.device_settings_ringer_mode_vibrate}"
+                                       ui:field="ringerModeSilentVibrate"/>
+                        <g:RadioButton name="ringerMode" text="{msg.device_settings_ringer_mode_silent}"
+                                       ui:field="ringerModeSilent"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <g:Button ui:field="saveButton" text="Save"/>
+                    </td>
 
-            </tr>
-        </table>
-    </g:HTMLPanel>
+                </tr>
+            </table>
+        </g:HTMLPanel>
+    </g:FlowPanel>
 </ui:UiBinder>

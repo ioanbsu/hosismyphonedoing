@@ -18,6 +18,7 @@ import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
 import com.artigile.howismyphonedoing.client.mvp.settings.SettingsPresenter;
+import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
@@ -34,6 +35,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.mvp4g.client.annotation.Presenter;
@@ -75,7 +79,6 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     private HowIsMyPhoneDoingAutoBeansFactory howIsMyPhoneDoingAutoBeansFactory;
 
     public static final int MAX_LOCATION_RESPONSE_WAIT = 60 * 1000;
-
 
     private Timer locationDetectTimer;
 
