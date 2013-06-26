@@ -25,9 +25,11 @@ import javax.inject.Singleton;
 public class DeviceSettingsWidget extends Composite implements TakesValue<DeviceSettings> {
 
     @UiField
-    RadioButton ringerModeSilentOn;
+    RadioButton ringerModeSilent;
     @UiField
-    RadioButton ringerModeSilentOff;
+    RadioButton ringerModeSilentNormal;
+    @UiField
+    RadioButton ringerModeSilentVibrate;
     @UiField
     Button saveButton;
     @Inject
@@ -42,18 +44,20 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<Device
     @Override
     public DeviceSettings getValue() {
         DeviceSettings deviceSettings = new DeviceSettings();
-        if (ringerModeSilentOn.getValue()) {
+        if (ringerModeSilent.getValue()) {
             deviceSettings.setRingerMode(RingerMode.RINGER_MODE_SILENT);
-        } else if (ringerModeSilentOff.getValue()) {
+        } else if (ringerModeSilentNormal.getValue()) {
             deviceSettings.setRingerMode(RingerMode.RINGER_MODE_NORMAL);
+        } else if (ringerModeSilentVibrate.getValue()) {
+            deviceSettings.setRingerMode(RingerMode.RINGER_MODE_VIBRATE);
         }
         return deviceSettings;
     }
 
     @Override
     public void setValue(DeviceSettings value) {
-        ringerModeSilentOff.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_NORMAL);
-        ringerModeSilentOn.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_SILENT);
+        ringerModeSilentNormal.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_NORMAL);
+        ringerModeSilent.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_SILENT);
     }
 
     public void setSaveSettingsListener(SaveSettingsListener saveSettingsListener) {

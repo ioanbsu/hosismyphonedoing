@@ -11,10 +11,11 @@
     <g:HTMLPanel>
         <table>
             <tr>
-                <td>Silent Mode</td>
+                <td><g:Label text="{msg.device_settings_ringer_mode_label}"/></td>
                 <td>
-                    <g:RadioButton name="ringerMode" text="Silent On" ui:field="ringerModeSilentOn"/>
-                    <g:RadioButton name="ringerMode" text="Silent Off" ui:field="ringerModeSilentOff"/>
+                    <g:RadioButton name="ringerMode" text="{msg.device_settings_ringer_mode_normal}" ui:field="ringerModeSilentNormal"/>
+                    <g:RadioButton name="ringerMode" text="{msg.device_settings_ringer_mode_vibrate}" ui:field="ringerModeSilentVibrate"/>
+                    <g:RadioButton name="ringerMode" text="{msg.device_settings_ringer_mode_silent}" ui:field="ringerModeSilent"/>
                 </td>
             </tr>
             <tr>
