@@ -57,6 +57,8 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     private DeviceDetailsReader UserPhoneDetailsReader;
     @Inject
     private DeviceDetailsReader deviceDetailsReader;
+    @Inject
+    private DeviceConfigurationService deviceConfigurationService;
     private String TAG = "AndroidMessageReceiver";
     private AndroidMessageResultListener androidMessageResultListener;
 
@@ -107,6 +109,13 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
         } else if (messageType == MessageType.DEVICE_DETAILS_INFO) {
             UserDeviceModel userDeviceModel = deviceDetailsReader.getUserDeviceDetails(null);
             failsafeSendMessage(messageType, messageParser.serialize(userDeviceModel));
+        } else if (messageType == MessageType.DEVICE_SETTINGS_UPDATE) {
+            DeviceSettings deviceSettings= messageParser.parse(messageType, serializedObject);
+            if(deviceSettings.getRingerMode()==RingerMode.RINGER_MODE_SILENT){
+                deviceConfigurationService.enableSilentMode(true);
+            }else if(deviceSettings.getRingerMode()==RingerMode.RINGER_MODE_NORMAL){
+                deviceConfigurationService.enableSilentMode(false);
+            }
         } else {
             commonUtilities.displayMessage(context, serializedObject);
             // notifies user

@@ -10,7 +10,8 @@
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:cellview="urn:import:com.google.gwt.user.cellview.client">
+             xmlns:cellview="urn:import:com.google.gwt.user.cellview.client"
+             xmlns:cell="urn:import:com.artigile.howismyphonedoing.client.mvp.settings.cell">
     <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
     <ui:with field="images" type="com.artigile.howismyphonedoing.client.resources.Images"/>
 
@@ -62,44 +63,8 @@
                         <g:customHeader size='7'>
                             <g:Label>Settings</g:Label>
                         </g:customHeader>
-                        <g:HTMLPanel>
-                            <table>
-                                <tr>
-                                    <td>Silent Mode</td>
-                                    <td>
-                                        <g:RadioButton name="silentMode" text="On" enabled="false"/>
-                                        <g:RadioButton name="silentMode" text="Off" enabled="false"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Alarms</td>
-                                    <td>
-                                        <g:ListBox enabled="false"/>
-                                        <g:Button text="Add alarm time" enabled="false"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Bluetooth</td>
-                                    <td>
-                                        <g:RadioButton name="bluetooth" text="On" enabled="false"/>
-                                        <g:RadioButton name="bluetooth" text="Off" enabled="false"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Wi-fi</td>
-                                    <td>
-                                        <g:RadioButton name="wifi" text="On" enabled="false"/>
-                                        <g:RadioButton name="wifi" text="Off" enabled="false"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        <g:Button text="Save Settings" enabled="false"/>
-                                    </td>
-                                </tr>
-                            </table>
-                        </g:HTMLPanel>
+                        <cell:DeviceSettingsWidget ui:field="deviceSettings"/>
+
                     </g:tab>
                 </g:TabLayoutPanel>
 

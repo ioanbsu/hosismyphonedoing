@@ -1,0 +1,28 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        >
+    <ui:with field="images" type="com.artigile.howismyphonedoing.client.resources.Images"/>
+    <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
+    <ui:with field='batteryInfo' type='java.lang.String'/>
+
+
+    <ui:style>
+    </ui:style>
+
+    <g:HTMLPanel>
+        <table>
+            <tr>
+                <td>Silent Mode</td>
+                <td>
+                    <g:RadioButton name="ringerMode" text="Silent On" ui:field="ringerModeSilentOn"/>
+                    <g:RadioButton name="ringerMode" text="Silent Off" ui:field="ringerModeSilentOff"/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <g:Button ui:field="saveButton" text="Save"/>
+                </td>
+
+            </tr>
+        </table>
+    </g:HTMLPanel>
+</ui:UiBinder>

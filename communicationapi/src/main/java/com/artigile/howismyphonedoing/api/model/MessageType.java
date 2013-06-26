@@ -50,6 +50,12 @@ public enum MessageType {
             return UserDeviceModel.class;
         }
     },
+    DEVICE_SETTINGS_UPDATE {
+        @Override
+        public Class<? extends Serializable> getDeserializedClass() {
+            return DeviceSettings.class;
+        }
+    },
     MESSAGE_TYPE_IS_NOT_SUPPORTED {
         @Override
         public Class<? extends Serializable> getDeserializedClass() {

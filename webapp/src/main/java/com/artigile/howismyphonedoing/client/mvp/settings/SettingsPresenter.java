@@ -1,14 +1,13 @@
 package com.artigile.howismyphonedoing.client.mvp.settings;
 
-import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
-import com.artigile.howismyphonedoing.api.model.MessageType;
-import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
+import com.artigile.howismyphonedoing.api.model.*;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
+import com.artigile.howismyphonedoing.client.service.HowIsMyPhoneDoingAutoBeansFactory;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.mvp4g.client.annotation.Presenter;
 import com.mvp4g.client.presenter.BasePresenter;
 
@@ -28,20 +27,20 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
 
     @Inject
     private MessageRpcServiceAsync messageRpcServiceAsync;
+    @Inject
+    private HowIsMyPhoneDoingAutoBeansFactory howIsMyPhoneDoingAutoBeansFactory;
 
     public void onInitApp() {
         GWT.log("Settings window initiated.");
     }
 
-
     public void show() {
         view.show();
     }
 
-    public void onUsersDevicesListReceived(List<UserDeviceModel> result){
-         view.setDevicesList(result);
+    public void onUsersDevicesListReceived(List<UserDeviceModel> result) {
+        view.setDevicesList(result);
     }
-
 
     public void onDeviceDetailsReceived(IUserDeviceModel deviceDetails) {
         view.updateDeviceDetails(deviceDetails);
@@ -51,5 +50,13 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         messageRpcServiceAsync.sendMessageToDevice(MessageType.DEVICE_DETAILS_INFO, selectedObject.getDeviceId(), "", new AsyncCallbackImpl<String>(eventBus) {
 
         });
+    }
+
+    public void onSaveDeviceConfigClicked(IUserDeviceModel iUserDeviceModel, DeviceSettings deviceSettings) {
+        AutoBean<IDeviceSettings> iDeviceSettingsAutoBean = howIsMyPhoneDoingAutoBeansFactory.create(IDeviceSettings.class, deviceSettings);
+        String serializedMessage = AutoBeanCodex.encode(iDeviceSettingsAutoBean).getPayload();
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.DEVICE_SETTINGS_UPDATE, iUserDeviceModel.getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
+        });
+
     }
 }

@@ -1,10 +1,12 @@
 package com.artigile.howismyphonedoing.client.mvp.settings;
 
+import com.artigile.howismyphonedoing.api.model.DeviceSettings;
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoCell;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceListCell;
+import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceSettingsWidget;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -18,12 +20,12 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.mvp4g.client.view.ReverseViewInterface;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,11 +49,16 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
     CellWidget<IUserDeviceModel> deviceInfo;
     @UiField
     Button refreshDeviceInfo;
+    @UiField(provided = true)
+    DeviceSettingsWidget deviceSettings;
     private SettingsPresenter presenter;
+    private Date lastSentUpdateDate;
 
 
     @Inject
-    public SettingsView(Binder binder, DeviceInfoCell deviceInfoCell, DeviceListCell deviceListCell) {
+    public SettingsView(Binder binder, DeviceInfoCell deviceInfoCell, DeviceListCell deviceListCell, DeviceSettingsWidget deviceSettings) {
+        this.deviceSettings=deviceSettings;
+        deviceSettings.setSaveSettingsListener(initSaveSettingsListener());
         deviceInfo = new CellWidget<IUserDeviceModel>(deviceInfoCell);
         addableDevicesList = new CellList<DeviceInfoWithLoadingInfo>(deviceListCell, getUserDeviceModelProvidesKey());
         addableDevicesList.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
@@ -61,10 +68,23 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
             @Override
             public void onSelectionChange(SelectionChangeEvent event) {
                 deviceInfo.setValue(selectionModel.getSelectedObject().getiUserDeviceModel());
-                requestDeviceInfoUpdate();
+                if (lastSentUpdateDate == null || new Date().getTime() - lastSentUpdateDate.getTime() > 1000 * 30) {
+                    requestDeviceInfoUpdate();
+                    lastSentUpdateDate = new Date();
+                }
             }
         });
         binder.createAndBindUi(this);
+    }
+
+    private DeviceSettingsWidget.SaveSettingsListener initSaveSettingsListener() {
+        return new DeviceSettingsWidget.SaveSettingsListener() {
+            @Override
+            public void onSaveClicked(DeviceSettings deviceSettings) {
+                presenter.onSaveDeviceConfigClicked(selectionModel.getSelectedObject().getiUserDeviceModel(),deviceSettings);
+            }
+        };
+
     }
 
     @Override
