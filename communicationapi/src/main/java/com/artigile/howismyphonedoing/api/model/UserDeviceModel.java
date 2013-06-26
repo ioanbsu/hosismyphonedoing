@@ -130,4 +130,6 @@ public class UserDeviceModel implements IUserDeviceModel {
     public void setNetworkType(NetworkType networkType) {
         this.networkType = networkType;
     }
+
+
 }

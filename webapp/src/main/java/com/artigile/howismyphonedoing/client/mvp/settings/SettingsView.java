@@ -25,7 +25,6 @@ import com.mvp4g.client.view.ReverseViewInterface;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,12 +51,11 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
     @UiField(provided = true)
     DeviceSettingsWidget deviceSettings;
     private SettingsPresenter presenter;
-    private Date lastSentUpdateDate;
 
 
     @Inject
     public SettingsView(Binder binder, DeviceInfoCell deviceInfoCell, DeviceListCell deviceListCell, DeviceSettingsWidget deviceSettings) {
-        this.deviceSettings=deviceSettings;
+        this.deviceSettings = deviceSettings;
         deviceSettings.setSaveSettingsListener(initSaveSettingsListener());
         deviceInfo = new CellWidget<IUserDeviceModel>(deviceInfoCell);
         addableDevicesList = new CellList<DeviceInfoWithLoadingInfo>(deviceListCell, getUserDeviceModelProvidesKey());
@@ -68,9 +66,8 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
             @Override
             public void onSelectionChange(SelectionChangeEvent event) {
                 deviceInfo.setValue(selectionModel.getSelectedObject().getiUserDeviceModel());
-                if (lastSentUpdateDate == null || new Date().getTime() - lastSentUpdateDate.getTime() > 1000 * 30) {
+                if (selectionModel.getSelectedObject().getiUserDeviceModel().getBatteryLevel() == null) {
                     requestDeviceInfoUpdate();
-                    lastSentUpdateDate = new Date();
                 }
             }
         });
@@ -81,7 +78,7 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
         return new DeviceSettingsWidget.SaveSettingsListener() {
             @Override
             public void onSaveClicked(DeviceSettings deviceSettings) {
-                presenter.onSaveDeviceConfigClicked(selectionModel.getSelectedObject().getiUserDeviceModel(),deviceSettings);
+                presenter.onSaveDeviceConfigClicked(selectionModel.getSelectedObject().getiUserDeviceModel(), deviceSettings);
             }
         };
 
@@ -133,14 +130,7 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
     public void updateDeviceDetails(IUserDeviceModel deviceDetails) {
         for (DeviceInfoWithLoadingInfo userDeviceModel : dataProvider.getList()) {
             if (userDeviceModel.getiUserDeviceModel().getDeviceId().equals(deviceDetails.getDeviceId())) {
-                userDeviceModel.getiUserDeviceModel().setBatteryLevel(deviceDetails.getBatteryLevel());
-                userDeviceModel.getiUserDeviceModel().setBatteryStatusType(deviceDetails.getBatteryStatusType());
-                userDeviceModel.getiUserDeviceModel().setBatteryPluggedType(deviceDetails.getBatteryPluggedType());
-                userDeviceModel.getiUserDeviceModel().setBatteryHealthType(deviceDetails.getBatteryHealthType());
-                userDeviceModel.getiUserDeviceModel().setOperator(deviceDetails.getOperator());
-                userDeviceModel.getiUserDeviceModel().setNetworkType(deviceDetails.getNetworkType());
-                userDeviceModel.getiUserDeviceModel().setWifiEnabled(deviceDetails.isWifiEnabled());
-                userDeviceModel.getiUserDeviceModel().setBluetoothEnabled(deviceDetails.isBluetoothEnabled());
+                mergeDeviceInfo(deviceDetails, userDeviceModel.getiUserDeviceModel());
                 userDeviceModel.setLoadingState(DeviceInfoWithLoadingInfo.LoadingState.LOADED);
                 addableDevicesList.redraw();
             }
@@ -151,16 +141,49 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
     }
 
     public void setDevicesList(List<UserDeviceModel> result) {
+        DeviceInfoWithLoadingInfo selectedObject = selectionModel.getSelectedObject();
+        DeviceInfoWithLoadingInfo newSelected = null;
+
+        List<DeviceInfoWithLoadingInfo> existentList = dataProvider.getList();
         dataProvider.getList().clear();
         List<DeviceInfoWithLoadingInfo> deviceInfoWithLoadingInfoList = new ArrayList<DeviceInfoWithLoadingInfo>();
         for (UserDeviceModel userDeviceModel : result) {
             DeviceInfoWithLoadingInfo deviceInfoWithLoadingInfo = new DeviceInfoWithLoadingInfo();
+
             deviceInfoWithLoadingInfo.setiUserDeviceModel(userDeviceModel);
             deviceInfoWithLoadingInfo.setLoadingState(DeviceInfoWithLoadingInfo.LoadingState.UNKNOWN);
+            for (DeviceInfoWithLoadingInfo deviceInfoWithLoadingInfoInList : existentList) {
+                if (deviceInfoWithLoadingInfoInList.getiUserDeviceModel().getDeviceId().equals(userDeviceModel)) {
+                    mergeDeviceInfo(deviceInfoWithLoadingInfoInList.getiUserDeviceModel(), userDeviceModel);
+                    deviceInfoWithLoadingInfo.setLoadingState(deviceInfoWithLoadingInfoInList.getLoadingState());
+                    break;
+                }
+            }
+            if (selectedObject != null && selectedObject.getiUserDeviceModel().getDeviceId().equals(userDeviceModel.getDeviceId())) {
+                newSelected = deviceInfoWithLoadingInfo;
+            } else {
+
+            }
             deviceInfoWithLoadingInfoList.add(deviceInfoWithLoadingInfo);
         }
         dataProvider.getList().addAll(deviceInfoWithLoadingInfoList);
+        if (newSelected != null) {
+            selectionModel.setSelected(newSelected, true);
+        }
     }
+
+
+    private void mergeDeviceInfo(IUserDeviceModel deviceDetailsFrom, IUserDeviceModel deviceDetailsTo) {
+        deviceDetailsTo.setBatteryLevel(deviceDetailsFrom.getBatteryLevel());
+        deviceDetailsTo.setBatteryStatusType(deviceDetailsFrom.getBatteryStatusType());
+        deviceDetailsTo.setBatteryPluggedType(deviceDetailsFrom.getBatteryPluggedType());
+        deviceDetailsTo.setBatteryHealthType(deviceDetailsFrom.getBatteryHealthType());
+        deviceDetailsTo.setOperator(deviceDetailsFrom.getOperator());
+        deviceDetailsTo.setNetworkType(deviceDetailsFrom.getNetworkType());
+        deviceDetailsTo.setWifiEnabled(deviceDetailsFrom.isWifiEnabled());
+        deviceDetailsTo.setBluetoothEnabled(deviceDetailsFrom.isBluetoothEnabled());
+    }
+
 
     public static interface Binder extends UiBinder<DialogBox, SettingsView> {
     }
