@@ -1,6 +1,7 @@
 package com.artigile.howismyphonedoing.client.mvp.settings.cell;
 
 import com.artigile.howismyphonedoing.api.model.DeviceSettingsModel;
+import com.artigile.howismyphonedoing.api.model.IDeviceSettingsModel;
 import com.artigile.howismyphonedoing.api.model.RingerMode;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -19,7 +20,7 @@ import javax.inject.Singleton;
  * Time: 5:32 PM
  */
 @Singleton
-public class DeviceSettingsWidget extends Composite implements TakesValue<DeviceSettingsModel> {
+public class DeviceSettingsWidget extends Composite implements TakesValue<IDeviceSettingsModel> {
 
     @UiField
     RadioButton ringerModeSilent;
@@ -43,8 +44,8 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<Device
     }
 
     @Override
-    public DeviceSettingsModel getValue() {
-        DeviceSettingsModel deviceSettingsModel = new DeviceSettingsModel();
+    public IDeviceSettingsModel getValue() {
+        IDeviceSettingsModel deviceSettingsModel = new DeviceSettingsModel();
         if (ringerModeSilent.getValue()) {
             deviceSettingsModel.setRingerMode(RingerMode.RINGER_MODE_SILENT);
         } else if (ringerModeSilentNormal.getValue()) {
@@ -56,9 +57,16 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<Device
     }
 
     @Override
-    public void setValue(DeviceSettingsModel value) {
-        ringerModeSilentNormal.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_NORMAL);
-        ringerModeSilent.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_SILENT);
+    public void setValue(IDeviceSettingsModel value) {
+        if (value != null) {
+            ringerModeSilentNormal.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_NORMAL);
+            ringerModeSilent.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_SILENT);
+            ringerModeSilentVibrate.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_VIBRATE);
+        } else {
+            ringerModeSilentNormal.setValue(false);
+            ringerModeSilent.setValue(false);
+            ringerModeSilent.setValue(false);
+        }
     }
 
     public void setSaveSettingsListener(SaveSettingsListener saveSettingsListener) {

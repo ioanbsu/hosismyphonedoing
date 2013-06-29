@@ -75,7 +75,6 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         List<DeviceInfoWithLoadingInfo> deviceInfoWithLoadingInfoList = new ArrayList<DeviceInfoWithLoadingInfo>();
         for (UserDeviceModel userDeviceModel : result) {
             DeviceInfoWithLoadingInfo deviceInfoWithLoadingInfo = new DeviceInfoWithLoadingInfo();
-
             deviceInfoWithLoadingInfo.setiUserDeviceModel(userDeviceModel);
             deviceInfoWithLoadingInfo.setLoadingState(DeviceInfoWithLoadingInfo.LoadingState.UNKNOWN);
             for (DeviceInfoWithLoadingInfo deviceInfoWithLoadingInfoInList : existentList) {
@@ -87,14 +86,13 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
             }
             if (selectedObject != null && selectedObject.getiUserDeviceModel().getDeviceId().equals(userDeviceModel.getDeviceId())) {
                 newSelected = deviceInfoWithLoadingInfo;
-            } else {
-
             }
             deviceInfoWithLoadingInfoList.add(deviceInfoWithLoadingInfo);
         }
         devicesListDataProvider.getList().addAll(deviceInfoWithLoadingInfoList);
         if (newSelected != null) {
             selectionModel.setSelected(newSelected, true);
+            getView().setDeviceSettingsModel(newSelected.getiUserDeviceModel().getiDeviceSettingsModel());
             getView().getSettingsView().enable(true);
         }else{
             getView().getSettingsView().enable(false);
@@ -111,13 +109,12 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         }
         if (getView().getDeviceInfoCell().getValue().getDeviceId().equals(deviceDetails.getDeviceId())) {
             getView().getDeviceInfoCell().setValue(deviceDetails);
+            getView().setDeviceSettingsModel(deviceDetails.getiDeviceSettingsModel());
         }
     }
 
     public void requestRefreshDeviceInfo(IUserDeviceModel selectedObject) {
-        messageRpcServiceAsync.sendMessageToDevice(MessageType.DEVICE_DETAILS_INFO, selectedObject.getDeviceId(), "", new AsyncCallbackImpl<String>(eventBus) {
-
-        });
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.DEVICE_DETAILS_INFO, selectedObject.getDeviceId(), "", new AsyncCallbackImpl<String>(eventBus) { });
     }
 
     public void onSaveDeviceConfigClicked() {
@@ -126,7 +123,7 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
             Window.alert("Please select device first");
             return;
         }
-        DeviceSettingsModel deviceSettingsModel = getView().getDeviceSettingsModel();
+        IDeviceSettingsModel deviceSettingsModel = getView().getDeviceSettingsModel();
         AutoBean<IDeviceSettingsModel> iDeviceSettingsAutoBean = howIsMyPhoneDoingAutoBeansFactory.create(IDeviceSettingsModel.class, deviceSettingsModel);
         String serializedMessage = AutoBeanCodex.encode(iDeviceSettingsAutoBean).getPayload();
         messageRpcServiceAsync.sendMessageToDevice(MessageType.DEVICE_SETTINGS_UPDATE,
@@ -143,6 +140,7 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         deviceDetailsTo.setNetworkType(deviceDetailsFrom.getNetworkType());
         deviceDetailsTo.setWifiEnabled(deviceDetailsFrom.isWifiEnabled());
         deviceDetailsTo.setBluetoothEnabled(deviceDetailsFrom.isBluetoothEnabled());
+        deviceDetailsTo.setiDeviceSettingsModel(deviceDetailsFrom.getiDeviceSettingsModel());
     }
 
 }

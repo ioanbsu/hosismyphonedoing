@@ -1,8 +1,8 @@
 package com.artigile.howismyphonedoing.client.mvp.settings;
 
 import com.artigile.howismyphonedoing.api.model.DeviceSettingsModel;
+import com.artigile.howismyphonedoing.api.model.IDeviceSettingsModel;
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
-import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoCell;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceListCell;
@@ -21,9 +21,6 @@ import com.mvp4g.client.view.ReverseViewInterface;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Date: 6/22/13
@@ -60,17 +57,22 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
         binder.createAndBindUi(this);
     }
 
-    public CellList<DeviceInfoWithLoadingInfo> getDevicesListView(){
+    public CellList<DeviceInfoWithLoadingInfo> getDevicesListView() {
         return addableDevicesList;
     }
 
-    public CellWidget<IUserDeviceModel> getDeviceInfoCell(){
+    public CellWidget<IUserDeviceModel> getDeviceInfoCell() {
         return deviceInfo;
     }
 
-    public DeviceSettingsModel getDeviceSettingsModel(){
+    public IDeviceSettingsModel getDeviceSettingsModel() {
         return deviceSettings.getValue();
     }
+
+    public void setDeviceSettingsModel(IDeviceSettingsModel iDeviceSettingsModel) {
+        deviceSettings.setValue(iDeviceSettingsModel);
+    }
+
     private DeviceSettingsWidget.SaveSettingsListener initSaveSettingsListener() {
         return new DeviceSettingsWidget.SaveSettingsListener() {
             @Override
