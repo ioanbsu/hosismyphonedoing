@@ -13,31 +13,33 @@ import java.lang.reflect.Type;
  * Time: 12:13 PM
  */
 public class MessageParserImpl implements MessageParser {
-    private Gson gson;
+    private Gson gsonParser;
+    private Gson gsonSerializer=new Gson();
 
     public MessageParserImpl() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(IDeviceModel.class, new IDeviceModelDeserializer());
-        gson = gsonBuilder.create();
+        gsonBuilder.registerTypeAdapter(IDeviceSettingsModel.class, new IDeviceSettingsModelDeserializer());
+        gsonParser = gsonBuilder.create();
     }
 
     @Override
     public <T extends Serializable> T parse(MessageType messageType, String serializedString) {
         try {
             if (messageType == MessageType.DEVICE_INFO) {
-                return (T) gson.getAdapter(DeviceModel.class).fromJson(serializedString);
+                return (T) gsonParser.getAdapter(DeviceModel.class).fromJson(serializedString);
             } else if (messageType == MessageType.REGISTER_DEVICE) {
-                return (T) gson.getAdapter(DeviceRegistrationModel.class).fromJson(serializedString);
+                return (T) gsonParser.getAdapter(DeviceRegistrationModel.class).fromJson(serializedString);
             } else if (messageType == MessageType.UNREGISTER_DEVICE) {
-                return (T) gson.getAdapter(DeviceRegistrationModel.class).fromJson(serializedString);
+                return (T) gsonParser.getAdapter(DeviceRegistrationModel.class).fromJson(serializedString);
             } else if (messageType == MessageType.MESSAGE_TO_DEVICE) {
-                return (T) gson.getAdapter(MessageToDeviceModel.class).fromJson(serializedString);
+                return (T) gsonParser.getAdapter(MessageToDeviceModel.class).fromJson(serializedString);
             } else if (messageType == MessageType.GET_DEVICE_LOCATION) {
-                return (T) gson.getAdapter(DeviceRegistrationModel.class).fromJson(serializedString);
+                return (T) gsonParser.getAdapter(DeviceRegistrationModel.class).fromJson(serializedString);
             } else if (messageType == MessageType.MESSAGE_TYPE_IS_NOT_SUPPORTED) {
-                return (T) gson.getAdapter(String.class).fromJson(serializedString);
+                return (T) gsonParser.getAdapter(String.class).fromJson(serializedString);
             }
-            return (T) gson.getAdapter(messageType.getDeserializedClass()).fromJson(serializedString);
+            return (T) gsonParser.getAdapter(messageType.getDeserializedClass()).fromJson(serializedString);
 
         } catch (IOException e) {
 
@@ -48,7 +50,7 @@ public class MessageParserImpl implements MessageParser {
 
     @Override
     public String serialize(Serializable object) {
-        return gson.toJson(object);
+        return gsonSerializer.toJson(object);
     }
 
     public class IDeviceModelDeserializer implements JsonDeserializer<IDeviceModel> {
@@ -57,14 +59,28 @@ public class MessageParserImpl implements MessageParser {
         public IDeviceModel deserialize(JsonElement json, Type typeofT, JsonDeserializationContext context) throws JsonParseException {
             String strObject = json.toString();
             try {
-                IDeviceModel deviceModel = gson.getAdapter(DeviceModel.class).fromJson(strObject);
+                IDeviceModel deviceModel = gsonParser.getAdapter(DeviceModel.class).fromJson(strObject);
                 return deviceModel;
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
         }
+    }
 
+    public class IDeviceSettingsModelDeserializer implements JsonDeserializer<IDeviceSettingsModel> {
+
+        @Override
+        public IDeviceSettingsModel deserialize(JsonElement json, Type typeofT, JsonDeserializationContext context) throws JsonParseException {
+            String strObject = json.toString();
+            try {
+                IDeviceSettingsModel iDeviceSettingsModel = gsonParser.getAdapter(DeviceSettingsModel.class).fromJson(strObject);
+                return iDeviceSettingsModel;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
 

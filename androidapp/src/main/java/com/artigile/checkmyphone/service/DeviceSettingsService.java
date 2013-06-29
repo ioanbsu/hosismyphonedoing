@@ -3,6 +3,8 @@ package com.artigile.checkmyphone.service;
 import android.content.Context;
 import android.media.AudioManager;
 import android.util.Log;
+import com.artigile.howismyphonedoing.api.model.DeviceSettingsModel;
+import com.artigile.howismyphonedoing.api.model.IDeviceSettingsModel;
 import com.artigile.howismyphonedoing.api.model.RingerMode;
 
 import javax.inject.Inject;
@@ -14,7 +16,7 @@ import javax.inject.Singleton;
  * Time: 5:28 PM
  */
 @Singleton
-public class DeviceConfigurationService {
+public class DeviceSettingsService {
 
     @Inject
     private Context context;
@@ -33,8 +35,24 @@ public class DeviceConfigurationService {
                 audio.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
             }
         } catch (Exception e) {
-            Log.w("DeviceConfigurationService","Failed to set ringer mode:" +ringerMode);
+            Log.w("DeviceSettingsService", "Failed to set ringer mode:" + ringerMode);
         }
+    }
+
+    public RingerMode getRingerMode() {
+        try {
+            AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (audio.getRingerMode() == AudioManager.RINGER_MODE_SILENT) {
+                return RingerMode.RINGER_MODE_SILENT;
+            } else if (audio.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
+                return RingerMode.RINGER_MODE_NORMAL;
+            } else if (audio.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) {
+                return RingerMode.RINGER_MODE_VIBRATE;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
     }
 
     public void setAlarm() {
@@ -44,5 +62,11 @@ public class DeviceConfigurationService {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, intent, 0);
         alarmManager.set(AlarmManager.RTC, time.getTimeInMillis(),pendingIntent );*/
+    }
+
+    public IDeviceSettingsModel getDeviceSettings() {
+        IDeviceSettingsModel iDeviceSettingsModel=new DeviceSettingsModel();
+        iDeviceSettingsModel.setRingerMode(getRingerMode());
+        return iDeviceSettingsModel;
     }
 }

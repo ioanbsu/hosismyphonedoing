@@ -54,11 +54,9 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     @Inject
     private DeviceInfoService deviceInfoService;
     @Inject
-    private DeviceDetailsReader UserPhoneDetailsReader;
-    @Inject
     private DeviceDetailsReader deviceDetailsReader;
     @Inject
-    private DeviceConfigurationService deviceConfigurationService;
+    private DeviceSettingsService deviceConfigurationService;
     private String TAG = "AndroidMessageReceiver";
     private AndroidMessageResultListener androidMessageResultListener;
 
@@ -108,6 +106,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
             });
         } else if (messageType == MessageType.DEVICE_DETAILS_INFO) {
             UserDeviceModel userDeviceModel = deviceDetailsReader.getUserDeviceDetails(null);
+            userDeviceModel.setiDeviceSettingsModel(deviceConfigurationService.getDeviceSettings());
             failsafeSendMessage(messageType, messageParser.serialize(userDeviceModel));
         } else if (messageType == MessageType.DEVICE_SETTINGS_UPDATE) {
             DeviceSettingsModel deviceSettingsModel = messageParser.parse(messageType, serializedObject);

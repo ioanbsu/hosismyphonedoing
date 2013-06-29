@@ -31,6 +31,8 @@ public class UserDeviceModel implements IUserDeviceModel {
 
     private NetworkType networkType;
 
+    private IDeviceSettingsModel iDeviceSettingsModel;
+
     @Override
     public String getDeviceId() {
         return deviceId;
@@ -132,4 +134,13 @@ public class UserDeviceModel implements IUserDeviceModel {
     }
 
 
+    @Override
+    public IDeviceSettingsModel getiDeviceSettingsModel() {
+        return iDeviceSettingsModel;
+    }
+
+    @Override
+    public void setiDeviceSettingsModel(IDeviceSettingsModel iDeviceSettingsModel) {
+        this.iDeviceSettingsModel = iDeviceSettingsModel;
+    }
 }

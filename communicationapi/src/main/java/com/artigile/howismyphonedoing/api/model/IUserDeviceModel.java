@@ -51,4 +51,8 @@ public interface IUserDeviceModel extends Serializable {
     NetworkType getNetworkType();
 
     void setNetworkType(NetworkType networkType);
+
+    IDeviceSettingsModel getiDeviceSettingsModel();
+
+    void setiDeviceSettingsModel(IDeviceSettingsModel iDeviceSettingsModel);
 }
