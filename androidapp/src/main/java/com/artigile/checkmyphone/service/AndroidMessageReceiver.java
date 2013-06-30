@@ -110,7 +110,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
             failsafeSendMessage(messageType, messageParser.serialize(userDeviceModel));
         } else if (messageType == MessageType.DEVICE_SETTINGS_UPDATE) {
             DeviceSettingsModel deviceSettingsModel = messageParser.parse(messageType, serializedObject);
-            deviceConfigurationService.updateRingerMode(deviceSettingsModel.getRingerMode());
+            deviceConfigurationService.updateDeviceSettings(deviceSettingsModel);
             failsafeSendMessage(messageType, serializedObject);
         } else {
             commonUtilities.displayMessage(context, serializedObject);

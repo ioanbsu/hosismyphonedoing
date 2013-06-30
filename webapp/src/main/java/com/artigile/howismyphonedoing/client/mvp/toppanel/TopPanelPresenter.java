@@ -157,12 +157,12 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
             }
         };
         locationDetectTimer.schedule(MAX_LOCATION_RESPONSE_WAIT);
-        view.showDevicesLoading();
         userInfoRpcService.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>(eventBus) {
             @Override
             public void success(List<UserDeviceModel> result) {
                 eventBus.devicesLocationUpdateRequestSent();
                 sendRequestForDeviceLocations(result);
+                view.showDevicesLoading();
             }
         });
     }

@@ -11,4 +11,12 @@ public interface IDeviceSettingsModel extends Serializable{
     RingerMode getRingerMode();
 
     void setRingerMode(RingerMode ringerMode);
+
+    boolean isWifiEnabled();
+
+    void setWifiEnabled(boolean wifiEnabled);
+
+    boolean isBluetoothEnabled();
+
+    void setBluetoothEnabled(boolean bluetoothEnabled);
 }

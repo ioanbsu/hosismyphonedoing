@@ -9,7 +9,7 @@
     </ui:style>
 
     <g:FlowPanel>
-        <g:Label text="{msg.device_settings_select_device_label}" ui:field="selectDeviceMsg" />
+        <g:Label text="{msg.device_settings_select_device_label}" ui:field="selectDeviceMsg"/>
         <g:HTMLPanel ui:field="settingsPanel" visible="false">
             <table>
                 <tr>
@@ -23,6 +23,28 @@
                                        ui:field="ringerModeSilentVibrate"/>
                         <g:RadioButton name="ringerMode" text="{msg.device_settings_ringer_mode_silent}"
                                        ui:field="ringerModeSilent"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <g:Label text="{msg.device_settings_wifi_label}"/>
+                    </td>
+                    <td>
+                        <g:RadioButton name="wifiState" text="{msg.device_settings_wifi_on}"
+                                       ui:field="wifiEnabled"/>
+                        <g:RadioButton name="wifiState" text="{msg.device_settings_wifi_off}"
+                                       ui:field="wifiDisabled"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <g:Label text="{msg.device_settings_bluetooth_label}"/>
+                    </td>
+                    <td>
+                        <g:RadioButton name="bluetoothState" text="{msg.device_settings_bluetooth_on}"
+                                       ui:field="bluetoothEnabled"/>
+                        <g:RadioButton name="bluetoothState" text="{msg.device_settings_bluetooth_off}"
+                                       ui:field="bluetoothDisabled"/>
                     </td>
                 </tr>
                 <tr>

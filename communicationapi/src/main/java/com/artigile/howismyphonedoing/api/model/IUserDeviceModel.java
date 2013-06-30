@@ -36,14 +36,6 @@ public interface IUserDeviceModel extends Serializable {
 
     void setBatteryStatusType(BatteryStatusType batteryStatusType);
 
-    boolean isWifiEnabled();
-
-    void setWifiEnabled(boolean wifiEnabled);
-
-    boolean isBluetoothEnabled();
-
-    void setBluetoothEnabled(boolean bluetoothEnabled);
-
     String getOperator();
 
     void setOperator(String signalStrenghtLevel);

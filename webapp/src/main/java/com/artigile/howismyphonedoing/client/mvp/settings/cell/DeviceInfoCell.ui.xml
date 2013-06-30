@@ -75,7 +75,7 @@
         </tr>
         <tr>
             <td>
-                <ui:text from='{msg.device_settings_battery_wifi_label}'/>
+                <ui:text from='{msg.device_settings_wifi_label}'/>
             </td>
             <td>
                 <ui:text from='{wifiEnabled}'/>
@@ -83,7 +83,7 @@
         </tr>
         <tr>
             <td>
-                <ui:text from='{msg.device_settings_battery_bluetooth_label}'/>
+                <ui:text from='{msg.device_settings_bluetooth_label}'/>
             </td>
             <td>
                 <ui:text from='{bluetoothEnabled}'/>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
@@ -38,8 +39,6 @@ public class DeviceDetailsReader {
             userDeviceModel = new UserDeviceModel();
         }
         populateBatteryData(userDeviceModel);
-        userDeviceModel.setWifiEnabled(detectWifiEnabled());
-        userDeviceModel.setBluetoothEnabled(detectBluetoothEnabled());
         TelephonyManager tel = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
         userDeviceModel.setOperator(detectSignalStrenghtLevel(tel));
@@ -99,34 +98,6 @@ public class DeviceDetailsReader {
             userDeviceModel.setBatteryLevel(50.0f);
         }
         userDeviceModel.setBatteryLevel(((float) level / (float) scale) * 100.0f);
-    }
-
-    private boolean detectWifiEnabled() {
-        try {
-            ConnectivityManager connectivityManager = (ConnectivityManager)
-                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = null;
-            if (connectivityManager != null) {
-                networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            }
-            return networkInfo != null && networkInfo.isConnected();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private boolean detectBluetoothEnabled() {
-        try {
-            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (mBluetoothAdapter == null) {
-                return false;
-            } else {
-                return mBluetoothAdapter.isEnabled();
-
-            }
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     public String detectSignalStrenghtLevel(TelephonyManager tel) {

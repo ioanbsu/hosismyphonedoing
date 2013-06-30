@@ -51,8 +51,15 @@ public class DeviceInfoCell extends AbstractCell<IUserDeviceModel> {
             chargingShadow = templates.deviceDischarging();
             batteryLevel += " " + messages.device_settings_battery_discharghing_icon();
         }
-        String wifiEnabled = deviceModelData.isWifiEnabled() ? messages.device_settings_battery_wifi_enabled_label() : messages.device_settings_battery_wifi_disabled_label();
-        String bluetoothEnabled = deviceModelData.isBluetoothEnabled() ? messages.device_settings_battery_bluetooth_enabled_label() : messages.device_settings_battery_bluetooth_disabled_label();
+        String wifiEnabled = messages.device_settings_data_is_loading();
+        if (deviceModelData.getiDeviceSettingsModel() != null) {
+            wifiEnabled = deviceModelData.getiDeviceSettingsModel().isWifiEnabled() ? messages.device_settings_wifi_enabled_label() : messages.device_settings_wifi_disabled_label();
+        }
+        String bluetoothEnabled = messages.device_settings_data_is_loading();
+        ;
+        if (deviceModelData.getiDeviceSettingsModel() != null) {
+            bluetoothEnabled = deviceModelData.getiDeviceSettingsModel().isBluetoothEnabled() ? messages.device_settings_bluetooth_enabled_label() : messages.device_settings_bluetooth_disabled_label();
+        }
         String operator = deviceModelData.getOperator() == null ? messages.device_settings_operator_unknown() : deviceModelData.getOperator();
         String networkType = parseNetworkType(deviceModelData.getNetworkType());
         renderer.render(sb,

@@ -34,6 +34,14 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<IDevic
     HTMLPanel settingsPanel;
     @UiField
     Label selectDeviceMsg;
+    @UiField
+    RadioButton wifiEnabled;
+    @UiField
+    RadioButton wifiDisabled;
+    @UiField
+    RadioButton bluetoothEnabled;
+    @UiField
+    RadioButton bluetoothDisabled;
     @Inject
     private Messages messages;
     private SaveSettingsListener saveSettingsListener;
@@ -53,6 +61,16 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<IDevic
         } else if (ringerModeSilentVibrate.getValue()) {
             deviceSettingsModel.setRingerMode(RingerMode.RINGER_MODE_VIBRATE);
         }
+        if (wifiEnabled.getValue()) {
+            deviceSettingsModel.setWifiEnabled(true);
+        } else if (wifiDisabled.getValue()) {
+            deviceSettingsModel.setWifiEnabled(false);
+        }
+        if (bluetoothEnabled.getValue()) {
+            deviceSettingsModel.setBluetoothEnabled(true);
+        } else if (bluetoothDisabled.getValue()) {
+            deviceSettingsModel.setBluetoothEnabled(false);
+        }
         return deviceSettingsModel;
     }
 
@@ -62,6 +80,10 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<IDevic
             ringerModeSilentNormal.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_NORMAL);
             ringerModeSilent.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_SILENT);
             ringerModeSilentVibrate.setValue(value.getRingerMode() == RingerMode.RINGER_MODE_VIBRATE);
+            wifiEnabled.setValue(value.isWifiEnabled());
+            wifiDisabled.setValue(!value.isWifiEnabled());
+            bluetoothEnabled.setValue(value.isBluetoothEnabled());
+            bluetoothDisabled.setValue(!value.isBluetoothEnabled());
         } else {
             ringerModeSilentNormal.setValue(false);
             ringerModeSilent.setValue(false);

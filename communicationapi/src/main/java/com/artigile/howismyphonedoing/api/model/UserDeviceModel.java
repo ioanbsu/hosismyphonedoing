@@ -23,10 +23,6 @@ public class UserDeviceModel implements IUserDeviceModel {
 
     private BatteryStatusType batteryStatusType;
 
-    private boolean wifiEnabled;
-
-    private boolean bluetoothEnabled;
-
     private String operator;
 
     private NetworkType networkType;
@@ -91,26 +87,6 @@ public class UserDeviceModel implements IUserDeviceModel {
     @Override
     public void setBatteryStatusType(BatteryStatusType batteryStatusType) {
         this.batteryStatusType = batteryStatusType;
-    }
-
-    @Override
-    public boolean isWifiEnabled() {
-        return wifiEnabled;
-    }
-
-    @Override
-    public void setWifiEnabled(boolean wifiEnabled) {
-        this.wifiEnabled = wifiEnabled;
-    }
-
-    @Override
-    public boolean isBluetoothEnabled() {
-        return bluetoothEnabled;
-    }
-
-    @Override
-    public void setBluetoothEnabled(boolean bluetoothEnabled) {
-        this.bluetoothEnabled = bluetoothEnabled;
     }
 
     @Override

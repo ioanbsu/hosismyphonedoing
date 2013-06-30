@@ -65,7 +65,7 @@ public class MapBodyPresenter extends BasePresenter<MapBodyView, MainEventBus> {
     }
 
     public void onCenterDeviceLocationOnScreen(IUserDeviceModel iUserDeviceModel){
-        if(deviceMarkerModelList==null){
+        if(deviceMarkerModelList==null||iUserDeviceModel==null){
             return;
         }
         for (DeviceMarkerModel deviceMarkerModel : deviceMarkerModelList) {

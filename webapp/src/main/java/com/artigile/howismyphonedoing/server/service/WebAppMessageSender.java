@@ -53,7 +53,7 @@ public class WebAppMessageSender implements WebAppMessageProcessor<String> {
 
     @Override
     public String processMessage(String deviceId, MessageType messageType, String messageStr) throws DeviceWasRemovedException {
-        logger.info("Sending messages to device with id = " + deviceId + ", message type = " + messageType);
+        logger.info("Sending message to device with id = " + deviceId + ", message type = " + messageType);
         UserDevice device = userService.findUserDeviceByUuid(deviceId);
         if (device == null) {
             throw new DeviceWasRemovedException();
@@ -90,6 +90,9 @@ public class WebAppMessageSender implements WebAppMessageProcessor<String> {
             return;
         }
         List<Result> results = multicastResult.getResults();
+        for (Result result : results) {
+            logger.info(result.toString());
+        }
         // analyze the results
         for (int i = 0; i < devices.size(); i++) {
             String currentRegistrationId = devices.get(i);
