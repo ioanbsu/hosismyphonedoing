@@ -42,6 +42,8 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<IDevic
     RadioButton bluetoothEnabled;
     @UiField
     RadioButton bluetoothDisabled;
+    @UiField
+    Image loadingIcon;
     @Inject
     private Messages messages;
     private SaveSettingsListener saveSettingsListener;
@@ -88,6 +90,10 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<IDevic
             ringerModeSilentNormal.setValue(false);
             ringerModeSilent.setValue(false);
             ringerModeSilent.setValue(false);
+            wifiEnabled.setValue(false);
+            wifiDisabled.setValue(false);
+            bluetoothEnabled.setValue(false);
+            bluetoothDisabled.setValue(false);
         }
     }
 
@@ -100,6 +106,10 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<IDevic
         if (saveSettingsListener != null) {
             saveSettingsListener.onSaveClicked();
         }
+    }
+
+    public void showLoading(boolean isLoading) {
+        loadingIcon.setVisible(isLoading);
     }
 
     public void enable(boolean enabled) {

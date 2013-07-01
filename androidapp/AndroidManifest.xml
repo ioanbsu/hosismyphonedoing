@@ -12,7 +12,7 @@
 <manifest
     package="com.artigile.checkmyphone"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="11"
+    android:versionCode="12"
     android:versionName="1.0.3">
 
     <!-- GCM requires Android SDK version 2.2 (API level 8) or above. -->

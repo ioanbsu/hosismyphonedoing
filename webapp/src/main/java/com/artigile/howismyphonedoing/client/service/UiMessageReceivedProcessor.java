@@ -49,6 +49,8 @@ public class UiMessageReceivedProcessor extends BaseEventHandler<MainEventBus> i
             deviceDetails.as().setDeviceId(userDevice.getDeviceId());
             deviceDetails.as().setHumanReadableName(userDevice.getHumanReadableName());
             eventBus.deviceDetailsReceived(deviceDetails.as());
+        } else if (messageType == MessageType.DEVICE_SETTINGS_UPDATE) {
+
         }
         return "succeeded";
     }

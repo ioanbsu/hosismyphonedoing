@@ -13,6 +13,11 @@
         <g:HTMLPanel ui:field="settingsPanel" visible="false">
             <table>
                 <tr>
+                    <td colspan="2">
+                        <g:Image resource="{images.loadingSmallIcon}" ui:field="loadingIcon" visible="false"/>
+                    </td>
+                </tr>
+                <tr>
                     <td>
                         <g:Label text="{msg.device_settings_ringer_mode_label}"/>
                     </td>

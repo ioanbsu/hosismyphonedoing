@@ -1,6 +1,5 @@
 package com.artigile.howismyphonedoing.client.mvp.settings;
 
-import com.artigile.howismyphonedoing.api.model.DeviceSettingsModel;
 import com.artigile.howismyphonedoing.api.model.IDeviceSettingsModel;
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoCell;
@@ -61,8 +60,12 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
         return addableDevicesList;
     }
 
-    public CellWidget<IUserDeviceModel> getDeviceInfoCell() {
-        return deviceInfo;
+    public IUserDeviceModel getDeviceInfoModel() {
+        return deviceInfo.getValue();
+    }
+
+    public void setDeviceInfoModel(IUserDeviceModel model) {
+        deviceInfo.setValue(model);
     }
 
     public IDeviceSettingsModel getDeviceSettingsModel() {
@@ -122,6 +125,10 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
 
     public DeviceSettingsWidget getSettingsView() {
         return deviceSettings;
+    }
+
+    public void showLoading(boolean isLoading) {
+        deviceSettings.showLoading(isLoading);
     }
 
 

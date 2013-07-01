@@ -121,7 +121,6 @@ public class LocationServiceImpl implements LocationService {
     private void stopRequestingLocationUpdates() {
         Log.v(TAG, "Accuracy is very precise");
         stopLocationRequestsTimer.cancel();
-        locationClient.removeLocationUpdates(internalLocationListener);
         locationClient.disconnect();
         locationRequestsAreInProgress = false;
     }

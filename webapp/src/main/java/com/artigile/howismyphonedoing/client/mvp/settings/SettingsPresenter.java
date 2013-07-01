@@ -1,15 +1,13 @@
 package com.artigile.howismyphonedoing.client.mvp.settings;
 
-import com.artigile.howismyphonedoing.api.model.IDeviceSettingsModel;
-import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
-import com.artigile.howismyphonedoing.api.model.MessageType;
-import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
+import com.artigile.howismyphonedoing.api.model.*;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.HowIsMyPhoneDoingAutoBeansFactory;
+import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.artigile.howismyphonedoing.client.widget.YesNoWindow;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -48,6 +46,8 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
     private YesNoWindow yesNoWindow;
     @Inject
     private Messages messages;
+    @Inject
+    private MessageWindow messageWindow;
 
     public void onInitApp() {
         GWT.log("Settings window initiated.");
@@ -57,7 +57,8 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent event) {
-                getView().getDeviceInfoCell().setValue(selectionModel.getSelectedObject().getiUserDeviceModel());
+                getView().setDeviceInfoModel(selectionModel.getSelectedObject().getiUserDeviceModel());
+                getView().setDeviceSettingsModel(selectionModel.getSelectedObject().getiUserDeviceModel().getiDeviceSettingsModel());
                 getView().getSettingsView().enable(true);
                 if (selectionModel.getSelectedObject().getiUserDeviceModel().getBatteryLevel() == null) {
                     requestDeviceInfoUpdate();
@@ -118,8 +119,8 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
                 getView().getDevicesListView().redraw();
             }
         }
-        if (getView().getDeviceInfoCell().getValue().getDeviceId().equals(deviceDetails.getDeviceId())) {
-            getView().getDeviceInfoCell().setValue(deviceDetails);
+        if (getView().getDeviceInfoModel().getDeviceId().equals(deviceDetails.getDeviceId())) {
+            getView().setDeviceInfoModel(deviceDetails);
             getView().setDeviceSettingsModel(deviceDetails.getiDeviceSettingsModel());
         }
     }
@@ -135,13 +136,22 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
             Window.alert("Please select device first");
             return;
         }
-        if (deviceInfoWithLoadingInfo.getiUserDeviceModel().getNetworkType() == null && !deviceInfoWithLoadingInfo.getiUserDeviceModel().getiDeviceSettingsModel().isWifiEnabled()) {
+        if (deviceInfoWithLoadingInfo.getiUserDeviceModel().getNetworkType() == NetworkType.NETWORK_TYPE_UNKNOWN
+                && (deviceInfoWithLoadingInfo.getiUserDeviceModel().getiDeviceSettingsModel().isWifiEnabled() && !getView().getDeviceSettingsModel().isWifiEnabled())) {
             yesNoWindow.show(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    doSave(selectionModel.getSelectedObject());
-                }
-            }, null, messages.device_settings_wifi_off_on_wifi_only_device()
+                                 @Override
+                                 public void onClick(ClickEvent event) {
+                                     doSave(selectionModel.getSelectedObject());
+                                 }
+                             }, new ClickHandler() {
+                                 @Override
+                                 public void onClick(ClickEvent event) {
+                                     IDeviceSettingsModel deviceSettingsModel = getView().getDeviceSettingsModel();
+                                     deviceSettingsModel.setWifiEnabled(true);
+                                     getView().setDeviceSettingsModel(deviceSettingsModel);
+                                 }
+                             },
+                    messages.device_settings_wifi_off_on_wifi_only_device()
             );
         } else {
             doSave(deviceInfoWithLoadingInfo);
@@ -154,6 +164,10 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         String serializedMessage = AutoBeanCodex.encode(iDeviceSettingsAutoBean).getPayload();
         messageRpcServiceAsync.sendMessageToDevice(MessageType.DEVICE_SETTINGS_UPDATE,
                 deviceInfoWithLoadingInfo.getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
+            @Override
+            public void success(String result) {
+                messageWindow.show(messages.device_settings_settings_updated());
+            }
         });
     }
 
