@@ -61,7 +61,7 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     public TopPanelView(Binder binder) {
         initWidget(binder.createAndBindUi(this));
         blockWhileConnecting.setVisible(false);
-        devicesSettings.setVisible(DebugUtil.isDebugMode());
+//        devicesSettings.setVisible(DebugUtil.isDebugMode());
     }
 
     @Override
