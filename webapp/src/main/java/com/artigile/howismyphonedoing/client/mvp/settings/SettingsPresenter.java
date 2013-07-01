@@ -181,4 +181,13 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         deviceDetailsTo.setiDeviceSettingsModel(deviceDetailsFrom.getiDeviceSettingsModel());
     }
 
+    public void displayLogsOnSelectedDevice() {
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.DISPLAY_LOGS, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), "", new AsyncCallbackImpl<String>(eventBus) {
+        });
+    }
+
+    public void hideLogsOnSelectedDevice() {
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.HIDE_LOGS, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), "", new AsyncCallbackImpl<String>(eventBus) {
+        });
+    }
 }

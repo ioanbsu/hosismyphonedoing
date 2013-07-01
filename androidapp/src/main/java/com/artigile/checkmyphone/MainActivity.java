@@ -17,22 +17,16 @@ import android.app.Dialog;
 import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.telephony.SignalStrength;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.artigile.checkmyphone.service.CommonUtilities;
-import com.artigile.checkmyphone.service.DeviceDetailsReader;
-import com.artigile.checkmyphone.service.DeviceRegistrationServiceImpl;
-import com.artigile.checkmyphone.service.LocationService;
+import com.artigile.checkmyphone.service.*;
 import com.artigile.checkmyphone.util.GCMRegistrar;
 import com.artigile.howismyphonedoing.api.CommonConstants;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
@@ -49,15 +43,17 @@ import static com.artigile.checkmyphone.service.CommonUtilities.*;
 @Singleton
 public class MainActivity extends RoboActivity {
 
-    private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
-            mDisplay.append(newMessage + "\n");
-        }
-    };
-    @InjectView(value = R.id.display)
+
+    @InjectView(R.id.display)
     TextView mDisplay;
+    @InjectView(R.id.deviceRegisteredLabel)
+    TextView deviceRegisteredLabel;
+    @InjectView(R.id.deviceNotRegisteredLabel)
+    TextView deviceNotRegisteredLabel;
+    @InjectView(R.id.cleanLogsButton)
+    Button cleanLogsButton;
+    @InjectView(R.id.logsScrollView)
+    ScrollView logsScrollView;
     AsyncTask<Void, Void, Void> mRegisterTask;
     @Inject
     private DeviceRegistrationServiceImpl deviceRegistrationService;
@@ -69,6 +65,9 @@ public class MainActivity extends RoboActivity {
     private CommonUtilities commonUtilities;
     @Inject
     private DeviceDetailsReader deviceDetailsReader;
+    @Inject
+    private SharedPreferences prefs;
+
     private Dialog errorDialog;
 
     @Override
@@ -89,6 +88,7 @@ public class MainActivity extends RoboActivity {
     protected void onStart() {
         super.onStart();
         checkIfUserHasGoogleAccount();
+        checkLogsShouldBeDisplayed();
     }
 
     @Override
@@ -96,34 +96,6 @@ public class MainActivity extends RoboActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.app_menu, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            /*
-             * Typically, an application registers automatically, so options
-             * below are disabled. Uncomment them if you want to manually
-             * register or unregister the device (you will also need to
-             * uncomment the equivalent options on options_menu.xml).
-             */
-            /*
-            case R.id.options_register:
-                GCMRegistrar.register(this, SENDER_ID);
-                return true;
-            case R.id.options_unregister:
-                GCMRegistrar.unregister(this);
-                return true;
-             */
-            /*case R.id.options_clear:
-                mDisplay.setText(null);
-                return true;
-            case R.id.options_exit:
-                finish();
-                return true;*/
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     public void unregisterDevice(View v) {
@@ -135,21 +107,16 @@ public class MainActivity extends RoboActivity {
     }
 
     public void cleanLogsButton(View v) {
-        Context context = getApplicationContext();
-        CharSequence text = "Button clicked";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
         mDisplay.setText("");
     }
 
     public void testButton(View v) {
         UserDeviceModel userDeviceModel = deviceDetailsReader.getUserDeviceDetails(null);
-        commonUtilities.displayMessage(this, "===========");
-        commonUtilities.displayMessage(this, userDeviceModel.getBatteryLevel() + "");
-        commonUtilities.displayMessage(this, userDeviceModel.getBatteryHealthType() + "");
-        commonUtilities.displayMessage(this, userDeviceModel.getBatteryStatusType() + "");
-        commonUtilities.displayMessage(this, userDeviceModel.getBatteryPluggedType() + "");
+        commonUtilities.displayMessage(this, "===========", CommonUtilities.LOG_MESSAGE_TYPE);
+        commonUtilities.displayMessage(this, userDeviceModel.getBatteryLevel() + "", CommonUtilities.LOG_MESSAGE_TYPE);
+        commonUtilities.displayMessage(this, userDeviceModel.getBatteryHealthType() + "", CommonUtilities.LOG_MESSAGE_TYPE);
+        commonUtilities.displayMessage(this, userDeviceModel.getBatteryStatusType() + "", CommonUtilities.LOG_MESSAGE_TYPE);
+        commonUtilities.displayMessage(this, userDeviceModel.getBatteryPluggedType() + "", CommonUtilities.LOG_MESSAGE_TYPE);
     }
 
     @Override
@@ -178,7 +145,8 @@ public class MainActivity extends RoboActivity {
             // Device is already registered on GCM, check server.
             if (GCMRegistrar.isRegisteredOnServer(this)) {
                 // Skips registration.
-                mDisplay.append(getString(R.string.already_registered) + "\n");
+                commonUtilities.displayMessage(this, getString(R.string.already_registered), CommonUtilities.LOG_MESSAGE_TYPE);
+                displayRegisteredMessages(getString(R.string.device_registered));
             } else {
                 // Try to register again, but not in the UI thread.
                 // It's also necessary to cancel the thread onDestroy(),
@@ -203,31 +171,13 @@ public class MainActivity extends RoboActivity {
         }
     }
 
-    /*   @Override
-       public void onInit(int status) {
-           if (status == TextToSpeech.SUCCESS) {
-               int result = textToSpeechService.setLanguage(Locale.US);
-               if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                   Log.e("TTS", "This Language is not supported");
-               }
-           } else {
-               Log.e("TTS", "Initilization Failed!");
-           }
-       }
-   */
-    private void checkGooglePlayServiceAvailability(int requestCode) {
-        // Query for the status of Google Play services on the device
-        int statusCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
-
-        if (statusCode == ConnectionResult.SUCCESS) {
-//			init();
-        } else {
-            if (GooglePlayServicesUtil.isUserRecoverableError(statusCode)) {
-                errorDialog = GooglePlayServicesUtil.getErrorDialog(statusCode, this, requestCode);
-                errorDialog.show();
-            } else {
-                // Handle unrecoverable error
-            }
+    private void displayRegisteredMessages(String message) {
+        if (getString(R.string.device_registered).equals(message)) {
+            deviceNotRegisteredLabel.setVisibility(View.GONE);
+            deviceRegisteredLabel.setVisibility(View.VISIBLE);
+        } else if (getString(R.string.device_not_registered).equals(message)) {
+            deviceNotRegisteredLabel.setVisibility(View.VISIBLE);
+            deviceRegisteredLabel.setVisibility(View.GONE);
         }
     }
 
@@ -254,5 +204,32 @@ public class MainActivity extends RoboActivity {
         }
     }
 
+
+    private void checkLogsShouldBeDisplayed() {
+        boolean displayLogs = prefs.getBoolean(Constants.DISPLAY_LOGS_FLAG, false);
+        if (displayLogs) {
+            logsScrollView.setVisibility(View.VISIBLE);
+            cleanLogsButton.setVisibility(View.VISIBLE);
+        } else {
+            logsScrollView.setVisibility(View.GONE);
+            cleanLogsButton.setVisibility(View.GONE);
+        }
+    }
+
+
+    private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getExtras().getString(MESSAGE);
+            int messageType = intent.getExtras().getInt(MESSAGE_TYPE);
+            if (messageType == LOG_MESSAGE_TYPE) {
+                mDisplay.append(message + "\n");
+            } else if (messageType == REGISTRATION_STATUS_MESSAGE_TYPE) {
+                displayRegisteredMessages(message);
+            } else if (messageType == SHOW_LOGS_STATE_UPDATED) {
+                checkLogsShouldBeDisplayed();
+            }
+        }
+    };
 
 }

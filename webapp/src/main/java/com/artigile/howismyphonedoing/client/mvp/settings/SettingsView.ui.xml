@@ -64,7 +64,6 @@
                             <g:Label>Settings</g:Label>
                         </g:customHeader>
                         <cell:DeviceSettingsWidget ui:field="deviceSettings"/>
-
                     </g:tab>
                 </g:TabLayoutPanel>
 

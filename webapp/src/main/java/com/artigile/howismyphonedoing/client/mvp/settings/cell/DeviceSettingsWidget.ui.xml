@@ -54,7 +54,9 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <g:Button ui:field="saveButton" text="Save"/>
+                        <g:Button ui:field="saveButton" text="{msg.device_settings_save_button}"/>
+                        <g:Button ui:field="displayLogs" text="{msg.device_display_logs_on_device}"/>
+                        <g:Button ui:field="hideLogs" text="{msg.device_hide_logs_on_device}"/>
                     </td>
 
                 </tr>

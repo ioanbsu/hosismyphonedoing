@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <style name="Main">
+
+    </style>
+    <style name="Main.registeredLabel">
+        <item name="android:textSize">18dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    <style name="Main.registeredLabel.isRegistered">
+        <item name="android:textColor">#66FF66</item>
+    </style>
+    <style name="Main.registeredLabel.notRegistered">
+        <item name="android:textColor">#FF6666</item>
+    </style>
+</resources>

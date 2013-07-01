@@ -56,6 +56,18 @@ public enum MessageType {
             return DeviceSettingsModel.class;
         }
     },
+    DISPLAY_LOGS {//displays logs on the device
+        @Override
+        public Class<? extends Serializable> getDeserializedClass() {
+            return String.class;
+        }
+    },
+    HIDE_LOGS {//hides logs on the device
+        @Override
+        public Class<? extends Serializable> getDeserializedClass() {
+            return String.class;
+        }
+    },
     MESSAGE_TYPE_IS_NOT_SUPPORTED {
         @Override
         public Class<? extends Serializable> getDeserializedClass() {

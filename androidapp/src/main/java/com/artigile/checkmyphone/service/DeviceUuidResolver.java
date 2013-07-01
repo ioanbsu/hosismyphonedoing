@@ -14,8 +14,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
-import com.google.inject.Inject;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
@@ -25,7 +25,6 @@ import java.util.UUID;
  */
 @Singleton
 public class DeviceUuidResolver {
-    protected static final String PREFS_FILE = "device_id.xml";
     protected static final String PREFS_DEVICE_ID = "device_id";
     protected volatile static UUID uuid;
     @Inject
@@ -35,7 +34,6 @@ public class DeviceUuidResolver {
         if (uuid == null) {
             synchronized (DeviceUuidResolver.class) {
                 if (uuid == null) {
-//                    final SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE, 0);
                     final String id = prefs.getString(PREFS_DEVICE_ID, null);
                     if (id != null) {
                         // Use the ids previously computed and stored in the prefs file

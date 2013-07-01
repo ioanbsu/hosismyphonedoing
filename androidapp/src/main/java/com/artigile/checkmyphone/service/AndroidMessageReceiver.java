@@ -15,6 +15,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.util.Log;
 import com.artigile.checkmyphone.MainActivity;
@@ -57,13 +58,15 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     private DeviceDetailsReader deviceDetailsReader;
     @Inject
     private DeviceSettingsService deviceConfigurationService;
+    @Inject
+    private SharedPreferences prefs;
     private String TAG = "AndroidMessageReceiver";
     private AndroidMessageResultListener androidMessageResultListener;
 
     @Override
     public String processMessage(final MessageType messageType, String serializedObject, AndroidMessageResultListener messageResultListener) throws IOException {
         this.androidMessageResultListener = messageResultListener;
-        commonUtilities.displayMessage(context, messageType + "");
+        commonUtilities.displayMessage(context, messageType + "", CommonUtilities.LOG_MESSAGE_TYPE);
         if (messageType == MessageType.DEVICE_INFO) {
             IDeviceModel deviceModel = deviceInfoService.buildPhoneModel();
             failsafeSendMessage(MessageType.DEVICE_INFO, messageParser.serialize(deviceModel));
@@ -97,7 +100,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                         deviceLocationModel.setHasBearing(location.hasBearing());
                         commonUtilities.displayMessage(context,
                                 "Accuracy: " + location.getAccuracy() + ", Bearing:" + location.getBearing() + ", Speed:"
-                                        + location.getSpeed());
+                                        + location.getSpeed(), CommonUtilities.LOG_MESSAGE_TYPE);
                     } catch (Exception e) {
                         failsafeSendMessage(MessageType.DEVICE_LOCATION_NOT_POSSIBLE, messageParser.serialize(deviceLocationModel));
                     }
@@ -112,8 +115,14 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
             DeviceSettingsModel deviceSettingsModel = messageParser.parse(messageType, serializedObject);
             deviceConfigurationService.updateDeviceSettings(deviceSettingsModel);
             failsafeSendMessage(messageType, serializedObject);
+        } else if (messageType == MessageType.DISPLAY_LOGS) {
+            prefs.edit().putBoolean(Constants.DISPLAY_LOGS_FLAG, true).commit();
+            commonUtilities.displayMessage(context, serializedObject, CommonUtilities.SHOW_LOGS_STATE_UPDATED);
+        } else if (messageType == MessageType.HIDE_LOGS) {
+            prefs.edit().putBoolean(Constants.DISPLAY_LOGS_FLAG, false).commit();
+            commonUtilities.displayMessage(context, serializedObject, CommonUtilities.SHOW_LOGS_STATE_UPDATED);
         } else {
-            commonUtilities.displayMessage(context, serializedObject);
+            commonUtilities.displayMessage(context, serializedObject, CommonUtilities.LOG_MESSAGE_TYPE);
             // notifies user
             generateNotification(serializedObject);
         }
@@ -125,7 +134,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
         try {
             messageSender.processMessage(messageType, selializedObject, null);
         } catch (IOException e) {
-            commonUtilities.displayMessage(context, "Failed to send a message to server: " + messageType);
+            commonUtilities.displayMessage(context, "Failed to send a message to server: " + messageType, CommonUtilities.LOG_MESSAGE_TYPE);
         }
     }
 

@@ -57,15 +57,18 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onRegistered(Context context, String registrationId) {
         Log.i(TAG, "Device registered: regId = " + registrationId);
-        commonUtilities.displayMessage(context, getString(R.string.gcm_registered, registrationId));
+        commonUtilities.displayMessage(context, getString(R.string.gcm_registered, registrationId), CommonUtilities.LOG_MESSAGE_TYPE);
         deviceRegistrationService.register(context, registrationId);
+        commonUtilities.displayMessage(context, getString(R.string.device_registered), CommonUtilities.REGISTRATION_STATUS_MESSAGE_TYPE);
+
     }
 
     @Override
     protected void onUnregistered(Context context, String registrationId) {
         Log.i(TAG, "Device unregistered");
-        commonUtilities.displayMessage(context, getString(R.string.gcm_unregistered));
+        commonUtilities.displayMessage(context, getString(R.string.gcm_unregistered), CommonUtilities.LOG_MESSAGE_TYPE);
         deviceRegistrationService.unregister(context, registrationId);
+        commonUtilities.displayMessage(context, getString(R.string.device_not_registered), CommonUtilities.REGISTRATION_STATUS_MESSAGE_TYPE);
     }
 
     @Override
@@ -91,7 +94,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     protected void onDeletedMessages(Context context, int total) {
         Log.i(TAG, "Received deleted messages notification");
         String message = getString(R.string.gcm_deleted, total);
-        commonUtilities.displayMessage(context, message);
+        commonUtilities.displayMessage(context, message, CommonUtilities.LOG_MESSAGE_TYPE);
         // notifies user
         //at some point we might analyze it ...
     }
@@ -99,7 +102,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     public void onError(Context context, String errorId) {
         Log.i(TAG, "Received error: " + errorId);
-        commonUtilities.displayMessage(context, getString(R.string.gcm_error, errorId));
+        commonUtilities.displayMessage(context, getString(R.string.gcm_error, errorId), CommonUtilities.LOG_MESSAGE_TYPE);
     }
 
     @Override
@@ -107,7 +110,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         // log message
         Log.i(TAG, "Received recoverable error: " + errorId);
         commonUtilities.displayMessage(context, getString(R.string.gcm_recoverable_error,
-                errorId));
+                errorId), CommonUtilities.LOG_MESSAGE_TYPE);
         return super.onRecoverableError(context, errorId);
     }
 

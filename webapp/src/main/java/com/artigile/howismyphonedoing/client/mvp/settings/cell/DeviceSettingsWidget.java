@@ -4,6 +4,7 @@ import com.artigile.howismyphonedoing.api.model.DeviceSettingsModel;
 import com.artigile.howismyphonedoing.api.model.IDeviceSettingsModel;
 import com.artigile.howismyphonedoing.api.model.RingerMode;
 import com.artigile.howismyphonedoing.client.Messages;
+import com.artigile.howismyphonedoing.client.service.DebugUtil;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -44,6 +45,10 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<IDevic
     RadioButton bluetoothDisabled;
     @UiField
     Image loadingIcon;
+    @UiField
+    Button displayLogs;
+    @UiField
+    Button hideLogs;
     @Inject
     private Messages messages;
     private SaveSettingsListener saveSettingsListener;
@@ -51,6 +56,8 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<IDevic
     @Inject
     public DeviceSettingsWidget(Binder binder) {
         initWidget(binder.createAndBindUi(this));
+        displayLogs.setVisible(DebugUtil.isDebugMode());
+        hideLogs.setVisible(DebugUtil.isDebugMode());
     }
 
     @Override
@@ -108,6 +115,20 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<IDevic
         }
     }
 
+    @UiHandler("displayLogs")
+    void onDisplayLogsClicked(ClickEvent clickEvent) {
+        if (saveSettingsListener != null) {
+            saveSettingsListener.onDisplayLogsCliecked();
+        }
+    }
+
+    @UiHandler("hideLogs")
+    void onHideLogsClicked(ClickEvent clickEvent) {
+        if (saveSettingsListener != null) {
+            saveSettingsListener.onHideLogsClicked();
+        }
+    }
+
     public void showLoading(boolean isLoading) {
         loadingIcon.setVisible(isLoading);
     }
@@ -122,5 +143,9 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<IDevic
 
     public static interface SaveSettingsListener {
         void onSaveClicked();
+
+        void onDisplayLogsCliecked();
+
+        void onHideLogsClicked();
     }
 }

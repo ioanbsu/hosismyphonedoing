@@ -16,8 +16,6 @@ import com.artigile.checkmyphone.R;
 import roboguice.inject.InjectResource;
 
 import javax.inject.Singleton;
-import java.io.IOException;
-import java.util.Properties;
 
 /**
  * User: ioanbsu
@@ -44,7 +42,12 @@ public class CommonUtilities {
     /**
      * Intent's extra that contains the message to be displayed.
      */
-    public static final String EXTRA_MESSAGE = "message";
+    public static final String MESSAGE = "message";
+    public static final String MESSAGE_TYPE = "messageType";
+
+    public static final int LOG_MESSAGE_TYPE=0;
+    public static final int REGISTRATION_STATUS_MESSAGE_TYPE =1;
+    public static final int SHOW_LOGS_STATE_UPDATED =2;
 
     /**
      * Notifies UI to display a message.
@@ -55,9 +58,10 @@ public class CommonUtilities {
      * @param context application's context.
      * @param message message to be displayed.
      */
-    public void displayMessage(Context context, String message) {
+    public void displayMessage(Context context, String message, int messageType) {
         Intent intent = new Intent(DISPLAY_MESSAGE_ACTION);
-        intent.putExtra(EXTRA_MESSAGE, message);
+        intent.putExtra(MESSAGE, message);
+        intent.putExtra(MESSAGE_TYPE, messageType);
         context.sendBroadcast(intent);
     }
 
