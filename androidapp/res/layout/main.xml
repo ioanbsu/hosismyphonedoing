@@ -16,7 +16,32 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:gravity="top"
         >
-
+    <TextView
+            android:gravity="top"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/deviceRegisteredLabel"
+            android:text="@string/device_registered"
+            style="@style/Main.registeredLabel.isRegistered"
+            android:visibility="gone"/>
+    <TextView
+            android:gravity="top"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/deviceNotRegisteredLabel"
+            android:visibility="gone"
+            android:text="@string/device_not_registered"
+            style="@style/Main.registeredLabel.notRegistered"/>
+    <View
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:background="@android:color/holo_blue_dark"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:scaleType="fitXY"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp"/>
 
     <LinearLayout
             android:orientation="vertical"
@@ -55,32 +80,6 @@
                 android:visibility="gone"
                 android:textSize="40dp"/>
     </LinearLayout>
-    <TextView
-            android:gravity="top"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/deviceRegisteredLabel"
-            android:text="@string/device_registered"
-            style="@style/Main.registeredLabel.isRegistered"
-            android:visibility="gone"/>
-    <TextView
-            android:gravity="top"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/deviceNotRegisteredLabel"
-            android:visibility="gone"
-            android:text="@string/device_not_registered"
-            style="@style/Main.registeredLabel.notRegistered"/>
-    <View
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:background="@android:color/holo_blue_dark"
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:scaleType="fitXY"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingBottom="2dp"
-            android:paddingTop="2dp"/>
     <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
