@@ -11,7 +11,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:cellview="urn:import:com.google.gwt.user.cellview.client"
-             xmlns:cell="urn:import:com.artigile.howismyphonedoing.client.mvp.settings.cell">
+             xmlns:widget="urn:import:com.artigile.howismyphonedoing.client.mvp.settings.widget"
+        >
     <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
     <ui:with field="images" type="com.artigile.howismyphonedoing.client.resources.Images"/>
 
@@ -51,19 +52,24 @@
                 </g:FlowPanel>
             </g:west>
             <g:center>
-                <g:TabLayoutPanel barUnit='EM' barHeight='2.4' animationDuration="200">
+                <g:TabLayoutPanel barUnit='EM' barHeight='2.4' animationDuration="200" ui:field="tabLayuotPanel">
                     <g:tab>
-                        <g:header size='7'>
-                            <b>Device</b>
-                            info
-                        </g:header>
+                        <g:customHeader size='7'>
+                            <g:Label text="{msg.device_settings_info_tab_title}"/>
+                        </g:customHeader>
                         <cellview:CellWidget ui:field="deviceInfo"/>
                     </g:tab>
                     <g:tab>
                         <g:customHeader size='7'>
-                            <g:Label>Settings</g:Label>
+                            <g:Label text="{msg.device_settings_settings_tab_title}"/>
                         </g:customHeader>
-                        <cell:DeviceSettingsWidget ui:field="deviceSettings"/>
+                        <widget:DeviceSettingsWidget ui:field="deviceSettings"/>
+                    </g:tab>
+                    <g:tab>
+                        <g:customHeader size='7'>
+                            <g:Label text="{msg.device_settings_anthi_theft_tab_title}"/>
+                        </g:customHeader>
+                        <widget:AntiTheftWidget ui:field="antiTheftWidget"/>
                     </g:tab>
                 </g:TabLayoutPanel>
 

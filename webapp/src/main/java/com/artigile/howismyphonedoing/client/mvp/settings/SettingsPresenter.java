@@ -190,4 +190,10 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         messageRpcServiceAsync.sendMessageToDevice(MessageType.HIDE_LOGS, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), "", new AsyncCallbackImpl<String>(eventBus) {
         });
     }
+
+    public void onLockDeviceClicked() {
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.LOCK_DEVICE, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), "", new AsyncCallbackImpl<String>(eventBus) {
+        });
+
+    }
 }

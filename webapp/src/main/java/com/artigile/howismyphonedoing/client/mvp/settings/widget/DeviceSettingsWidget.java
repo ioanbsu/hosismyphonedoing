@@ -1,4 +1,4 @@
-package com.artigile.howismyphonedoing.client.mvp.settings.cell;
+package com.artigile.howismyphonedoing.client.mvp.settings.widget;
 
 import com.artigile.howismyphonedoing.api.model.DeviceSettingsModel;
 import com.artigile.howismyphonedoing.api.model.IDeviceSettingsModel;

@@ -1,0 +1,14 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        >
+    <ui:with field="images" type="com.artigile.howismyphonedoing.client.resources.Images"/>
+    <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
+    <ui:with field='batteryInfo' type='java.lang.String'/>
+
+
+    <ui:style>
+    </ui:style>
+
+    <g:FlowPanel>
+         <g:Button text="Lock" ui:field="lockTheDevice"/>
+    </g:FlowPanel>
+</ui:UiBinder>

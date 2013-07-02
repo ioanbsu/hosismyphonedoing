@@ -69,7 +69,7 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
         PersistenceManager pm = pmfTransationAware.getPersistenceManager();
         try {
             UserDevice userDevice = getUserDeviceByGcmId(oldDeviceRegistrationId, pm);
-            userDevice.setUuid(newDeviceRegistrationId);
+            userDevice.setDeviceCloudRegistrationId(newDeviceRegistrationId);
             pm.makePersistent(userDevice);
         } finally {
             pm.close();

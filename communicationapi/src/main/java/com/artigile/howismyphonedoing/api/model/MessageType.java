@@ -68,6 +68,12 @@ public enum MessageType {
             return String.class;
         }
     },
+    LOCK_DEVICE {//hides logs on the device
+        @Override
+        public Class<? extends Serializable> getDeserializedClass() {
+            return String.class;
+        }
+    },
     MESSAGE_TYPE_IS_NOT_SUPPORTED {
         @Override
         public Class<? extends Serializable> getDeserializedClass() {

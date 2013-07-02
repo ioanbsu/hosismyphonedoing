@@ -5,7 +5,9 @@ import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoCell;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceListCell;
-import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceSettingsWidget;
+import com.artigile.howismyphonedoing.client.mvp.settings.widget.AntiTheftWidget;
+import com.artigile.howismyphonedoing.client.mvp.settings.widget.DeviceSettingsWidget;
+import com.artigile.howismyphonedoing.client.service.DebugUtil;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -15,6 +17,7 @@ import com.google.gwt.user.cellview.client.CellWidget;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.view.client.ProvidesKey;
 import com.mvp4g.client.view.ReverseViewInterface;
 
@@ -43,17 +46,35 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
     Button refreshDeviceInfo;
     @UiField(provided = true)
     DeviceSettingsWidget deviceSettings;
+    @UiField(provided = true)
+    AntiTheftWidget antiTheftWidget;
+    @UiField
+    TabLayoutPanel tabLayuotPanel;
     private SettingsPresenter presenter;
 
 
     @Inject
-    public SettingsView(Binder binder, DeviceInfoCell deviceInfoCell, DeviceListCell deviceListCell, DeviceSettingsWidget deviceSettings) {
+    public SettingsView(Binder binder, DeviceInfoCell deviceInfoCell, DeviceListCell deviceListCell, DeviceSettingsWidget deviceSettings, AntiTheftWidget antiTheftWidget) {
+        this.antiTheftWidget = antiTheftWidget;
         this.deviceSettings = deviceSettings;
+        antiTheftWidget.setAntiTheftActionLkstener(initAntiTheftListener());
         deviceSettings.setSaveSettingsListener(initSaveSettingsListener());
         deviceInfo = new CellWidget<IUserDeviceModel>(deviceInfoCell);
         addableDevicesList = new CellList<DeviceInfoWithLoadingInfo>(deviceListCell, getUserDeviceModelProvidesKey());
         addableDevicesList.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
         binder.createAndBindUi(this);
+        if (!DebugUtil.isDebugMode()) {
+            tabLayuotPanel.getTabWidget(2).getParent().setVisible(false);
+        }
+    }
+
+    private AntiTheftWidget.AntiTheftActionLkstener initAntiTheftListener() {
+        return new AntiTheftWidget.AntiTheftActionLkstener() {
+            @Override
+            public void onLockDeviceClicked() {
+                presenter.onLockDeviceClicked();
+            }
+        };
     }
 
     public CellList<DeviceInfoWithLoadingInfo> getDevicesListView() {
@@ -85,7 +106,7 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
 
             @Override
             public void onDisplayLogsCliecked() {
-                 presenter.displayLogsOnSelectedDevice();
+                presenter.displayLogsOnSelectedDevice();
             }
 
             @Override

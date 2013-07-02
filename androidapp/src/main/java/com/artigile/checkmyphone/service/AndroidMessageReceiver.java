@@ -60,6 +60,8 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     private DeviceSettingsService deviceConfigurationService;
     @Inject
     private SharedPreferences prefs;
+    @Inject
+    private AntiTheftService antiTheftService;
     private String TAG = "AndroidMessageReceiver";
     private AndroidMessageResultListener androidMessageResultListener;
 
@@ -121,6 +123,8 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
         } else if (messageType == MessageType.HIDE_LOGS) {
             prefs.edit().putBoolean(Constants.DISPLAY_LOGS_FLAG, false).commit();
             commonUtilities.displayMessage(context, serializedObject, CommonUtilities.SHOW_LOGS_STATE_UPDATED);
+        } else if (messageType == MessageType.LOCK_DEVICE) {
+            antiTheftService.lockDevice();
         } else {
             commonUtilities.displayMessage(context, serializedObject, CommonUtilities.LOG_MESSAGE_TYPE);
             // notifies user
