@@ -11,6 +11,7 @@
 package com.artigile.howismyphonedoing.client.rpc;
 
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
+import com.artigile.howismyphonedoing.client.exception.UserHasNoDevicesException;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -26,5 +27,5 @@ import java.util.List;
 public interface UserInfoRpcService extends RemoteService{
 
 
-    List<UserDeviceModel> getUsersDevicesList();
+    List<UserDeviceModel> getUsersDevicesList() throws UserHasNoDevicesException;
 }

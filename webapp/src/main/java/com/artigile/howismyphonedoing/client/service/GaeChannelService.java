@@ -49,6 +49,8 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
     private Messages messages;
     @Inject
     private AuthRpcServiceAsync authRpcServiceAsync;
+    @Inject
+    private CustomLogger customLogger;
     private Channel channel;
     private int channelOpenAttempt;
     private Timer timer;
@@ -71,6 +73,7 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
     }
 
     private void openChannel() {
+        customLogger.log("Trying to open channel. Attempt: " + channelOpenAttempt, 5);
         if (channelOpenAttempt > MAX_CHANNEL_OPEN_ATTEMTPS) {
             stopTryingToReconnect();
             eventBus.channelStateChanged(ChannelStateType.CHANNEL_NOT_ABLE_TO_RECONNECT);
@@ -105,7 +108,7 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
                         if (error.getCode().contains("Token+timed+out")) {//todo: find out the code for timeout.
                             reconnectAfterTimeOut();
                             return;
-                        }else if("0".equals(error.getCode())){
+                        } else if ("0".equals(error.getCode())) {
                             eventBus.userLogout();
                         }
                         eventBus.channelStateChanged(ChannelStateType.CHANNEL_CONNECTING);
@@ -125,6 +128,7 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
     }
 
     private void reconnectAfterTimeOut() {
+        customLogger.log("Reconnecting after token timeout." + channelOpenAttempt, 5);
         socket.close();
         authRpcServiceAsync.getLoggedInUserAndCreateChannel(new AsyncCallbackImpl<StateAndChanelEntity>(eventBus) {
             @Override

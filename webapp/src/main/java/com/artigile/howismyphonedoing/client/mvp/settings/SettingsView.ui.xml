@@ -67,7 +67,7 @@
                     </g:tab>
                     <g:tab>
                         <g:customHeader size='7'>
-                            <g:Label text="{msg.device_settings_anthi_theft_tab_title}"/>
+                            <g:Label text="{msg.device_settings_anti_theft_tab_title}"/>
                         </g:customHeader>
                         <widget:AntiTheftWidget ui:field="antiTheftWidget"/>
                     </g:tab>
