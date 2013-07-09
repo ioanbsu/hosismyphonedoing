@@ -5,10 +5,27 @@
     <ui:with field='batteryInfo' type='java.lang.String'/>
 
 
-    <ui:style>
+    <ui:style>.lockDevicePinImage {
+
+    }
     </ui:style>
 
-    <g:FlowPanel>
-         <g:Button text="Lock" ui:field="lockTheDevice"/>
-    </g:FlowPanel>
+    <g:HTMLPanel>
+        <table>
+            <tr>
+                <td>
+                    <g:Button text="{msg.device_settings_anti_theft_lock_with_pin_text}" ui:field="lockTheDevice"/>
+                </td>
+                <td>
+                    <g:TextBox ui:field="newPinCode"/>
+                </td>
+                <td>
+                    <g:Image resource="{images.question}"
+                             title="{msg.device_settings_anti_theft_lock_with_pin_help_text}"
+                             stylePrimaryName="{style.lockDevicePinImage}"/>
+                </td>
+
+            </tr>
+        </table>
+    </g:HTMLPanel>
 </ui:UiBinder>

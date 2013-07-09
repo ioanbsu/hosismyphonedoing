@@ -38,6 +38,8 @@ public class MessageParserImpl implements MessageParser {
                 return (T) gsonParser.getAdapter(DeviceRegistrationModel.class).fromJson(serializedString);
             } else if (messageType == MessageType.MESSAGE_TYPE_IS_NOT_SUPPORTED) {
                 return (T) gsonParser.getAdapter(String.class).fromJson(serializedString);
+            } else if (messageType == MessageType.LOCK_DEVICE) {
+                return (T) gsonParser.getAdapter(LockDeviceScreenModel.class).fromJson(serializedString);
             }
             return (T) gsonParser.getAdapter(messageType.getDeserializedClass()).fromJson(serializedString);
 

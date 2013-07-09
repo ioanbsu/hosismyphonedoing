@@ -45,6 +45,21 @@ import static com.artigile.checkmyphone.service.CommonUtilities.*;
 public class MainActivity extends RoboActivity {
 
 
+    private static final int ENABLE_ADMIN_SUPPORT_INTENT_CODE = 2348756;
+    private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getExtras().getString(MESSAGE);
+            int messageType = intent.getExtras().getInt(MESSAGE_TYPE);
+            if (messageType == LOG_MESSAGE_TYPE) {
+                mDisplay.append(message + "\n");
+            } else if (messageType == REGISTRATION_STATUS_MESSAGE_TYPE) {
+                displayRegisteredMessages(message);
+            } else if (messageType == SHOW_LOGS_STATE_UPDATED) {
+                checkLogsShouldBeDisplayed();
+            }
+        }
+    };
     @InjectView(R.id.display)
     TextView mDisplay;
     @InjectView(R.id.deviceRegisteredLabel)
@@ -55,6 +70,8 @@ public class MainActivity extends RoboActivity {
     Button cleanLogsButton;
     @InjectView(R.id.logsScrollView)
     ScrollView logsScrollView;
+    @InjectView(R.id.enableAntiTheftButton)
+    Button enableAntiTheftButton;
     AsyncTask<Void, Void, Void> mRegisterTask;
     @Inject
     private DeviceRegistrationServiceImpl deviceRegistrationService;
@@ -70,8 +87,6 @@ public class MainActivity extends RoboActivity {
     private SharedPreferences prefs;
     @Inject
     private AntiTheftService antiTheftService;
-
-
     private Dialog errorDialog;
 
     @Override
@@ -96,10 +111,24 @@ public class MainActivity extends RoboActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        checkAntiTheft();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.app_menu, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==ENABLE_ADMIN_SUPPORT_INTENT_CODE){
+            checkAntiTheft();
+        }
     }
 
     public void unregisterDevice(View v) {
@@ -114,14 +143,16 @@ public class MainActivity extends RoboActivity {
         mDisplay.setText("");
     }
 
-    public void testButton(View v) {
+    public void enableAntiTheftButton(View v) {
         ComponentName mDeviceAdminSample = new ComponentName(this, DeviceAdminReceiverImpl.class);
         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mDeviceAdminSample);
-        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Some extra text");
-        startActivityForResult(intent, 1);
+        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getString(R.string.device_admin_explanation));
+        startActivityForResult(intent, ENABLE_ADMIN_SUPPORT_INTENT_CODE);
+    }
 
-        antiTheftService.lockDevice();
+    public void testButton(View v) {
+
     }
 
     @Override
@@ -209,7 +240,6 @@ public class MainActivity extends RoboActivity {
         }
     }
 
-
     private void checkLogsShouldBeDisplayed() {
         boolean displayLogs = prefs.getBoolean(Constants.DISPLAY_LOGS_FLAG, false);
         if (displayLogs) {
@@ -222,19 +252,13 @@ public class MainActivity extends RoboActivity {
     }
 
 
-    private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String message = intent.getExtras().getString(MESSAGE);
-            int messageType = intent.getExtras().getInt(MESSAGE_TYPE);
-            if (messageType == LOG_MESSAGE_TYPE) {
-                mDisplay.append(message + "\n");
-            } else if (messageType == REGISTRATION_STATUS_MESSAGE_TYPE) {
-                displayRegisteredMessages(message);
-            } else if (messageType == SHOW_LOGS_STATE_UPDATED) {
-                checkLogsShouldBeDisplayed();
-            }
+    private void checkAntiTheft() {
+        if (antiTheftService.isAntiTheftEnabled()) {
+            enableAntiTheftButton.setVisibility(View.GONE);
+        } else{
+            enableAntiTheftButton.setVisibility(View.VISIBLE);
         }
-    };
+    }
+
 
 }

@@ -63,21 +63,20 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     @Inject
     private AntiTheftService antiTheftService;
     private String TAG = "AndroidMessageReceiver";
-    private AndroidMessageResultListener androidMessageResultListener;
 
     @Override
     public String processMessage(final MessageType messageType, String serializedObject, AndroidMessageResultListener messageResultListener) throws IOException {
-        this.androidMessageResultListener = messageResultListener;
         commonUtilities.displayMessage(context, messageType + "", CommonUtilities.LOG_MESSAGE_TYPE);
+        String serializedResonseObject = "";
         if (messageType == MessageType.DEVICE_INFO) {
             IDeviceModel deviceModel = deviceInfoService.buildPhoneModel();
-            failsafeSendMessage(MessageType.DEVICE_INFO, messageParser.serialize(deviceModel));
+            serializedResonseObject = messageParser.serialize(deviceModel);
         } else if (messageType == MessageType.MESSAGE_TO_DEVICE) {
             MessageToDeviceModel messageToTheDevice = messageParser.parse(messageType, serializedObject);
             generateNotification(messageToTheDevice.getMessage());
             Locale locale = parseLocale(messageToTheDevice.getLocale());
             textToSpeechService.say(locale, messageToTheDevice.getMessage());
-            failsafeSendMessage(messageType, serializedObject);
+            serializedResonseObject = serializedObject;
         } else if (messageType == MessageType.GET_DEVICE_LOCATION) {
             Log.v(TAG, "got request to return phone location.");
             locationService.getLocation(new LocationListener() {
@@ -106,30 +105,39 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                     } catch (Exception e) {
                         failsafeSendMessage(MessageType.DEVICE_LOCATION_NOT_POSSIBLE, messageParser.serialize(deviceLocationModel));
                     }
-                    failsafeSendMessage(messageType, messageParser.serialize(deviceLocationModel));
+                    failsafeSendMessage(MessageType.DEVICE_LOCATION_UPDATED, messageParser.serialize(deviceLocationModel));
                 }
             });
         } else if (messageType == MessageType.DEVICE_DETAILS_INFO) {
             UserDeviceModel userDeviceModel = deviceDetailsReader.getUserDeviceDetails(null);
             userDeviceModel.setiDeviceSettingsModel(deviceConfigurationService.getDeviceSettings());
-            failsafeSendMessage(messageType, messageParser.serialize(userDeviceModel));
+            serializedResonseObject = messageParser.serialize(userDeviceModel);
         } else if (messageType == MessageType.DEVICE_SETTINGS_UPDATE) {
             DeviceSettingsModel deviceSettingsModel = messageParser.parse(messageType, serializedObject);
             deviceConfigurationService.updateDeviceSettings(deviceSettingsModel);
-            failsafeSendMessage(messageType, serializedObject);
+            serializedResonseObject = serializedObject;
         } else if (messageType == MessageType.DISPLAY_LOGS) {
             prefs.edit().putBoolean(Constants.DISPLAY_LOGS_FLAG, true).commit();
             commonUtilities.displayMessage(context, serializedObject, CommonUtilities.SHOW_LOGS_STATE_UPDATED);
+            return "success";
         } else if (messageType == MessageType.HIDE_LOGS) {
             prefs.edit().putBoolean(Constants.DISPLAY_LOGS_FLAG, false).commit();
             commonUtilities.displayMessage(context, serializedObject, CommonUtilities.SHOW_LOGS_STATE_UPDATED);
+            return "success";
         } else if (messageType == MessageType.LOCK_DEVICE) {
-            antiTheftService.lockDevice();
+            try {
+                LockDeviceScreenModel lockDeviceScreenModel=messageParser.parse(messageType, serializedObject);
+                antiTheftService.lockDevice(lockDeviceScreenModel);
+            } catch (DeviceAdminIsNotEnabledException e) {
+                failsafeSendMessage(MessageType.DEVICE_ADMIN_IS_NOT_ENABLED, "");
+                return "failed to lock the device. not supported.";
+            }
         } else {
             commonUtilities.displayMessage(context, serializedObject, CommonUtilities.LOG_MESSAGE_TYPE);
             // notifies user
             generateNotification(serializedObject);
         }
+        failsafeSendMessage(messageType, serializedResonseObject);
 
         return "message had been successfully sent";
     }

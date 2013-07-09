@@ -192,7 +192,12 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
     }
 
     public void onLockDeviceClicked() {
-        messageRpcServiceAsync.sendMessageToDevice(MessageType.LOCK_DEVICE, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), "", new AsyncCallbackImpl<String>(eventBus) {
+        String newPinCode= getView().getNewPinCode();
+        ILockDeviceScreenModel lockDeviceScreenModel=new LockDeviceScreenModel();
+        lockDeviceScreenModel.setNewPinCode(newPinCode);
+        AutoBean<ILockDeviceScreenModel> iLockDeviceScreenModelAutoBean = howIsMyPhoneDoingAutoBeansFactory.create(ILockDeviceScreenModel.class, lockDeviceScreenModel);
+        String serializedMessage = AutoBeanCodex.encode(iLockDeviceScreenModelAutoBean).getPayload();
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.LOCK_DEVICE, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
         });
 
     }

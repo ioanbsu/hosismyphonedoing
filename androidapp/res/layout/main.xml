@@ -74,9 +74,17 @@
         <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/enableAntiTheft"
+                android:id="@+id/enableAntiTheftButton"
+                android:onClick="enableAntiTheftButton"
+                android:textSize="40dp"/>
+        <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/testButton"
                 android:id="@+id/testButton"
                 android:onClick="testButton"
+                android:visibility="gone"
                 android:textSize="40dp"/>
     </LinearLayout>
     <ScrollView

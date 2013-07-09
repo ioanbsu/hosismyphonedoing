@@ -1,13 +1,13 @@
 package com.artigile.howismyphonedoing.client.mvp.settings.widget;
 
+import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
+import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -23,6 +23,12 @@ public class AntiTheftWidget extends Composite {
 
     @UiField
     Button lockTheDevice;
+    @UiField
+    TextBox newPinCode;
+    @Inject
+    private MessageWindow messageWindow;
+    @Inject
+    private Messages messages;
 
     private AntiTheftActionLkstener antiTheftActionLkstener;
 
@@ -45,7 +51,11 @@ public class AntiTheftWidget extends Composite {
         this.antiTheftActionLkstener = antiTheftActionLkstener;
     }
 
-    public static interface Binder extends UiBinder<FlowPanel, AntiTheftWidget> {
+    public String getNewPinCode(){
+        return newPinCode.getText();
+    }
+
+    public static interface Binder extends UiBinder<HTMLPanel, AntiTheftWidget> {
     }
 
     public static interface AntiTheftActionLkstener {

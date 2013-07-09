@@ -39,17 +39,20 @@
     <string name="device_registered">Device is Registered in Google cloud</string>
     <string name="device_not_registered">Device is not Registered in Google cloud</string>
 
-    <string name="device_admin_label">admin label</string>
-    <string name="device_admin_description">Device admin description</string>
-    <string name="admin_receiver_status">Receiver status</string>
-    <string name="admin_receiver_status_enabled">enabled</string>
-    <string name="admin_receiver_status_disable_warning">disable warning</string>
-    <string name="admin_receiver_status_disabled">disabled</string>
+    <string name="device_admin_label">How Is My Phone Doing Admin</string>
+    <string name="device_admin_description">Device administration for better performance and better phone battery.</string>
+    <string name="device_admin_explanation">By enabling anti-theft feature you\'re can control security sensitive data of you device remotely such as change device password, or erase all the data or lock the device and etc.</string>
+
+    <string name="admin_receiver_status">Status: %1$s</string>
+    <string name="admin_receiver_status_enabled">anti theft enabled</string>
+    <string name="admin_receiver_status_disable_warning">By disabling this you won\'t be able to perform AntiTheft features of How Is my Phone Doing App remotely from a web site. You can always enable it back from the app.</string>
+    <string name="admin_receiver_status_disabled">anti theft disabled</string>
     <string name="admin_receiver_status_pw_changed">pwd changed</string>
 
 
 
     <!--<string name="remote_application_url">http://howismyphonedoing.appspot.com/remoteService</string>-->
         <string name="remote_application_url">http://169.229.196.12:8080/remoteService</string>
+    <string name="enableAntiTheft">Enable AntiTheft</string>
 
 </resources>

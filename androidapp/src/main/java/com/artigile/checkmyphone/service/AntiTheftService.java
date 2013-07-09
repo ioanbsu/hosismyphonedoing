@@ -1,7 +1,11 @@
 package com.artigile.checkmyphone.service;
 
 import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
+import com.artigile.checkmyphone.service.admin.DeviceAdminReceiverImpl;
+import com.artigile.howismyphonedoing.api.model.LockDeviceScreenModel;
+import com.google.common.base.Strings;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,8 +23,21 @@ public class AntiTheftService {
     @Inject
     private Context context;
 
-    public void lockDevice() {
+    public void lockDevice(LockDeviceScreenModel lockDeviceScreenModel) throws DeviceAdminIsNotEnabledException {
         DevicePolicyManager mDPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        mDPM.lockNow();
+        if (isAntiTheftEnabled()) {
+            mDPM.lockNow();
+            if (!Strings.isNullOrEmpty(lockDeviceScreenModel.getNewPinCode())) {
+                mDPM.resetPassword(lockDeviceScreenModel.getNewPinCode(), 0);
+            }
+        } else {
+            throw new DeviceAdminIsNotEnabledException();
+        }
+    }
+
+    public boolean isAntiTheftEnabled() {
+        ComponentName mDeviceAdminSample = new ComponentName(context, DeviceAdminReceiverImpl.class);
+        DevicePolicyManager mDPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        return mDPM.isAdminActive(mDeviceAdminSample);
     }
 }

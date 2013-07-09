@@ -1,6 +1,7 @@
 package com.artigile.howismyphonedoing.client.mvp.settings;
 
 import com.artigile.howismyphonedoing.api.model.IDeviceSettingsModel;
+import com.artigile.howismyphonedoing.api.model.ILockDeviceScreenModel;
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoCell;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
@@ -160,6 +161,10 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
 
     public void showLoading(boolean isLoading) {
         deviceSettings.showLoading(isLoading);
+    }
+
+    public String getNewPinCode() {
+        return antiTheftWidget.getNewPinCode();
     }
 
 

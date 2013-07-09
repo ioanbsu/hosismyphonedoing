@@ -17,7 +17,7 @@ public class DeviceAdminReceiverImpl extends DeviceAdminReceiver {
 
     void showToast(Context context, String msg) {
         String status = context.getString(R.string.admin_receiver_status, msg);
-        Toast.makeText(context, status, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, status, Toast.LENGTH_LONG).show();
     }
 
     @Override

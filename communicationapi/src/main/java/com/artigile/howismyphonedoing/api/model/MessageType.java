@@ -38,6 +38,12 @@ public enum MessageType {
             return DeviceLocationModel.class;
         }
     },
+    DEVICE_LOCATION_UPDATED {
+        @Override
+        public Class<? extends Serializable> getDeserializedClass() {
+            return DeviceLocationModel.class;
+        }
+    },
     DEVICE_LOCATION_NOT_POSSIBLE {
         @Override
         public Class<? extends Serializable> getDeserializedClass() {
@@ -69,6 +75,12 @@ public enum MessageType {
         }
     },
     LOCK_DEVICE {//hides logs on the device
+        @Override
+        public Class<? extends Serializable> getDeserializedClass() {
+            return String.class;
+        }
+    },
+    DEVICE_ADMIN_IS_NOT_ENABLED {//hides logs on the device
         @Override
         public Class<? extends Serializable> getDeserializedClass() {
             return String.class;
