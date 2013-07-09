@@ -106,7 +106,7 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
             }
 
             @Override
-            public void onDisplayLogsCliecked() {
+            public void onDisplayLogsClicked() {
                 presenter.displayLogsOnSelectedDevice();
             }
 

@@ -118,7 +118,7 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<IDevic
     @UiHandler("displayLogs")
     void onDisplayLogsClicked(ClickEvent clickEvent) {
         if (saveSettingsListener != null) {
-            saveSettingsListener.onDisplayLogsCliecked();
+            saveSettingsListener.onDisplayLogsClicked();
         }
     }
 
@@ -144,7 +144,7 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<IDevic
     public static interface SaveSettingsListener {
         void onSaveClicked();
 
-        void onDisplayLogsCliecked();
+        void onDisplayLogsClicked();
 
         void onHideLogsClicked();
     }
