@@ -11,6 +11,7 @@
 package com.artigile.howismyphonedoing.server.rpc;
 
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
+import com.artigile.howismyphonedoing.client.exception.UserHasNoDevicesException;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcService;
 import com.artigile.howismyphonedoing.server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +29,17 @@ import java.util.logging.Logger;
 public class UserInfoRpcServiceImpl extends AbstractRpcService implements UserInfoRpcService {
 
     protected final Logger logger = Logger.getLogger(getClass().getName());
-
     @Autowired
     private UserService userService;
 
     @Override
-    public List<UserDeviceModel> getUsersDevicesList() {
-        String userInSession=getUserEmailFromSession();
-        logger.info("Getting list of devices for user: "+userInSession);
-        return userService.getUsersDevicesList(userInSession);
+    public List<UserDeviceModel> getUsersDevicesList() throws UserHasNoDevicesException {
+        String userInSession = getUserEmailFromSession();
+        logger.info("Getting list of devices for user: " + userInSession);
+        List<UserDeviceModel> userDeviceModelList = userService.getUsersDevicesList(userInSession);
+        if (userDeviceModelList == null || userDeviceModelList.isEmpty()) {
+            throw new UserHasNoDevicesException();
+        }
+        return userDeviceModelList;
     }
 }

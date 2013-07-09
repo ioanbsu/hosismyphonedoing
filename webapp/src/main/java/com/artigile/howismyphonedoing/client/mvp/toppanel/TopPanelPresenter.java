@@ -17,8 +17,8 @@ import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
+import com.artigile.howismyphonedoing.client.exception.UserHasNoDevicesException;
 import com.artigile.howismyphonedoing.client.mvp.settings.SettingsPresenter;
-import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
@@ -35,9 +35,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.mvp4g.client.annotation.Presenter;
@@ -57,6 +54,7 @@ import java.util.List;
 @Presenter(view = TopPanelView.class)
 public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus> {
 
+    public static final int MAX_LOCATION_RESPONSE_WAIT = 60 * 1000;
     @Inject
     private MessageRpcServiceAsync messageRpcServiceAsync;
     @Inject
@@ -77,9 +75,6 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     private SettingsPresenter settingsPresenter;
     @Inject
     private HowIsMyPhoneDoingAutoBeansFactory howIsMyPhoneDoingAutoBeansFactory;
-
-    public static final int MAX_LOCATION_RESPONSE_WAIT = 60 * 1000;
-
     private Timer locationDetectTimer;
 
     public void onInitApp() {
@@ -105,6 +100,13 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
             @Override
             public void success(List<UserDeviceModel> result) {
                 eventBus.usersDevicesListReceived(result);
+            }
+
+            @Override
+            public void failure(Throwable caught) {
+                if (caught instanceof UserHasNoDevicesException) {
+                    eventBus.usersDevicesListReceived(new ArrayList<UserDeviceModel>());
+                }
             }
         });
     }
@@ -163,6 +165,13 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
                 eventBus.devicesLocationUpdateRequestSent();
                 sendRequestForDeviceLocations(result);
                 view.showDevicesLoading();
+            }
+
+            @Override
+            public void failure(Throwable caught) {
+                if (caught instanceof UserHasNoDevicesException) {
+                    cancelTimer();
+                }
             }
         });
     }
