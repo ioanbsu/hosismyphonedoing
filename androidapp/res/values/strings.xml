@@ -41,5 +41,13 @@
     <string name="device_registered">Device is Registered in Google cloud</string>
     <string name="device_not_registered">Device is not Registered in Google cloud</string>
 
+    <string name="device_admin_label">admin label</string>
+    <string name="device_admin_description">Device admin description</string>
+    <string name="admin_receiver_status">Receiver status</string>
+    <string name="admin_receiver_status_enabled">enabled</string>
+    <string name="admin_receiver_status_disable_warning">disable warning</string>
+    <string name="admin_receiver_status_disabled">disabled</string>
+    <string name="admin_receiver_status_pw_changed">pwd changed</string>
+
 
 </resources>

@@ -14,6 +14,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.admin.DevicePolicyManager;
 import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,9 +25,9 @@ import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import com.artigile.checkmyphone.service.*;
+import com.artigile.checkmyphone.service.admin.DeviceAdminReceiverImpl;
 import com.artigile.checkmyphone.util.GCMRegistrar;
 import com.artigile.howismyphonedoing.api.CommonConstants;
-import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
@@ -67,6 +68,9 @@ public class MainActivity extends RoboActivity {
     private DeviceDetailsReader deviceDetailsReader;
     @Inject
     private SharedPreferences prefs;
+    @Inject
+    private AntiTheftService antiTheftService;
+
 
     private Dialog errorDialog;
 
@@ -111,12 +115,13 @@ public class MainActivity extends RoboActivity {
     }
 
     public void testButton(View v) {
-        UserDeviceModel userDeviceModel = deviceDetailsReader.getUserDeviceDetails(null);
-        commonUtilities.displayMessage(this, "===========", CommonUtilities.LOG_MESSAGE_TYPE);
-        commonUtilities.displayMessage(this, userDeviceModel.getBatteryLevel() + "", CommonUtilities.LOG_MESSAGE_TYPE);
-        commonUtilities.displayMessage(this, userDeviceModel.getBatteryHealthType() + "", CommonUtilities.LOG_MESSAGE_TYPE);
-        commonUtilities.displayMessage(this, userDeviceModel.getBatteryStatusType() + "", CommonUtilities.LOG_MESSAGE_TYPE);
-        commonUtilities.displayMessage(this, userDeviceModel.getBatteryPluggedType() + "", CommonUtilities.LOG_MESSAGE_TYPE);
+        ComponentName mDeviceAdminSample = new ComponentName(this, DeviceAdminReceiverImpl.class);
+        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mDeviceAdminSample);
+        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Some extra text");
+        startActivityForResult(intent, 1);
+
+        antiTheftService.lockDevice();
     }
 
     @Override

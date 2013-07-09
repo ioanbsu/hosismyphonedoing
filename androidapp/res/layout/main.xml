@@ -77,7 +77,6 @@
                 android:text="@string/testButton"
                 android:id="@+id/testButton"
                 android:onClick="testButton"
-                android:visibility="gone"
                 android:textSize="40dp"/>
     </LinearLayout>
     <ScrollView
