@@ -82,4 +82,10 @@ public interface MainEventBus extends EventBus {
 
     @Event(handlers = MapBodyPresenter.class)
     void centerDeviceLocationOnScreen(IUserDeviceModel iUserDeviceModel);
+
+    @Event(handlers = SettingsPresenter.class)
+    void deviceHadBeenLocked(IUserDeviceModel userDevice);
+
+    @Event(handlers = SettingsPresenter.class)
+    void deviceAdminIsNotEnabled(IUserDeviceModel userDevice);
 }

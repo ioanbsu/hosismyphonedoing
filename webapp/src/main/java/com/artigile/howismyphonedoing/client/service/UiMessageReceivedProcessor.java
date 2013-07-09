@@ -51,9 +51,9 @@ public class UiMessageReceivedProcessor extends BaseEventHandler<MainEventBus> i
             deviceDetails.as().setHumanReadableName(userDevice.getHumanReadableName());
             eventBus.deviceDetailsReceived(deviceDetails.as());
         } else if (messageType == MessageType.LOCK_DEVICE) {
-            Window.alert("Device screen had been locked: " + userDevice.getHumanReadableName());
+            eventBus.deviceHadBeenLocked(userDevice);
         } else if (messageType == MessageType.DEVICE_ADMIN_IS_NOT_ENABLED) {
-            Window.alert("Device admin is not enabled on the " + userDevice.getHumanReadableName());
+            eventBus.deviceAdminIsNotEnabled(userDevice);
         } else if (messageType == MessageType.DEVICE_SETTINGS_UPDATE) {
 
         }

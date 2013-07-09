@@ -167,6 +167,14 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
         return antiTheftWidget.getNewPinCode();
     }
 
+    public void resetNewPinCodeTextBox() {
+        antiTheftWidget.resetNewPinCode();
+    }
+
+    public void showDeviceLockIsInProgress(boolean isDeviceLockIsInProgress) {
+        antiTheftWidget.showDeviceLoading(isDeviceLockIsInProgress);
+    }
+
 
     public static interface Binder extends UiBinder<DialogBox, SettingsView> {
     }

@@ -125,6 +125,16 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         }
     }
 
+    public void onDeviceHadBeenLocked(IUserDeviceModel userDevice) {
+        getView().showDeviceLockIsInProgress(false);
+
+    }
+
+    public void onDeviceAdminIsNotEnabled(IUserDeviceModel userDevice) {
+        messageWindow.show(messages.device_settings_anti_theft_is_not_enabled(userDevice.getHumanReadableName()));
+        getView().showDeviceLockIsInProgress(false);
+    }
+
     public void requestRefreshDeviceInfo(IUserDeviceModel selectedObject) {
         messageRpcServiceAsync.sendMessageToDevice(MessageType.DEVICE_DETAILS_INFO, selectedObject.getDeviceId(), "", new AsyncCallbackImpl<String>(eventBus) {
         });
@@ -192,13 +202,15 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
     }
 
     public void onLockDeviceClicked() {
-        String newPinCode= getView().getNewPinCode();
-        ILockDeviceScreenModel lockDeviceScreenModel=new LockDeviceScreenModel();
+        String newPinCode = getView().getNewPinCode();
+        ILockDeviceScreenModel lockDeviceScreenModel = new LockDeviceScreenModel();
         lockDeviceScreenModel.setNewPinCode(newPinCode);
         AutoBean<ILockDeviceScreenModel> iLockDeviceScreenModelAutoBean = howIsMyPhoneDoingAutoBeansFactory.create(ILockDeviceScreenModel.class, lockDeviceScreenModel);
         String serializedMessage = AutoBeanCodex.encode(iLockDeviceScreenModelAutoBean).getPayload();
         messageRpcServiceAsync.sendMessageToDevice(MessageType.LOCK_DEVICE, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
         });
+        getView().resetNewPinCodeTextBox();
+        getView().showDeviceLockIsInProgress(true);
 
     }
 }

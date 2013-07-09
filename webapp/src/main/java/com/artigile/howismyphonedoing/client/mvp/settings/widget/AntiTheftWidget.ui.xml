@@ -8,21 +8,30 @@
     <ui:style>.lockDevicePinImage {
 
     }
+
+    .lockDeviceButton {
+        font-size: 10px;
+    }
+
     </ui:style>
 
     <g:HTMLPanel>
         <table>
             <tr>
                 <td>
-                    <g:Button text="{msg.device_settings_anti_theft_lock_with_pin_text}" ui:field="lockTheDevice"/>
+                    <g:Button text="{msg.device_settings_anti_theft_lock_with_pin_text}"
+                              ui:field="lockTheDevice" addStyleNames="{style.lockDeviceButton}"/>
                 </td>
                 <td>
-                    <g:TextBox ui:field="newPinCode"/>
+                    <g:PasswordTextBox ui:field="newPinCode"/>
                 </td>
                 <td>
                     <g:Image resource="{images.question}"
                              title="{msg.device_settings_anti_theft_lock_with_pin_help_text}"
                              stylePrimaryName="{style.lockDevicePinImage}"/>
+                </td>
+                <td>
+                    <g:Image resource="{images.loadingSmallIcon}" visible="false" ui:field="deviceLockingLoading"/>
                 </td>
 
             </tr>

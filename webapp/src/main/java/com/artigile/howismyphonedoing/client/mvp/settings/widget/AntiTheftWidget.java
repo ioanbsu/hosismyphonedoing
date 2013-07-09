@@ -24,14 +24,14 @@ public class AntiTheftWidget extends Composite {
     @UiField
     Button lockTheDevice;
     @UiField
-    TextBox newPinCode;
+    PasswordTextBox newPinCode;
+    @UiField
+    Image deviceLockingLoading;
     @Inject
     private MessageWindow messageWindow;
     @Inject
     private Messages messages;
-
     private AntiTheftActionLkstener antiTheftActionLkstener;
-
     @Inject
     private MessageRpcServiceAsync messageRpcServiceAsync;
 
@@ -51,8 +51,16 @@ public class AntiTheftWidget extends Composite {
         this.antiTheftActionLkstener = antiTheftActionLkstener;
     }
 
-    public String getNewPinCode(){
+    public String getNewPinCode() {
         return newPinCode.getText();
+    }
+
+    public void resetNewPinCode() {
+        newPinCode.setText("");
+    }
+
+    public void showDeviceLoading(boolean isLoading){
+        deviceLockingLoading.setVisible(isLoading);
     }
 
     public static interface Binder extends UiBinder<HTMLPanel, AntiTheftWidget> {
