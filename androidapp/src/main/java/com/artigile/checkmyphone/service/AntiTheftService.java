@@ -15,4 +15,6 @@ public interface AntiTheftService {
     void wipeDevice() throws DeviceAdminIsNotEnabledException;
 
     boolean isAntiTheftEnabled();
+
+    void takePicture() throws DeviceHasNoCameraException;
 }
