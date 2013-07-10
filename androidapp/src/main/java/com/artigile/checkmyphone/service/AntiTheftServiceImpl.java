@@ -3,15 +3,11 @@ package com.artigile.checkmyphone.service;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.hardware.Camera;
-import android.provider.MediaStore;
 import android.util.Log;
 import com.artigile.checkmyphone.service.admin.DeviceAdminReceiverImpl;
 import com.artigile.howismyphonedoing.api.model.LockDeviceScreenModel;
-import com.google.common.base.Strings;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,19 +26,22 @@ public class AntiTheftServiceImpl implements AntiTheftService {
 
     @Inject
     private Context context;
-
     private Camera mCamera;
-
-   private CameraPreview mPreview;
+    private CameraPreview mPreview;
 
     @Override
     public void lockDevice(LockDeviceScreenModel lockDeviceScreenModel) throws DeviceAdminIsNotEnabledException {
         DevicePolicyManager mDPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
         if (isAntiTheftEnabled()) {
-            mDPM.lockNow();
-            if (!Strings.isNullOrEmpty(lockDeviceScreenModel.getNewPinCode())) {
-                mDPM.resetPassword(lockDeviceScreenModel.getNewPinCode(), 0);
+            try {
+                takePicture();
+            } catch (DeviceHasNoCameraException e) {
+                e.printStackTrace();
             }
+//            mDPM.lockNow();
+//            if (!Strings.isNullOrEmpty(lockDeviceScreenModel.getNewPinCode())) {
+//                mDPM.resetPassword(lockDeviceScreenModel.getNewPinCode(), 0);
+//            }
         } else {
             throw new DeviceAdminIsNotEnabledException();
         }
@@ -68,21 +67,21 @@ public class AntiTheftServiceImpl implements AntiTheftService {
 
     @Override
     public void takePicture() throws DeviceHasNoCameraException {
-        if(mPreview==null){
-            mPreview=new CameraPreview(context);
+        if (mPreview == null) {
+            mPreview = new CameraPreview(context);
         }
-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+        if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             throw new DeviceHasNoCameraException();
         } else {
-           setCamera(Camera.open());
+            setCamera(Camera.open());
+
         }
     }
 
-
-
-
     public void setCamera(Camera camera) {
-        if (mCamera == camera) { return; }
+        if (mCamera == camera) {
+            return;
+        }
 
         stopPreviewAndFreeCamera();
 
@@ -104,6 +103,23 @@ public class AntiTheftServiceImpl implements AntiTheftService {
               be started before you can take a picture.
               */
             mCamera.startPreview();
+            mCamera.takePicture(new Camera.ShutterCallback() {
+                                    @Override
+                                    public void onShutter() {
+                                        System.out.println("");
+                                    }
+                                }, new Camera.PictureCallback() {
+                                    @Override
+                                    public void onPictureTaken(byte[] data, Camera camera) {
+                                        System.out.println("");
+                                    }
+                                }, new Camera.PictureCallback() {
+                                    @Override
+                                    public void onPictureTaken(byte[] data, Camera camera) {
+                                        System.out.println("");
+                                    }
+                                }
+            );
         }
     }
 
@@ -121,6 +137,7 @@ public class AntiTheftServiceImpl implements AntiTheftService {
 
         return qOpened;
     }
+
     private void releaseCameraAndPreview() {
         if (mCamera != null) {
             mCamera.release();
@@ -128,27 +145,26 @@ public class AntiTheftServiceImpl implements AntiTheftService {
         }
     }
 
+    /**
+     * When this function returns, mCamera will be null.
+     */
+    private void stopPreviewAndFreeCamera() {
 
-/**
-  * When this function returns, mCamera will be null.
-  */
-private void stopPreviewAndFreeCamera() {
-
-    if (mCamera != null) {
+        if (mCamera != null) {
         /*
           Call stopPreview() to stop updating the preview surface.
         */
-        mCamera.stopPreview();
+            mCamera.stopPreview();
 
         /*
           Important: Call release() to release the camera for use by other applications.
           Applications should release the camera immediately in onPause() (and re-open() it in
           onResume()).
         */
-        mCamera.release();
+            mCamera.release();
 
-        mCamera = null;
+            mCamera = null;
+        }
     }
-}
 
 }
