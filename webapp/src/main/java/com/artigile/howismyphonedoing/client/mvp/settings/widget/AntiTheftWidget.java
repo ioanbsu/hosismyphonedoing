@@ -27,6 +27,8 @@ public class AntiTheftWidget extends Composite {
     PasswordTextBox newPinCode;
     @UiField
     Image deviceLockingLoading;
+    @UiField
+    Button takePicture;
     @Inject
     private MessageWindow messageWindow;
     @Inject
@@ -44,6 +46,13 @@ public class AntiTheftWidget extends Composite {
     void onLockTheDeviceClicked(ClickEvent clickEvent) {
         if (antiTheftActionLkstener != null) {
             antiTheftActionLkstener.onLockDeviceClicked();
+        }
+    }
+
+    @UiHandler("takePicture")
+    void onTakePictureClicked(ClickEvent clickEvent) {
+        if (antiTheftActionLkstener != null) {
+            antiTheftActionLkstener.onTakePictureClicked();
         }
     }
 
@@ -68,6 +77,9 @@ public class AntiTheftWidget extends Composite {
 
     public static interface AntiTheftActionLkstener {
         void onLockDeviceClicked();
+
+        void onTakePictureClicked();
+
     }
 
 }

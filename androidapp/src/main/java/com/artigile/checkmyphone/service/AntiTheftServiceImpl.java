@@ -3,16 +3,13 @@ package com.artigile.checkmyphone.service;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.hardware.Camera;
-import android.util.Log;
 import com.artigile.checkmyphone.service.admin.DeviceAdminReceiverImpl;
 import com.artigile.howismyphonedoing.api.model.LockDeviceScreenModel;
+import com.artigile.howismyphonedoing.api.model.TakePictureModel;
+import com.google.common.base.Strings;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Date: 7/1/13
@@ -26,22 +23,17 @@ public class AntiTheftServiceImpl implements AntiTheftService {
 
     @Inject
     private Context context;
-    private Camera mCamera;
-    private CameraPreview mPreview;
+    @Inject
+    private CameraService cameraService;
 
     @Override
     public void lockDevice(LockDeviceScreenModel lockDeviceScreenModel) throws DeviceAdminIsNotEnabledException {
         DevicePolicyManager mDPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
         if (isAntiTheftEnabled()) {
-            try {
-                takePicture();
-            } catch (DeviceHasNoCameraException e) {
-                e.printStackTrace();
+            mDPM.lockNow();
+            if (!Strings.isNullOrEmpty(lockDeviceScreenModel.getNewPinCode())) {
+                mDPM.resetPassword(lockDeviceScreenModel.getNewPinCode(), 0);
             }
-//            mDPM.lockNow();
-//            if (!Strings.isNullOrEmpty(lockDeviceScreenModel.getNewPinCode())) {
-//                mDPM.resetPassword(lockDeviceScreenModel.getNewPinCode(), 0);
-//            }
         } else {
             throw new DeviceAdminIsNotEnabledException();
         }
@@ -52,7 +44,6 @@ public class AntiTheftServiceImpl implements AntiTheftService {
         DevicePolicyManager mDPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
         if (isAntiTheftEnabled()) {
             mDPM.wipeData(DevicePolicyManager.WIPE_EXTERNAL_STORAGE);
-
         } else {
             throw new DeviceAdminIsNotEnabledException();
         }
@@ -66,105 +57,10 @@ public class AntiTheftServiceImpl implements AntiTheftService {
     }
 
     @Override
-    public void takePicture() throws DeviceHasNoCameraException {
-        if (mPreview == null) {
-            mPreview = new CameraPreview(context);
-        }
-        if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            throw new DeviceHasNoCameraException();
-        } else {
-            setCamera(Camera.open());
-
-        }
+    public void takePicture(TakePictureModel lockDeviceScreenModel) throws DeviceHasNoCameraException {
+        cameraService.takePicture();
     }
 
-    public void setCamera(Camera camera) {
-        if (mCamera == camera) {
-            return;
-        }
 
-        stopPreviewAndFreeCamera();
-
-        mCamera = camera;
-
-        if (mCamera != null) {
-            List<Camera.Size> localSizes = mCamera.getParameters().getSupportedPreviewSizes();
-//            mSupportedPreviewSizes = localSizes;
-//            context.requestLayout();
-
-            try {
-                mCamera.setPreviewDisplay(mPreview.getmHolder());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            /*
-              Important: Call startPreview() to start updating the preview surface. Preview must
-              be started before you can take a picture.
-              */
-            mCamera.startPreview();
-            mCamera.takePicture(new Camera.ShutterCallback() {
-                                    @Override
-                                    public void onShutter() {
-                                        System.out.println("");
-                                    }
-                                }, new Camera.PictureCallback() {
-                                    @Override
-                                    public void onPictureTaken(byte[] data, Camera camera) {
-                                        System.out.println("");
-                                    }
-                                }, new Camera.PictureCallback() {
-                                    @Override
-                                    public void onPictureTaken(byte[] data, Camera camera) {
-                                        System.out.println("");
-                                    }
-                                }
-            );
-        }
-    }
-
-    private boolean safeCameraOpen(int id) {
-        boolean qOpened = false;
-
-        try {
-            releaseCameraAndPreview();
-            mCamera = Camera.open(id);
-            qOpened = (mCamera != null);
-        } catch (Exception e) {
-            Log.e("blablabla", "failed to open Camera");
-            e.printStackTrace();
-        }
-
-        return qOpened;
-    }
-
-    private void releaseCameraAndPreview() {
-        if (mCamera != null) {
-            mCamera.release();
-            mCamera = null;
-        }
-    }
-
-    /**
-     * When this function returns, mCamera will be null.
-     */
-    private void stopPreviewAndFreeCamera() {
-
-        if (mCamera != null) {
-        /*
-          Call stopPreview() to stop updating the preview surface.
-        */
-            mCamera.stopPreview();
-
-        /*
-          Important: Call release() to release the camera for use by other applications.
-          Applications should release the camera immediately in onPause() (and re-open() it in
-          onResume()).
-        */
-            mCamera.release();
-
-            mCamera = null;
-        }
-    }
 
 }

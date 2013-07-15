@@ -1,6 +1,8 @@
 package com.artigile.checkmyphone.service;
 
+import android.view.SurfaceView;
 import com.artigile.howismyphonedoing.api.model.LockDeviceScreenModel;
+import com.artigile.howismyphonedoing.api.model.TakePictureModel;
 import com.google.inject.ImplementedBy;
 
 /**
@@ -16,5 +18,5 @@ public interface AntiTheftService {
 
     boolean isAntiTheftEnabled();
 
-    void takePicture() throws DeviceHasNoCameraException;
+    void takePicture(TakePictureModel lockDeviceScreenModel) throws DeviceHasNoCameraException;
 }

@@ -35,6 +35,9 @@
                 </td>
 
             </tr>
+            <tr>
+                <td><g:Button ui:field="takePicture"/></td>
+            </tr>
         </table>
     </g:HTMLPanel>
 </ui:UiBinder>

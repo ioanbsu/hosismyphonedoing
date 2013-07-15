@@ -75,6 +75,11 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
             public void onLockDeviceClicked() {
                 presenter.onLockDeviceClicked();
             }
+
+            @Override
+            public void onTakePictureClicked() {
+                presenter.onTakePictureClicked();
+            }
         };
     }
 

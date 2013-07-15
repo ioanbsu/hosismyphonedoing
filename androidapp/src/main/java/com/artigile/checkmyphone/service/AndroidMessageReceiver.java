@@ -132,6 +132,13 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                 failsafeSendMessage(MessageType.DEVICE_ADMIN_IS_NOT_ENABLED, "");
                 return "failed to lock the device. not supported.";
             }
+        }else if (messageType == MessageType.TAKE_PICTURE) {
+            try {
+                TakePictureModel lockDeviceScreenModel=messageParser.parse(messageType, serializedObject);
+                antiTheftService.takePicture(lockDeviceScreenModel);
+            }catch (DeviceHasNoCameraException e) {
+                //todo: process here
+            }
         } else {
             commonUtilities.displayMessage(context, serializedObject, CommonUtilities.LOG_MESSAGE_TYPE);
             // notifies user

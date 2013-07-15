@@ -213,4 +213,12 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         getView().showDeviceLockIsInProgress(true);
 
     }
+
+    public void onTakePictureClicked() {
+        ITakePictureModel takePictureModel = new TakePictureModel();
+        AutoBean<ITakePictureModel> iTakePictureModelAutoBean = howIsMyPhoneDoingAutoBeansFactory.create(ITakePictureModel.class, takePictureModel);
+        String serializedMessage = AutoBeanCodex.encode(iTakePictureModelAutoBean).getPayload();
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.TAKE_PICTURE, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
+        });
+    }
 }

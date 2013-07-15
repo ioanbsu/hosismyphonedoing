@@ -18,9 +18,7 @@ import android.app.admin.DevicePolicyManager;
 import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
+import android.view.*;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -43,8 +41,6 @@ import static com.artigile.checkmyphone.service.CommonUtilities.*;
  */
 @Singleton
 public class MainActivity extends RoboActivity {
-
-
     private static final int ENABLE_ADMIN_SUPPORT_INTENT_CODE = 2348756;
     private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -66,6 +62,8 @@ public class MainActivity extends RoboActivity {
     TextView deviceRegisteredLabel;
     @InjectView(R.id.deviceNotRegisteredLabel)
     TextView deviceNotRegisteredLabel;
+    @InjectView(R.id.infoLabel)
+    TextView infoLabel;
     @InjectView(R.id.cleanLogsButton)
     Button cleanLogsButton;
     @InjectView(R.id.logsScrollView)
@@ -87,6 +85,8 @@ public class MainActivity extends RoboActivity {
     private SharedPreferences prefs;
     @Inject
     private AntiTheftService antiTheftService;
+    @Inject
+    private CameraService cameraService;
     private Dialog errorDialog;
 
     @Override
@@ -126,7 +126,7 @@ public class MainActivity extends RoboActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==ENABLE_ADMIN_SUPPORT_INTENT_CODE){
+        if (requestCode == ENABLE_ADMIN_SUPPORT_INTENT_CODE) {
             checkAntiTheft();
         }
     }
@@ -152,7 +152,11 @@ public class MainActivity extends RoboActivity {
     }
 
     public void testButton(View v) {
-
+        try {
+            antiTheftService.takePicture(null);
+        } catch (DeviceHasNoCameraException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -211,9 +215,11 @@ public class MainActivity extends RoboActivity {
         if (getString(R.string.device_registered).equals(message)) {
             deviceNotRegisteredLabel.setVisibility(View.GONE);
             deviceRegisteredLabel.setVisibility(View.VISIBLE);
+            infoLabel.setVisibility(View.VISIBLE);
         } else if (getString(R.string.device_not_registered).equals(message)) {
             deviceNotRegisteredLabel.setVisibility(View.VISIBLE);
             deviceRegisteredLabel.setVisibility(View.GONE);
+            infoLabel.setVisibility(View.GONE);
         }
     }
 
@@ -255,10 +261,8 @@ public class MainActivity extends RoboActivity {
     private void checkAntiTheft() {
         if (antiTheftService.isAntiTheftEnabled()) {
             enableAntiTheftButton.setVisibility(View.GONE);
-        } else{
+        } else {
             enableAntiTheftButton.setVisibility(View.VISIBLE);
         }
     }
-
-
 }

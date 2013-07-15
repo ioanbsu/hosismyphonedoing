@@ -14,12 +14,13 @@ import java.lang.reflect.Type;
  */
 public class MessageParserImpl implements MessageParser {
     private Gson gsonParser;
-    private Gson gsonSerializer=new Gson();
+    private Gson gsonSerializer = new Gson();
 
     public MessageParserImpl() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(IDeviceModel.class, new IDeviceModelDeserializer());
         gsonBuilder.registerTypeAdapter(IDeviceSettingsModel.class, new IDeviceSettingsModelDeserializer());
+        gsonBuilder.registerTypeAdapter(ITakePictureModel.class, new ITakePictureModelModelDeserializer());
         gsonParser = gsonBuilder.create();
     }
 
@@ -40,6 +41,8 @@ public class MessageParserImpl implements MessageParser {
                 return (T) gsonParser.getAdapter(String.class).fromJson(serializedString);
             } else if (messageType == MessageType.LOCK_DEVICE) {
                 return (T) gsonParser.getAdapter(LockDeviceScreenModel.class).fromJson(serializedString);
+            } else if (messageType == MessageType.TAKE_PICTURE) {
+                return (T) gsonParser.getAdapter(TakePictureModel.class).fromJson(serializedString);
             }
             return (T) gsonParser.getAdapter(messageType.getDeserializedClass()).fromJson(serializedString);
 
@@ -78,6 +81,21 @@ public class MessageParserImpl implements MessageParser {
             try {
                 IDeviceSettingsModel iDeviceSettingsModel = gsonParser.getAdapter(DeviceSettingsModel.class).fromJson(strObject);
                 return iDeviceSettingsModel;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    public class ITakePictureModelModelDeserializer implements JsonDeserializer<ITakePictureModel> {
+
+        @Override
+        public ITakePictureModel deserialize(JsonElement json, Type typeofT, JsonDeserializationContext context) throws JsonParseException {
+            String strObject = json.toString();
+            try {
+                ITakePictureModel takePictureModel = gsonParser.getAdapter(TakePictureModel.class).fromJson(strObject);
+                return takePictureModel;
             } catch (IOException e) {
                 e.printStackTrace();
             }
