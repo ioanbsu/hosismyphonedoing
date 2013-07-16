@@ -96,14 +96,13 @@
 
     </ui:style>
     <g:FlowPanel>
-        <toppanel:TopPanelButton ui:field="myDevicesCount" styleName="{style.topMenuButtonStyle}"/>
         <toppanel:TopPanelButton text="{msg.top_panel_get_device_location_button}" ui:field="devicesLocationButton"
                   styleName="{style.topMenuButtonStyle}"/>
         <toppanel:TopPanelButton text="{msg.top_panel_remove_all_my_devices}" ui:field="removeAllDevices"
                   styleName="{style.topMenuButtonStyle}"/>
         <toppanel:TopPanelButton text="{msg.top_panel_read_loud_on_my_phone}" ui:field="sendTextToPhone"
                   styleName="{style.topMenuButtonStyle}"/>
-        <toppanel:TopPanelButton text="{msg.device_settings_title}" ui:field="devicesSettings"
+        <toppanel:TopPanelButton ui:field="devicesSettings"
                                  styleName="{style.topMenuButtonStyle}" />
         <toppanel:TopPanelButton text="{msg.top_panel_log_out}" ui:field="logoutButton"
                   styleName="{style.topMenuButtonStyle} {style.logOutFloatRight}"/>

@@ -6,6 +6,7 @@ import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
+import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.HowIsMyPhoneDoingAutoBeansFactory;
 import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.artigile.howismyphonedoing.client.widget.YesNoWindow;
@@ -48,6 +49,8 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
     private Messages messages;
     @Inject
     private MessageWindow messageWindow;
+    @Inject
+    private UserInfoRpcServiceAsync userInfoRpcServiceAsync;
 
     public void onInitApp() {
         GWT.log("Settings window initiated.");
@@ -219,6 +222,15 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         AutoBean<ITakePictureModel> iTakePictureModelAutoBean = howIsMyPhoneDoingAutoBeansFactory.create(ITakePictureModel.class, takePictureModel);
         String serializedMessage = AutoBeanCodex.encode(iTakePictureModelAutoBean).getPayload();
         messageRpcServiceAsync.sendMessageToDevice(MessageType.TAKE_PICTURE, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
+        });
+    }
+
+    public void onRefreshDevicesListClicked() {
+        userInfoRpcServiceAsync.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>(eventBus) {
+            @Override
+            public void success(List<UserDeviceModel> result) {
+                eventBus.usersDevicesListReceived(result);
+            }
         });
     }
 }

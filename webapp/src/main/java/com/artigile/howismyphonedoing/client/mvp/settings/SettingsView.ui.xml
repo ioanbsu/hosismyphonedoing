@@ -45,6 +45,9 @@
                     <g:ScrollPanel styleName="{style.devicesList}">
                         <cellview:CellList ui:field="addableDevicesList" pageSize="50"/>
                     </g:ScrollPanel>
+                    <g:FlowPanel>
+                        <g:Button ui:field="refreshDevicesList"/>
+                    </g:FlowPanel>
                     <g:FlowPanel styleName="{style.buttonsPanel}">
                         <g:Button ui:field="closeSettings" text="{msg.device_settings_close_window_button}"/>
                         <g:Button ui:field="refreshDeviceInfo" text="{msg.device_settings_refresh_device_info_button}"/>

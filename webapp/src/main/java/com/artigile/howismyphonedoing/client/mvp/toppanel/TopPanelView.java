@@ -12,7 +12,6 @@ package com.artigile.howismyphonedoing.client.mvp.toppanel;
 
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
-import com.artigile.howismyphonedoing.client.service.DebugUtil;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -46,8 +45,6 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     @UiField
     Label loggedInAs;
     @UiField
-    TopPanelButton myDevicesCount;
-    @UiField
     FlowPanel blockWhileConnecting;
     @UiField
     Image reloadPage;
@@ -61,6 +58,7 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     public TopPanelView(Binder binder) {
         initWidget(binder.createAndBindUi(this));
         blockWhileConnecting.setVisible(false);
+        devicesSettings.setText(messages.device_settings_button_title(0 + ""));
     }
 
     @Override
@@ -95,10 +93,6 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
         presenter.removeAllDevices();
     }
 
-    @UiHandler("myDevicesCount")
-    void onMyDevicesCountClick(ClickEvent event) {
-        presenter.showDevicesCountWindow();
-    }
 
     @UiHandler("reloadPage")
     void onReloadPageClick(ClickEvent event) {
@@ -115,7 +109,8 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     }
 
     public void setMyDevicesCount(int size) {
-        myDevicesCount.setText(messages.top_panel_view_my_devices_link(size + ""));
+        devicesSettings.setText(messages.device_settings_button_title(0 + ""));
+
     }
 
     public void updateChannelStateIcon(ChannelStateType channelState) {

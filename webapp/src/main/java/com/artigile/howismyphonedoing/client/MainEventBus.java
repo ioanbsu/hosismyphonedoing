@@ -20,7 +20,6 @@ import com.artigile.howismyphonedoing.client.service.CustomLogger;
 import com.artigile.howismyphonedoing.client.service.GaeChannelService;
 import com.artigile.howismyphonedoing.client.service.MessageNotSupportedProcessor;
 import com.artigile.howismyphonedoing.client.service.UiMessageReceivedProcessor;
-import com.artigile.howismyphonedoing.client.widget.DevicesListWindow;
 import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
 import com.artigile.howismyphonedoing.client.widget.SigninWithGooglePlusWindow;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
@@ -53,7 +52,7 @@ public interface MainEventBus extends EventBus {
     @Event(handlers = {MapBodyPresenter.class, TopPanelPresenter.class})
     void deviceLocationUpdated(IDeviceLocationModel as);
 
-    @Event(handlers = {TopPanelPresenter.class, DevicesListWindow.class, SendMessageWindow.class, SettingsPresenter.class})
+    @Event(handlers = {TopPanelPresenter.class, SendMessageWindow.class, SettingsPresenter.class})
     void usersDevicesListReceived(List<UserDeviceModel> result);
 
     @Event(handlers = {TopPanelPresenter.class})

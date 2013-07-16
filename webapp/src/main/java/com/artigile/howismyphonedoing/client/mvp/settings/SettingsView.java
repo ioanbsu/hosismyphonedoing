@@ -3,11 +3,13 @@ package com.artigile.howismyphonedoing.client.mvp.settings;
 import com.artigile.howismyphonedoing.api.model.IDeviceSettingsModel;
 import com.artigile.howismyphonedoing.api.model.ILockDeviceScreenModel;
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
+import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoCell;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceListCell;
 import com.artigile.howismyphonedoing.client.mvp.settings.widget.AntiTheftWidget;
 import com.artigile.howismyphonedoing.client.mvp.settings.widget.DeviceSettingsWidget;
+import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.service.DebugUtil;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -24,6 +26,7 @@ import com.mvp4g.client.view.ReverseViewInterface;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.List;
 
 /**
  * Date: 6/22/13
@@ -51,6 +54,8 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
     AntiTheftWidget antiTheftWidget;
     @UiField
     TabLayoutPanel tabLayuotPanel;
+    @UiField
+    Button refreshDevicesList;
     private SettingsPresenter presenter;
 
 
@@ -148,6 +153,11 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
     @UiHandler("refreshDeviceInfo")
     void onRefreshDeviceInfo(ClickEvent event) {
         presenter.requestDeviceInfoUpdate();
+    }
+
+    @UiHandler("refreshDevicesList")
+    void onRefreshDevicesList(ClickEvent event){
+     presenter.onRefreshDevicesListClicked();
     }
 
 

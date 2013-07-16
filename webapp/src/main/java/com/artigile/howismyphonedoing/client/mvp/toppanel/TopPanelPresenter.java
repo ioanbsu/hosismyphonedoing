@@ -25,7 +25,6 @@ import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.ApplicationState;
 import com.artigile.howismyphonedoing.client.service.DebugUtil;
 import com.artigile.howismyphonedoing.client.service.HowIsMyPhoneDoingAutoBeansFactory;
-import com.artigile.howismyphonedoing.client.widget.DevicesListWindow;
 import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
 import com.artigile.howismyphonedoing.client.widget.YesNoWindow;
@@ -63,8 +62,6 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     private UserInfoRpcServiceAsync userInfoRpcService;
     @Inject
     private ApplicationState applicationState;
-    @Inject
-    private DevicesListWindow devicesListWindow;
     @Inject
     private SendMessageWindow sendMessageWindow;
     @Inject
@@ -195,10 +192,6 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
         if (!DebugUtil.isDebugMode()) {
             messageWindow.show(messages.top_panel_user_has_no_devices());
         }
-    }
-
-    public void showDevicesCountWindow() {
-        devicesListWindow.show();
     }
 
     public void showDeviceSettings() {
