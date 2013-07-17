@@ -1,8 +1,8 @@
 package com.artigile.checkmyphone;
 
 import android.content.pm.PackageManager;
-import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -10,9 +10,12 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.artigile.checkmyphone.service.CameraService;
+import com.artigile.checkmyphone.service.CommonUtilities;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -27,13 +30,43 @@ import java.util.Date;
  *
  * @author ioanbsu
  */
-
+@Singleton
 public class TakePictureActivity extends RoboActivity implements SurfaceHolder.Callback {
+    private final Camera.PictureCallback mCall;
     @InjectView(R.id.cameraRecordPreviewTp)
     private SurfaceView cameraSurfaceView;
-
+    @Inject
+    private CommonUtilities commonUtilities;
     private Camera mCamera;
 
+    public TakePictureActivity() {
+        mCall = new Camera.PictureCallback() {
+
+            public void onPictureTaken(byte[] data, Camera camera) {
+                FileOutputStream outStream = null;
+                try {
+                    outStream = new FileOutputStream(getOutputMediaFile());
+                    outStream.write(data);
+                    outStream.close();
+                    stopPreviewAndFreeCamera();
+                    new AsyncTask<byte[], Void, Void>() {
+
+                        @Override
+                        protected Void doInBackground(byte[]... params) {
+                            commonUtilities.firePictureTakenEvent(TakePictureActivity.this, params[0]);
+                            return null;
+                        }
+                    }.doInBackground(data);
+                    finish();
+                } catch (FileNotFoundException e) {
+                    Log.d("CAMERA", e.getMessage());
+                } catch (IOException e) {
+                    Log.d("CAMERA", e.getMessage());
+                }
+
+            }
+        };
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,26 +125,6 @@ public class TakePictureActivity extends RoboActivity implements SurfaceHolder.C
         super.onDestroy();
         stopPreviewAndFreeCamera();
     }
-
-    Camera.PictureCallback mCall = new Camera.PictureCallback() {
-
-        public void onPictureTaken(byte[] data, Camera camera) {
-            FileOutputStream outStream = null;
-            try {
-                outStream = new FileOutputStream(getOutputMediaFile());
-                outStream.write(data);
-                outStream.close();
-                stopPreviewAndFreeCamera();
-                finish();
-            } catch (FileNotFoundException e) {
-                Log.d("CAMERA", e.getMessage());
-            } catch (IOException e) {
-                Log.d("CAMERA", e.getMessage());
-            }
-
-        }
-    };
-
 
     public File getOutputMediaFile() {
         File mediaStorageDir = getMagicMazeVideosDir();

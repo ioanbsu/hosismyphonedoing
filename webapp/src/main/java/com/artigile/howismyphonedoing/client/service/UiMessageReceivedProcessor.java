@@ -3,7 +3,8 @@ package com.artigile.howismyphonedoing.client.service;
 import com.artigile.howismyphonedoing.api.model.*;
 import com.artigile.howismyphonedoing.api.shared.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.client.MainEventBus;
-import com.google.gwt.user.client.Window;
+import com.artigile.howismyphonedoing.client.widget.DisplayPictureWindow;
+import com.artigile.howismyphonedoing.shared.WebAppAndClientConstants;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.mvp4g.client.annotation.EventHandler;
@@ -11,6 +12,7 @@ import com.mvp4g.client.event.BaseEventHandler;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.logging.Logger;
 
 /**
  * Date: 6/22/13
@@ -22,8 +24,11 @@ import javax.inject.Singleton;
 @Singleton
 public class UiMessageReceivedProcessor extends BaseEventHandler<MainEventBus> implements WebAppMessageProcessor<IUserDeviceModel> {
 
+    public static final Logger logger = Logger.getLogger(UiMessageReceivedProcessor.class.getName());
     @Inject
     private HowIsMyPhoneDoingAutoBeansFactory howIsMyPhoneDoingBeansFactory;
+    @Inject
+    private DisplayPictureWindow displayPictureWindow;
 
     @Override
     public String processMessage(IUserDeviceModel userDevice, MessageType messageType, String serializedObject) {
@@ -55,6 +60,12 @@ public class UiMessageReceivedProcessor extends BaseEventHandler<MainEventBus> i
         } else if (messageType == MessageType.DEVICE_ADMIN_IS_NOT_ENABLED) {
             eventBus.deviceAdminIsNotEnabled(userDevice);
         } else if (messageType == MessageType.DEVICE_SETTINGS_UPDATE) {
+
+        } else if (messageType == MessageType.PICTURE_READY) {
+            AutoBean<IPictureReadyModel> deviceDetails = AutoBeanCodex.decode(howIsMyPhoneDoingBeansFactory, IPictureReadyModel.class, serializedObject);
+            String pictureUrl = "/remoteService"+WebAppAndClientConstants.PICTURE_URL_PATH+"?" + WebAppAndClientConstants.PICTURE_UUID + "=" + deviceDetails.as().getPictureId();
+            logger.info("Picture received, url:" + pictureUrl);
+            displayPictureWindow.show(pictureUrl);
 
         }
         return "succeeded";

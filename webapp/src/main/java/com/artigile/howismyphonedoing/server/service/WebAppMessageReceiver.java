@@ -11,10 +11,7 @@
 package com.artigile.howismyphonedoing.server.service;
 
 import com.artigile.howismyphonedoing.api.MessageParser;
-import com.artigile.howismyphonedoing.api.model.DeviceRegistrationModel;
-import com.artigile.howismyphonedoing.api.model.MessageType;
-import com.artigile.howismyphonedoing.api.model.ResponseFromServer;
-import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
+import com.artigile.howismyphonedoing.api.model.*;
 import com.artigile.howismyphonedoing.api.shared.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.google.appengine.api.channel.ChannelMessage;
@@ -37,6 +34,8 @@ public class WebAppMessageReceiver implements WebAppMessageProcessor<String> {
     @Autowired
     private UserService userInfoService;
     @Autowired
+    private PicturesService picturesService;
+    @Autowired
     private MessageParser messageParser;
 
     @Override
@@ -58,6 +57,14 @@ public class WebAppMessageReceiver implements WebAppMessageProcessor<String> {
             } else if (messageType == MessageType.UNREGISTER_DEVICE) {
                 logger.info("Unregistering device: " + uuid);
                 userEmail = userInfoService.unregisterDeviceByUuid(uuid);
+            } else if (messageType == MessageType.PICTURE_READY) {
+                logger.info("Picture taken " + uuid);
+                userEmail = userInfoService.unregisterDeviceByUuid(uuid);
+                IPictureReadyModel pictureReadyModel=messageParser.parse(messageType, serializedObject);
+                String pictureUuid=picturesService.storePicture(pictureReadyModel,uuid);
+                pictureReadyModel.setPictureData(null);//setting picture byte data to null so it do not get sent to client
+                pictureReadyModel.setPictureId(pictureUuid);
+                serializedObject=messageParser.serialize(pictureReadyModel);
             } else {
                 logger.info("Message Type: " + messageType);
                 userDevice = userInfoService.findUserDeviceByUuid(uuid);
@@ -80,7 +87,7 @@ public class WebAppMessageReceiver implements WebAppMessageProcessor<String> {
             logger.warning("unexpected error happened, please investigate!!!!!!!!!!!!!!!!");
             throw e;
         }
-        return "message pasring success";
+        return "message parsing success";
     }
 
 }

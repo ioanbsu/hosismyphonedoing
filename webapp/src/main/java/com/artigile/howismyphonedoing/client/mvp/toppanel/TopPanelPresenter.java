@@ -76,6 +76,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
 
     public void onInitApp() {
         GWT.log("TopPanelPresenter initiated.");
+        view.setMyDevicesCount(0);
     }
 
     public void logout() {

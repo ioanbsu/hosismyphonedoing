@@ -89,7 +89,13 @@ public enum MessageType {
     TAKE_PICTURE {//hides logs on the device
         @Override
         public Class<? extends Serializable> getDeserializedClass() {
-            return String.class;
+            return TakePictureModel.class;
+        }
+    },
+    PICTURE_READY {//hides logs on the device
+        @Override
+        public Class<? extends Serializable> getDeserializedClass() {
+            return PictureReadyModel.class;
         }
     },
     MESSAGE_TYPE_IS_NOT_SUPPORTED {

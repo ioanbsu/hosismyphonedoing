@@ -55,10 +55,9 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     private Messages messages;
 
     @Inject
-    public TopPanelView(Binder binder) {
+    public TopPanelView(Binder binder,Messages messages) {
         initWidget(binder.createAndBindUi(this));
         blockWhileConnecting.setVisible(false);
-        devicesSettings.setText(messages.device_settings_button_title(0 + ""));
     }
 
     @Override
@@ -109,7 +108,7 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     }
 
     public void setMyDevicesCount(int size) {
-        devicesSettings.setText(messages.device_settings_button_title(0 + ""));
+        devicesSettings.setText(messages.device_settings_button_title(size + ""));
 
     }
 

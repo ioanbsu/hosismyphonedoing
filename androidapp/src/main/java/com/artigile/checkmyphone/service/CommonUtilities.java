@@ -24,8 +24,6 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class CommonUtilities {
-    @InjectResource(R.string.remote_application_url)
-    private String serverUrl;
     /**
      * Google API project id registered to use GCM.
      */
@@ -40,14 +38,20 @@ public class CommonUtilities {
     public static final String DISPLAY_MESSAGE_ACTION =
             "com.google.android.gcm.demo.app.DISPLAY_MESSAGE";
     /**
+     * Intent used to display a message in the screen.
+     */
+    public static final String PICTURE_TAKEN_ACTION =
+            "com.google.android.gcm.demo.app.PICTURE_TAKEN";
+    /**
      * Intent's extra that contains the message to be displayed.
      */
     public static final String MESSAGE = "message";
     public static final String MESSAGE_TYPE = "messageType";
-
-    public static final int LOG_MESSAGE_TYPE=0;
-    public static final int REGISTRATION_STATUS_MESSAGE_TYPE =1;
-    public static final int SHOW_LOGS_STATE_UPDATED =2;
+    public static final int LOG_MESSAGE_TYPE = 0;
+    public static final int REGISTRATION_STATUS_MESSAGE_TYPE = 1;
+    public static final int SHOW_LOGS_STATE_UPDATED = 2;
+    @InjectResource(R.string.remote_application_url)
+    private String serverUrl;
 
     /**
      * Notifies UI to display a message.
@@ -65,7 +69,13 @@ public class CommonUtilities {
         context.sendBroadcast(intent);
     }
 
-    public String getServerUrl(String propertyName) {
+    public void firePictureTakenEvent(Context context, byte[] data) {
+        Intent intent = new Intent(CommonUtilities.PICTURE_TAKEN_ACTION);
+        intent.putExtra(MESSAGE, data);
+        context.sendBroadcast(intent);
+    }
+
+    public String getServerUrl() {
         return serverUrl;
     }
 }

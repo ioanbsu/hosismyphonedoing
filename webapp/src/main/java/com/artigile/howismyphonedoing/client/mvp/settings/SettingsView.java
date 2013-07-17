@@ -1,15 +1,12 @@
 package com.artigile.howismyphonedoing.client.mvp.settings;
 
 import com.artigile.howismyphonedoing.api.model.IDeviceSettingsModel;
-import com.artigile.howismyphonedoing.api.model.ILockDeviceScreenModel;
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
-import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoCell;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceListCell;
 import com.artigile.howismyphonedoing.client.mvp.settings.widget.AntiTheftWidget;
 import com.artigile.howismyphonedoing.client.mvp.settings.widget.DeviceSettingsWidget;
-import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.service.DebugUtil;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -18,15 +15,12 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.CellWidget;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ProvidesKey;
 import com.mvp4g.client.view.ReverseViewInterface;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.List;
 
 /**
  * Date: 6/22/13
@@ -56,6 +50,10 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
     TabLayoutPanel tabLayuotPanel;
     @UiField
     Button refreshDevicesList;
+    @UiField
+    Image deviceListLoading;
+    @UiField
+    Label noDeviceFoundText;
     private SettingsPresenter presenter;
 
 
@@ -188,6 +186,14 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
 
     public void showDeviceLockIsInProgress(boolean isDeviceLockIsInProgress) {
         antiTheftWidget.showDeviceLoading(isDeviceLockIsInProgress);
+    }
+
+    public void showDeviceListLoading(boolean isShowing) {
+        deviceListLoading.setVisible(isShowing);
+    }
+
+    public void displayNoDevicesFoundLabel(boolean isDevicesListEmpty) {
+        noDeviceFoundText.setVisible(isDevicesListEmpty);
     }
 
 

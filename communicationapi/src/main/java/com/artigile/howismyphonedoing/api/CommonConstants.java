@@ -13,10 +13,6 @@ public class CommonConstants {
     public static final String UUID = "uuid";
     public static final String SERIALIZED_OBJECT = "serializedObject";
     public static final String MESSAGES_COMMUNICATION_URL = "/messageServlet";
-    /**
-     * Base URL of the Demo Server (such as http://my_host:8080/gcm-demo)
-     */
-    public final static String SERVER_URL_PARAM_NAME = "remoteServerUrl";
 
     private CommonConstants() {
     }

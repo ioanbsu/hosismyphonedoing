@@ -1,9 +1,9 @@
 package com.artigile.howismyphonedoing.client.service;
 
-import com.google.gwt.core.client.GWT;
 import com.mvp4g.client.event.Mvp4gLogger;
 
 import javax.inject.Singleton;
+import java.util.logging.Logger;
 
 /**
  * User: ioanbsu
@@ -13,22 +13,9 @@ import javax.inject.Singleton;
 @Singleton
 public class CustomLogger implements Mvp4gLogger {
 
-    /**
-     * Displays logs into chrome console for debugging.
-     *
-     * @param logMessage the message to display
-     */
-    public static native void logToBrowserConsole(String logMessage) /*-{
-        console.log(logMessage);
-    }-*/;
+    public static final Logger logger = Logger.getLogger(CustomLogger.class.getName());
 
     public void log(String message, int depth) {
-        String indent = "";
-        for (int i = 0; i < depth; ++i)
-            indent += "    ";
-        GWT.log(indent + "CustomLogger: " + message);
-        if (DebugUtil.isDebugMode()) {
-            logToBrowserConsole(message);
-        }
+        logger.info(message);
     }
 }

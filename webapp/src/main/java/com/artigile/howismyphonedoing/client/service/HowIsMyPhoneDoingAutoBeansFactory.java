@@ -35,4 +35,6 @@ public interface HowIsMyPhoneDoingAutoBeansFactory extends AutoBeanFactory {
     AutoBean<ILockDeviceScreenModel> lockDeviceScreenModel();
 
     AutoBean<ITakePictureModel> takePictureModel();
+
+    AutoBean<IPictureReadyModel> pictureReadyModel();
 }

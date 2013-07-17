@@ -36,7 +36,7 @@
 
             </tr>
             <tr>
-                <td><g:Button ui:field="takePicture"/></td>
+                <td><g:Button ui:field="takePicture" text="{msg.device_settings_anti_theft_take_picture_text}"/></td>
             </tr>
         </table>
     </g:HTMLPanel>

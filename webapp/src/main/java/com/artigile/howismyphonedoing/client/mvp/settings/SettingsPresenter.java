@@ -112,6 +112,7 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         } else {
             getView().getSettingsView().enable(false);
         }
+        getView().displayNoDevicesFoundLabel(devicesListDataProvider.getList().isEmpty());
     }
 
     public void onDeviceDetailsReceived(IUserDeviceModel deviceDetails) {
@@ -226,10 +227,17 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
     }
 
     public void onRefreshDevicesListClicked() {
+        getView().showDeviceListLoading(true);
         userInfoRpcServiceAsync.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>(eventBus) {
             @Override
             public void success(List<UserDeviceModel> result) {
                 eventBus.usersDevicesListReceived(result);
+                getView().showDeviceListLoading(false);
+            }
+
+            @Override
+            public void failure(Throwable caught) {
+                getView().showDeviceListLoading(false);
             }
         });
     }

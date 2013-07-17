@@ -52,7 +52,7 @@ public class AndroidMessageSender implements AndroidMessageProcessor<String> {
     public String processMessage(MessageType messageType, String message, AndroidMessageResultListener messageResultListener) throws IOException {
         this.messageResultListener = messageResultListener;
         if (serverUrl == null) {
-            serverUrl = commonUtilities.getServerUrl(CommonConstants.SERVER_URL_PARAM_NAME) + CommonConstants.MESSAGES_COMMUNICATION_URL;
+            serverUrl = commonUtilities.getServerUrl() + CommonConstants.MESSAGES_COMMUNICATION_URL;
         }
         Map<String, String> params = new HashMap<String, String>();
         params.put(CommonConstants.UUID, deviceUuidResolver.getDeviceUuid(context).toString());

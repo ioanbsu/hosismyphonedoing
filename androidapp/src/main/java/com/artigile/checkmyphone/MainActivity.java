@@ -92,7 +92,7 @@ public class MainActivity extends RoboActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkNotNull(commonUtilities.getServerUrl(CommonConstants.SERVER_URL_PARAM_NAME), "SERVER_URL");
+        checkNotNull(commonUtilities.getServerUrl(), "SERVER_URL");
         checkNotNull(SENDER_ID, "SENDER_ID");
         // Make sure the device has the proper dependencies.
         GCMRegistrar.checkDevice(this);

@@ -14,6 +14,8 @@ import com.artigile.howismyphonedoing.api.CommonConstants;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcService;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcService;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcService;
+import com.artigile.howismyphonedoing.server.servlet.PicturesResolverServlet;
+import com.artigile.howismyphonedoing.shared.WebAppAndClientConstants;
 import org.gwtwidgets.server.spring.GWTRPCServiceExporter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
@@ -36,6 +38,7 @@ public class RpcConfig extends GenericWebApplicationContext {
         mappings.put("/mainHowIsMyPhoneDoing", "mainHowIsMyPhoneDoingServiceExporter");
         mappings.put("/authService", "authServiceExporter");
         mappings.put("/userInfoService", "userInfoServiceExporter");
+        mappings.put(WebAppAndClientConstants.PICTURE_URL_PATH, "picturesResolverServlet");
         mappings.put(CommonConstants.MESSAGES_COMMUNICATION_URL, "messageCommunicationServlet");
         simpleUrlHandlerMapping.setMappings(mappings);
         return simpleUrlHandlerMapping;
@@ -61,6 +64,4 @@ public class RpcConfig extends GenericWebApplicationContext {
         invoiceAppServiceExporter.setService(userInfoRpcService);
         return invoiceAppServiceExporter;
     }
-
-
 }

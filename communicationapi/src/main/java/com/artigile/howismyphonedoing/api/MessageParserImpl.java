@@ -43,6 +43,8 @@ public class MessageParserImpl implements MessageParser {
                 return (T) gsonParser.getAdapter(LockDeviceScreenModel.class).fromJson(serializedString);
             } else if (messageType == MessageType.TAKE_PICTURE) {
                 return (T) gsonParser.getAdapter(TakePictureModel.class).fromJson(serializedString);
+            } else if (messageType == MessageType.PICTURE_READY) {
+                return (T) gsonParser.getAdapter(PictureReadyModel.class).fromJson(serializedString);
             }
             return (T) gsonParser.getAdapter(messageType.getDeserializedClass()).fromJson(serializedString);
 
