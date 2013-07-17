@@ -11,13 +11,11 @@
 package com.artigile.howismyphonedoing.server.rpc;
 
 import com.artigile.howismyphonedoing.api.model.MessageType;
-import com.artigile.howismyphonedoing.api.shared.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.client.exception.DeviceWasRemovedException;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcService;
 import com.artigile.howismyphonedoing.server.service.UserService;
 import com.artigile.howismyphonedoing.server.service.WebAppMessageSender;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.logging.Logger;

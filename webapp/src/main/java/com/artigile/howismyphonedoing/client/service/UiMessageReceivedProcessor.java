@@ -1,7 +1,7 @@
 package com.artigile.howismyphonedoing.client.service;
 
 import com.artigile.howismyphonedoing.api.model.*;
-import com.artigile.howismyphonedoing.api.shared.WebAppMessageProcessor;
+import com.artigile.howismyphonedoing.shared.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.widget.DisplayPictureWindow;
 import com.artigile.howismyphonedoing.shared.WebAppAndClientConstants;

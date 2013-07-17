@@ -12,8 +12,8 @@ package com.artigile.howismyphonedoing.server.service;
 
 import com.artigile.howismyphonedoing.api.MessageParser;
 import com.artigile.howismyphonedoing.api.model.*;
-import com.artigile.howismyphonedoing.api.shared.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
+import com.artigile.howismyphonedoing.shared.WebAppMessageProcessor;
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;

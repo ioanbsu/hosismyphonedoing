@@ -12,13 +12,12 @@ package com.artigile.howismyphonedoing.server.service;
 
 import com.artigile.howismyphonedoing.api.CommonConstants;
 import com.artigile.howismyphonedoing.api.model.MessageType;
-import com.artigile.howismyphonedoing.api.shared.WebAppMessageProcessor;
+import com.artigile.howismyphonedoing.shared.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.client.exception.DeviceWasRemovedException;
 import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import com.artigile.howismyphonedoing.server.gcmserver.*;
 import com.artigile.howismyphonedoing.server.service.cloudutil.KeysResolver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
