@@ -59,13 +59,15 @@ public class WebAppMessageReceiver implements WebAppMessageProcessor<String> {
                 userEmail = userInfoService.unregisterDeviceByUuid(uuid);
             } else if (messageType == MessageType.PICTURE_READY) {
                 logger.info("Picture taken " + uuid);
-                IPictureReadyModel pictureReadyModel=messageParser.parse(messageType, serializedObject);
-                String pictureUuid=picturesService.storePicture(pictureReadyModel,uuid);
+                IPictureReadyModel pictureReadyModel = messageParser.parse(messageType, serializedObject);
+                String pictureUuid = picturesService.storePicture(pictureReadyModel, uuid);
                 pictureReadyModel.setPictureData(null);//setting picture byte data to null so it do not get sent to client
                 pictureReadyModel.setPictureId(pictureUuid);
-                serializedObject=messageParser.serialize(pictureReadyModel);
+                serializedObject = messageParser.serialize(pictureReadyModel);
             } else {
                 logger.info("Message Type: " + messageType);
+            }
+            if (userEmail == null) {
                 userDevice = userInfoService.findUserDeviceByUuid(uuid);
                 userEmail = userDevice.getUserEmail();
             }
