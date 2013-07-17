@@ -10,4 +10,11 @@ import java.io.Serializable;
  */
 
 public interface ITakePictureModel extends Serializable {
+    CameraType getCameraType();
+
+    void setCameraType(CameraType cameraType);
+
+    boolean isHighQuality();
+
+    void setHighQuality(boolean highQuality);
 }

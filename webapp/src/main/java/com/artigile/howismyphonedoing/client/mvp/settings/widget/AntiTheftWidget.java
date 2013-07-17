@@ -1,5 +1,6 @@
 package com.artigile.howismyphonedoing.client.mvp.settings.widget;
 
+import com.artigile.howismyphonedoing.api.model.CameraType;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.widget.MessageWindow;
@@ -29,35 +30,42 @@ public class AntiTheftWidget extends Composite {
     Image deviceLockingLoading;
     @UiField
     Button takePicture;
+    @UiField
+    CheckBox highQuality;
+    @UiField
+    RadioButton frontCamera;
+    @UiField
+    RadioButton backCamera;
     @Inject
     private MessageWindow messageWindow;
     @Inject
     private Messages messages;
-    private AntiTheftActionLkstener antiTheftActionLkstener;
+    private AntiTheftActionListener antiTheftActionListener;
     @Inject
     private MessageRpcServiceAsync messageRpcServiceAsync;
 
     @Inject
     public AntiTheftWidget(Binder binder) {
         initWidget(binder.createAndBindUi(this));
+        frontCamera.setValue(true);
     }
 
     @UiHandler("lockTheDevice")
     void onLockTheDeviceClicked(ClickEvent clickEvent) {
-        if (antiTheftActionLkstener != null) {
-            antiTheftActionLkstener.onLockDeviceClicked();
+        if (antiTheftActionListener != null) {
+            antiTheftActionListener.onLockDeviceClicked();
         }
     }
 
     @UiHandler("takePicture")
     void onTakePictureClicked(ClickEvent clickEvent) {
-        if (antiTheftActionLkstener != null) {
-            antiTheftActionLkstener.onTakePictureClicked();
+        if (antiTheftActionListener != null) {
+            antiTheftActionListener.onTakePictureClicked();
         }
     }
 
-    public void setAntiTheftActionLkstener(AntiTheftActionLkstener antiTheftActionLkstener) {
-        this.antiTheftActionLkstener = antiTheftActionLkstener;
+    public void setAntiTheftActionListener(AntiTheftActionListener antiTheftActionListener) {
+        this.antiTheftActionListener = antiTheftActionListener;
     }
 
     public String getNewPinCode() {
@@ -68,18 +76,33 @@ public class AntiTheftWidget extends Composite {
         newPinCode.setText("");
     }
 
-    public void showDeviceLoading(boolean isLoading){
+    public void showDeviceLoading(boolean isLoading) {
         deviceLockingLoading.setVisible(isLoading);
+    }
+
+    public CameraType getCameraType() {
+        if (frontCamera.getValue()) {
+            return CameraType.FRONT;
+        } else if (backCamera.getValue()) {
+            return CameraType.BACK;
+        }
+        return CameraType.FRONT;
+    }
+
+    public boolean isHighQuality() {
+        return highQuality.getValue();
     }
 
     public static interface Binder extends UiBinder<HTMLPanel, AntiTheftWidget> {
     }
 
-    public static interface AntiTheftActionLkstener {
+
+    public static interface AntiTheftActionListener {
         void onLockDeviceClicked();
 
         void onTakePictureClicked();
 
     }
+
 
 }

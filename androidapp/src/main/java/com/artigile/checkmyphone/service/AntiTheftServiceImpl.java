@@ -1,18 +1,19 @@
 package com.artigile.checkmyphone.service;
 
 import android.app.admin.DevicePolicyManager;
-import android.content.*;
+import android.content.ComponentName;
+import android.content.Context;
+import android.util.Log;
 import com.artigile.checkmyphone.service.admin.DeviceAdminReceiverImpl;
 import com.artigile.howismyphonedoing.api.MessageParser;
 import com.artigile.howismyphonedoing.api.model.*;
 import com.google.common.base.Strings;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
-
-import static com.artigile.checkmyphone.service.CommonUtilities.MESSAGE;
-import static com.artigile.checkmyphone.service.CommonUtilities.PICTURE_TAKEN_ACTION;
 
 /**
  * Date: 7/1/13
@@ -23,7 +24,7 @@ import static com.artigile.checkmyphone.service.CommonUtilities.PICTURE_TAKEN_AC
 
 @Singleton
 public class AntiTheftServiceImpl implements AntiTheftService {
-    private final BroadcastReceiver mHandleMessageReceiver;
+    //    private final BroadcastReceiver mHandleMessageReceiver;
     @Inject
     private Context context;
     @Inject
@@ -32,22 +33,23 @@ public class AntiTheftServiceImpl implements AntiTheftService {
     private AndroidMessageSender messageSender;
     @Inject
     private MessageParser messageParser;
+    private EventBus eventBus;
+    private boolean takePictureIsInProgress;
 
 
-    public AntiTheftServiceImpl() {
-        mHandleMessageReceiver = new BroadcastReceiver() {
+    @Inject
+    public AntiTheftServiceImpl(EventBus eventBus) {
+        this.eventBus = eventBus;
+        /*mHandleMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.i("AntiTheftServiceImpl", "Picture data received in Anti theft service broadcast.");
+                takePictureIsInProgress = false;
                 byte[] data = intent.getExtras().getByteArray(MESSAGE);
-                IPictureReadyModel pictureReadyModel = new PictureReadyModel();
-                pictureReadyModel.setPictureData(data);
-                try {
-                    messageSender.processMessage(MessageType.PICTURE_READY, messageParser.serialize(pictureReadyModel), null);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                sendPictureReadyMessage(data);
             }
-        };
+        };*/
+        eventBus.register(new PictureReadyListener());
     }
 
     @Override
@@ -81,10 +83,31 @@ public class AntiTheftServiceImpl implements AntiTheftService {
     }
 
     @Override
-    public void takePicture(TakePictureModel lockDeviceScreenModel) throws DeviceHasNoCameraException {
-        context.registerReceiver(mHandleMessageReceiver, new IntentFilter(PICTURE_TAKEN_ACTION));
-        cameraService.takePicture();
+    public void takePicture(TakePictureModel takePictureModel) throws DeviceHasNoCameraException {
+        if (!takePictureIsInProgress) {
+//            context.registerReceiver(mHandleMessageReceiver, new IntentFilter(PICTURE_TAKEN_ACTION));
+            cameraService.takePicture(takePictureModel);
+            takePictureIsInProgress = true;
+        } else {
+            Log.i("AntiTheftServiceImpl", "Skipping picture shot since picture taking is in progress...");
+        }
+    }
 
+    private void sendPictureReadyMessage(byte[] data) {
+        IPictureReadyModel pictureReadyModel = new PictureReadyModel();
+        pictureReadyModel.setPictureData(data);
+        try {
+            messageSender.processMessage(MessageType.PICTURE_READY, messageParser.serialize(pictureReadyModel), null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private class PictureReadyListener {
+        @Subscribe
+        public void pictureReady(PictureReadyEvent event) {
+            sendPictureReadyMessage(event.getPictureBytes());
+        }
     }
 
 

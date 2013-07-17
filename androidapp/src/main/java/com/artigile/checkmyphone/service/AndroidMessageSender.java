@@ -45,7 +45,7 @@ public class AndroidMessageSender implements AndroidMessageProcessor<String> {
     @Inject
     private DeviceUuidResolver deviceUuidResolver;
     @Inject
-    private CommonUtilities commonUtilities;
+    private ActivityAndBroadcastUtils commonUtilities;
     private AndroidMessageResultListener messageResultListener;
 
     @Override
@@ -91,7 +91,7 @@ public class AndroidMessageSender implements AndroidMessageProcessor<String> {
                         }
                     }
                     String body = bodyBuilder.toString();
-                    Log.v(TAG, "Posting '" + body + "' to " + url);
+                    Log.v(TAG, "Posting '" + body.substring(0, Math.min(500, body.length())) + "' to " + url);
                     byte[] bytes = body.getBytes();
                     HttpURLConnection conn = null;
                     try {
@@ -126,7 +126,7 @@ public class AndroidMessageSender implements AndroidMessageProcessor<String> {
 
             @Override
             protected void onPostExecute(MessageSendResultType messageSendResult) {
-                if(messageResultListener!=null){
+                if (messageResultListener != null) {
                     messageResultListener.onMessageResult(messageSendResult);
                 }
             }

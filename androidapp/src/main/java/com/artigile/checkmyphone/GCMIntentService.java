@@ -13,9 +13,9 @@ package com.artigile.checkmyphone;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import com.artigile.checkmyphone.service.ActivityAndBroadcastUtils;
 import com.artigile.checkmyphone.service.AndroidMessageReceiver;
 import com.artigile.checkmyphone.service.AndroidMessageSender;
-import com.artigile.checkmyphone.service.CommonUtilities;
 import com.artigile.checkmyphone.service.DeviceRegistrationServiceImpl;
 import com.artigile.checkmyphone.util.GCMBaseIntentService;
 import com.artigile.howismyphonedoing.api.CommonConstants;
@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 
-import static com.artigile.checkmyphone.service.CommonUtilities.SENDER_ID;
+import static com.artigile.checkmyphone.service.ActivityAndBroadcastUtils.SENDER_ID;
 
 /**
  * User: ioanbsu
@@ -48,7 +48,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Inject
     private MessageParser messageParser;
     @Inject
-    private CommonUtilities commonUtilities;
+    private ActivityAndBroadcastUtils commonUtilities;
 
     public GCMIntentService() {
         super(SENDER_ID);
@@ -57,18 +57,18 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onRegistered(Context context, String registrationId) {
         Log.i(TAG, "Device registered: regId = " + registrationId);
-        commonUtilities.displayMessage(context, getString(R.string.gcm_registered, registrationId), CommonUtilities.LOG_MESSAGE_TYPE);
+        commonUtilities.displayMessage(context, getString(R.string.gcm_registered, registrationId), ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
         deviceRegistrationService.register(context, registrationId);
-        commonUtilities.displayMessage(context, getString(R.string.device_registered), CommonUtilities.REGISTRATION_STATUS_MESSAGE_TYPE);
+        commonUtilities.displayMessage(context, getString(R.string.device_registered), ActivityAndBroadcastUtils.REGISTRATION_STATUS_MESSAGE_TYPE);
 
     }
 
     @Override
     protected void onUnregistered(Context context, String registrationId) {
         Log.i(TAG, "Device unregistered");
-        commonUtilities.displayMessage(context, getString(R.string.gcm_unregistered), CommonUtilities.LOG_MESSAGE_TYPE);
+        commonUtilities.displayMessage(context, getString(R.string.gcm_unregistered), ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
         deviceRegistrationService.unregister(context, registrationId);
-        commonUtilities.displayMessage(context, getString(R.string.device_not_registered), CommonUtilities.REGISTRATION_STATUS_MESSAGE_TYPE);
+        commonUtilities.displayMessage(context, getString(R.string.device_not_registered), ActivityAndBroadcastUtils.REGISTRATION_STATUS_MESSAGE_TYPE);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     protected void onDeletedMessages(Context context, int total) {
         Log.i(TAG, "Received deleted messages notification");
         String message = getString(R.string.gcm_deleted, total);
-        commonUtilities.displayMessage(context, message, CommonUtilities.LOG_MESSAGE_TYPE);
+        commonUtilities.displayMessage(context, message, ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
         // notifies user
         //at some point we might analyze it ...
     }
@@ -102,7 +102,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     public void onError(Context context, String errorId) {
         Log.i(TAG, "Received error: " + errorId);
-        commonUtilities.displayMessage(context, getString(R.string.gcm_error, errorId), CommonUtilities.LOG_MESSAGE_TYPE);
+        commonUtilities.displayMessage(context, getString(R.string.gcm_error, errorId), ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         // log message
         Log.i(TAG, "Received recoverable error: " + errorId);
         commonUtilities.displayMessage(context, getString(R.string.gcm_recoverable_error,
-                errorId), CommonUtilities.LOG_MESSAGE_TYPE);
+                errorId), ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
         return super.onRecoverableError(context, errorId);
     }
 

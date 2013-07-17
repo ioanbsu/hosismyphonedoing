@@ -1,6 +1,7 @@
 package com.artigile.checkmyphone;
 
 import android.content.pm.PackageManager;
+import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,8 +9,13 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import com.artigile.checkmyphone.service.ActivityAndBroadcastUtils;
 import com.artigile.checkmyphone.service.CameraService;
-import com.artigile.checkmyphone.service.CommonUtilities;
+import com.artigile.checkmyphone.service.PictureReadyEvent;
+import com.artigile.howismyphonedoing.api.CompressorUtil;
+import com.artigile.howismyphonedoing.api.model.CameraType;
+import com.artigile.howismyphonedoing.api.model.TakePictureModel;
+import com.google.common.eventbus.EventBus;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
@@ -30,8 +36,12 @@ public class TakePictureActivity extends RoboActivity implements SurfaceHolder.C
     @InjectView(R.id.cameraRecordPreviewTp)
     private SurfaceView cameraSurfaceView;
     @Inject
-    private CommonUtilities commonUtilities;
+    private ActivityAndBroadcastUtils commonUtilities;
+
+    @Inject
+    private EventBus eventBus;
     private Camera mCamera;
+    private TakePictureModel takePictureModel;
 
     public TakePictureActivity() {
         mCall = new Camera.PictureCallback() {
@@ -42,11 +52,11 @@ public class TakePictureActivity extends RoboActivity implements SurfaceHolder.C
 
                     @Override
                     protected Void doInBackground(byte[]... params) {
-                        commonUtilities.firePictureTakenEvent(TakePictureActivity.this, params[0]);
+                        eventBus.post(new PictureReadyEvent(params[0]));
+                        finish();
                         return null;
                     }
-                }.doInBackground(data);
-                finish();
+                }.doInBackground(CompressorUtil.compressBytes(data));
             }
         };
     }
@@ -55,6 +65,7 @@ public class TakePictureActivity extends RoboActivity implements SurfaceHolder.C
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.take_picture);
+        takePictureModel = (TakePictureModel) this.getIntent().getExtras().get(ActivityAndBroadcastUtils.TAKE_PICTURE_CONFIG);
     }
 
     @Override
@@ -71,12 +82,22 @@ public class TakePictureActivity extends RoboActivity implements SurfaceHolder.C
     private void initCameraAndTakePicture() {
         Log.i(CameraService.class.getName(), "Surface Created");
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            mCamera = Camera.open();
+            mCamera = getCamera();
             mCamera.setDisplayOrientation(90);
             try {
                 mCamera.setPreviewDisplay(cameraSurfaceView.getHolder());
                 Camera.Parameters parameters = mCamera.getParameters();
                 parameters.setPreviewSize(640, 480);
+                parameters.setPictureFormat(ImageFormat.JPEG);
+                if (takePictureModel != null) {
+                    if (takePictureModel.isHighQuality()) {
+                        Camera.Size size = parameters.getSupportedPictureSizes().get(0);
+                        parameters.setPictureSize(size.width, size.height);
+                        parameters.setJpegQuality(50);
+                    }
+                }else{
+                    parameters.setJpegQuality(1);
+                }
                 //set camera parameters
                 mCamera.setParameters(parameters);
                 mCamera.startPreview();
@@ -91,6 +112,27 @@ public class TakePictureActivity extends RoboActivity implements SurfaceHolder.C
                 e.printStackTrace();
             }
         }
+    }
+
+    private Camera getCamera() {
+        if (takePictureModel != null) {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            int facing = -1;
+            if (takePictureModel.getCameraType() == CameraType.BACK) {
+                facing = Camera.CameraInfo.CAMERA_FACING_BACK;
+            } else if (takePictureModel.getCameraType() == CameraType.FRONT) {
+                facing = Camera.CameraInfo.CAMERA_FACING_FRONT;
+
+            }
+            for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
+                Camera.getCameraInfo(i, info);
+                if (info.facing == facing) {
+                    return Camera.open(i);
+                }
+            }
+
+        }
+        return Camera.open();
     }
 
     @Override

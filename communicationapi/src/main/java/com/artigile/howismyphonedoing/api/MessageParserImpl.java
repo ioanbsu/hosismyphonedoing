@@ -19,6 +19,7 @@ public class MessageParserImpl implements MessageParser {
     public MessageParserImpl() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(IDeviceModel.class, new IDeviceModelDeserializer());
+        gsonBuilder.registerTypeAdapter(Boolean.class, new JsonBooleanDeserializer());
         gsonBuilder.registerTypeAdapter(IDeviceSettingsModel.class, new IDeviceSettingsModelDeserializer());
         gsonBuilder.registerTypeAdapter(ITakePictureModel.class, new ITakePictureModelModelDeserializer());
         gsonParser = gsonBuilder.create();
@@ -102,6 +103,19 @@ public class MessageParserImpl implements MessageParser {
                 e.printStackTrace();
             }
             return null;
+        }
+    }
+
+    public class JsonBooleanDeserializer implements JsonDeserializer<Boolean> {
+        @Override
+        public Boolean deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            try {
+                String value = json.getAsJsonPrimitive().getAsString();
+                return value.toLowerCase().equals("true");
+            } catch (ClassCastException e) {
+                throw new JsonParseException("Cannot parse json date '" + json.toString() + "'", e);
+            }
         }
     }
 

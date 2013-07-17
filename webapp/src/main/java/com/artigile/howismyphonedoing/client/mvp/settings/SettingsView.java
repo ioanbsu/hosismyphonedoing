@@ -1,5 +1,6 @@
 package com.artigile.howismyphonedoing.client.mvp.settings;
 
+import com.artigile.howismyphonedoing.api.model.CameraType;
 import com.artigile.howismyphonedoing.api.model.IDeviceSettingsModel;
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoCell;
@@ -61,7 +62,7 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
     public SettingsView(Binder binder, DeviceInfoCell deviceInfoCell, DeviceListCell deviceListCell, DeviceSettingsWidget deviceSettings, AntiTheftWidget antiTheftWidget) {
         this.antiTheftWidget = antiTheftWidget;
         this.deviceSettings = deviceSettings;
-        antiTheftWidget.setAntiTheftActionLkstener(initAntiTheftListener());
+        antiTheftWidget.setAntiTheftActionListener(initAntiTheftListener());
         deviceSettings.setSaveSettingsListener(initSaveSettingsListener());
         deviceInfo = new CellWidget<IUserDeviceModel>(deviceInfoCell);
         addableDevicesList = new CellList<DeviceInfoWithLoadingInfo>(deviceListCell, getUserDeviceModelProvidesKey());
@@ -72,8 +73,8 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
         }
     }
 
-    private AntiTheftWidget.AntiTheftActionLkstener initAntiTheftListener() {
-        return new AntiTheftWidget.AntiTheftActionLkstener() {
+    private AntiTheftWidget.AntiTheftActionListener initAntiTheftListener() {
+        return new AntiTheftWidget.AntiTheftActionListener() {
             @Override
             public void onLockDeviceClicked() {
                 presenter.onLockDeviceClicked();
@@ -194,6 +195,14 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
 
     public void displayNoDevicesFoundLabel(boolean isDevicesListEmpty) {
         noDeviceFoundText.setVisible(isDevicesListEmpty);
+    }
+
+    public CameraType getCameraType() {
+        return antiTheftWidget.getCameraType();
+    }
+
+    public boolean isHighQuality() {
+        return antiTheftWidget.isHighQuality();
     }
 
 

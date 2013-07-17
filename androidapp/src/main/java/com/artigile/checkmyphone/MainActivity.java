@@ -25,14 +25,13 @@ import android.widget.TextView;
 import com.artigile.checkmyphone.service.*;
 import com.artigile.checkmyphone.service.admin.DeviceAdminReceiverImpl;
 import com.artigile.checkmyphone.util.GCMRegistrar;
-import com.artigile.howismyphonedoing.api.CommonConstants;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import static com.artigile.checkmyphone.service.CommonUtilities.*;
+import static com.artigile.checkmyphone.service.ActivityAndBroadcastUtils.*;
 
 /**
  * User: ioanbsu
@@ -78,7 +77,7 @@ public class MainActivity extends RoboActivity {
     @Inject
     private LocationService locationService;
     @Inject
-    private CommonUtilities commonUtilities;
+    private ActivityAndBroadcastUtils commonUtilities;
     @Inject
     private DeviceDetailsReader deviceDetailsReader;
     @Inject
@@ -185,7 +184,7 @@ public class MainActivity extends RoboActivity {
             // Device is already registered on GCM, check server.
             if (GCMRegistrar.isRegisteredOnServer(this)) {
                 // Skips registration.
-                commonUtilities.displayMessage(this, getString(R.string.already_registered), CommonUtilities.LOG_MESSAGE_TYPE);
+                commonUtilities.displayMessage(this, getString(R.string.already_registered), ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
                 displayRegisteredMessages(getString(R.string.device_registered));
             } else {
                 // Try to register again, but not in the UI thread.

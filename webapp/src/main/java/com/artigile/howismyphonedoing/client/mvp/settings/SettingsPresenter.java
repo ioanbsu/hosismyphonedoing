@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Date: 6/22/13
@@ -37,6 +38,7 @@ import java.util.List;
 @Presenter(view = SettingsView.class)
 public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus> {
 
+    public static final Logger logger = Logger.getLogger(SettingsPresenter.class.getName());
     final private SingleSelectionModel<DeviceInfoWithLoadingInfo> selectionModel = new SingleSelectionModel<DeviceInfoWithLoadingInfo>();
     final private ListDataProvider<DeviceInfoWithLoadingInfo> devicesListDataProvider = new ListDataProvider<DeviceInfoWithLoadingInfo>();
     @Inject
@@ -221,7 +223,10 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
     public void onTakePictureClicked() {
         ITakePictureModel takePictureModel = new TakePictureModel();
         AutoBean<ITakePictureModel> iTakePictureModelAutoBean = howIsMyPhoneDoingAutoBeansFactory.create(ITakePictureModel.class, takePictureModel);
+        iTakePictureModelAutoBean.as().setCameraType(getView().getCameraType());
+        iTakePictureModelAutoBean.as().setHighQuality(getView().isHighQuality());
         String serializedMessage = AutoBeanCodex.encode(iTakePictureModelAutoBean).getPayload();
+        logger.info("Picture model: "+serializedMessage);
         messageRpcServiceAsync.sendMessageToDevice(MessageType.TAKE_PICTURE, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
         });
     }

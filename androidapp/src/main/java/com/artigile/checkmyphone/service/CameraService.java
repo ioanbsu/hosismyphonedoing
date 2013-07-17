@@ -6,6 +6,7 @@ import android.hardware.Camera;
 import android.os.Environment;
 import android.util.Log;
 import com.artigile.checkmyphone.TakePictureActivity;
+import com.artigile.howismyphonedoing.api.model.TakePictureModel;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,9 +31,8 @@ public class CameraService {
     private CameraHolderListener initCameraListener;
 
 
-    public void takePicture() throws DeviceHasNoCameraException {
-        Intent i = new Intent(context, TakePictureActivity.class);
-        context.startActivity(i);
+    public void takePicture(TakePictureModel takePictureModel) throws DeviceHasNoCameraException {
+        ActivityAndBroadcastUtils.startCameraActivity(context,takePictureModel);
     }
 
 

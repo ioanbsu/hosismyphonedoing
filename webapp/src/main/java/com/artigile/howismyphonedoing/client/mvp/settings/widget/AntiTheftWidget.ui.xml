@@ -37,6 +37,11 @@
             </tr>
             <tr>
                 <td><g:Button ui:field="takePicture" text="{msg.device_settings_anti_theft_take_picture_text}"/></td>
+                <td><g:FlowPanel>
+                    <g:RadioButton name="cameraType" text="{msg.device_settings_anti_theft_take_picture_camera_back}" ui:field="backCamera"/>
+                    <g:RadioButton name="cameraType" text="{msg.device_settings_anti_theft_take_picture_camera_front}" ui:field="frontCamera"/>
+                </g:FlowPanel></td>
+                <td><g:CheckBox text="{msg.device_settings_anti_theft_take_picture_camera_hd}" ui:field="highQuality"/></td>
             </tr>
         </table>
     </g:HTMLPanel>

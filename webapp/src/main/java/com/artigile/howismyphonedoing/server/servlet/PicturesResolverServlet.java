@@ -1,5 +1,6 @@
 package com.artigile.howismyphonedoing.server.servlet;
 
+import com.artigile.howismyphonedoing.api.CompressorUtil;
 import com.artigile.howismyphonedoing.server.entity.PicturesFromDevice;
 import com.artigile.howismyphonedoing.server.service.PicturesService;
 import com.artigile.howismyphonedoing.shared.WebAppAndClientConstants;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.logging.Logger;
 
 /**
  * User: ioanbsu
@@ -20,6 +22,7 @@ import java.io.OutputStream;
 @Service
 public class PicturesResolverServlet extends AbstractServlet {
 
+    public static final Logger logger = Logger.getLogger(PicturesResolverServlet.class.getName());
     private static final String JPEG_EXTENSION = "jpeg";
     @Autowired
     private PicturesService picturesService;
@@ -35,7 +38,9 @@ public class PicturesResolverServlet extends AbstractServlet {
     public void writeImageInResponse(byte[] byteData, HttpServletResponse resp) throws IOException {
         resp.setContentType("image/" + JPEG_EXTENSION);
         OutputStream responseOS = resp.getOutputStream();
-        resp.setContentLength(byteData.length);
-        responseOS.write(byteData);
+        byte[] uncompressedBytes = CompressorUtil.extractBytes(byteData);
+        logger.info("Get picture response. Data compression: " + byteData.length + "->" + uncompressedBytes.length);
+        resp.setContentLength(uncompressedBytes.length);
+        responseOS.write(uncompressedBytes);
     }
 }

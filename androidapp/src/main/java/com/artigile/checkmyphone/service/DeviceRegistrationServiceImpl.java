@@ -49,7 +49,7 @@ public final class DeviceRegistrationServiceImpl {
     @Inject
     private AndroidMessageSender messageSender;
     @Inject
-    private CommonUtilities commonUtilities;
+    private ActivityAndBroadcastUtils commonUtilities;
     @Inject
     private DeviceInfoService deviceInfoService;
 
@@ -73,7 +73,7 @@ public final class DeviceRegistrationServiceImpl {
         for (int i = 1; i <= MAX_ATTEMPTS; i++) {
             Log.d(TAG, "Attempt #" + i + " to register");
             try {
-                commonUtilities.displayMessage(context, context.getString(R.string.server_registering, i, MAX_ATTEMPTS), CommonUtilities.LOG_MESSAGE_TYPE);
+                commonUtilities.displayMessage(context, context.getString(R.string.server_registering, i, MAX_ATTEMPTS), ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
                 messageSender.processMessage(MessageType.REGISTER_DEVICE, deviceRegistrationModelConverted, new AndroidMessageResultListener() {
                     @Override
                     public void onMessageResult(MessageSendResultType messageSendResult) {
@@ -83,12 +83,12 @@ public final class DeviceRegistrationServiceImpl {
                         } else if (messageSendResult == MessageSendResultType.SUCCESS) {
                             message = context.getString(R.string.server_registered);
                         }
-                        commonUtilities.displayMessage(context, message, CommonUtilities.LOG_MESSAGE_TYPE);
+                        commonUtilities.displayMessage(context, message, ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
                     }
                 });
                 GCMRegistrar.setRegisteredOnServer(context, true);
                 String message = context.getString(R.string.connecting_to_howismyphonedoing_server);
-                commonUtilities.displayMessage(context, message, CommonUtilities.LOG_MESSAGE_TYPE);
+                commonUtilities.displayMessage(context, message, ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
                 return;
             } catch (IOException e) {
                 // Here we are simplifying and retrying on any error; in a real
@@ -113,7 +113,7 @@ public final class DeviceRegistrationServiceImpl {
         }
         String message = context.getString(R.string.server_register_error,
                 MAX_ATTEMPTS);
-        commonUtilities.displayMessage(context, message, CommonUtilities.LOG_MESSAGE_TYPE);
+        commonUtilities.displayMessage(context, message, ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
     }
 
     private String createRegisterMap(Context context, String cloudRegistrationId) {
@@ -146,12 +146,12 @@ public final class DeviceRegistrationServiceImpl {
                     } else if (messageSendResult == MessageSendResultType.SUCCESS) {
                         message = context.getString(R.string.server_unregistered);
                     }
-                    commonUtilities.displayMessage(context, message, CommonUtilities.LOG_MESSAGE_TYPE);
+                    commonUtilities.displayMessage(context, message, ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
                 }
             });
             GCMRegistrar.setRegisteredOnServer(context, false);
             String message = context.getString(R.string.connecting_to_howismyphonedoing_server);
-            commonUtilities.displayMessage(context, message, CommonUtilities.LOG_MESSAGE_TYPE);
+            commonUtilities.displayMessage(context, message, ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
         } catch (IOException e) {
             // At this point the device is unregistered from GCM, but still
             // registered in the server.
@@ -160,7 +160,7 @@ public final class DeviceRegistrationServiceImpl {
             // a "NotRegistered" error message and should unregister the device.
             String message = context.getString(R.string.server_unregister_error,
                     e.getMessage());
-            commonUtilities.displayMessage(context, message, CommonUtilities.LOG_MESSAGE_TYPE);
+            commonUtilities.displayMessage(context, message, ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
         }
     }
 

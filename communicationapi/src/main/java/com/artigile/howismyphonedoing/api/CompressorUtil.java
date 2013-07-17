@@ -2,7 +2,6 @@ package com.artigile.howismyphonedoing.api;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -19,7 +18,7 @@ public class CompressorUtil {
     private CompressorUtil() {
     }
 
-    private static byte[] compressBytes(byte[] input) throws UnsupportedEncodingException, IOException {
+    public static byte[] compressBytes(byte[] input) {
         Deflater df = new Deflater();       //this function mainly generate the byte code
         df.setLevel(Deflater.BEST_COMPRESSION);
         df.setInput(input);
@@ -30,23 +29,31 @@ public class CompressorUtil {
             int count = df.deflate(buff);       //returns the generated code... index
             baos.write(buff, 0, count);     //write 4m 0 to count
         }
-        baos.close();
-        byte[] output = baos.toByteArray();
-        return output;
+        try {
+            baos.close();
+            return baos.toByteArray();
+        } catch (IOException e) {
+            return input;
+        }
     }
 
-
-    private static byte[] extractBytes(byte[] input) throws UnsupportedEncodingException, IOException, DataFormatException {
+    public static byte[] extractBytes(byte[] input) {
         Inflater ifl = new Inflater();   //mainly generate the extraction
         ifl.setInput(input);
         ByteArrayOutputStream baos = new ByteArrayOutputStream(input.length);
-        byte[] buff = new byte[1024];
-        while (!ifl.finished()) {
-            int count = ifl.inflate(buff);
-            baos.write(buff, 0, count);
+        try {
+            byte[] buff = new byte[1024];
+            while (!ifl.finished()) {
+                int count = 0;
+                count = ifl.inflate(buff);
+                baos.write(buff, 0, count);
+            }
+            baos.close();
+            return baos.toByteArray();
+        } catch (DataFormatException e) {
+            return input;
+        } catch (IOException e) {
+            return input;
         }
-        baos.close();
-        byte[] output = baos.toByteArray();
-        return output;
     }
 }

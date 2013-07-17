@@ -51,7 +51,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     @Inject
     private MessageParser messageParser;
     @Inject
-    private CommonUtilities commonUtilities;
+    private ActivityAndBroadcastUtils commonUtilities;
     @Inject
     private DeviceInfoService deviceInfoService;
     @Inject
@@ -66,7 +66,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
 
     @Override
     public String processMessage(final MessageType messageType, String serializedObject, AndroidMessageResultListener messageResultListener) throws IOException {
-        commonUtilities.displayMessage(context, messageType + "", CommonUtilities.LOG_MESSAGE_TYPE);
+        commonUtilities.displayMessage(context, messageType + "", ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
         String serializedResonseObject = "";
         if (messageType == MessageType.DEVICE_INFO) {
             IDeviceModel deviceModel = deviceInfoService.buildPhoneModel();
@@ -101,7 +101,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
                         deviceLocationModel.setHasBearing(location.hasBearing());
                         commonUtilities.displayMessage(context,
                                 "Accuracy: " + location.getAccuracy() + ", Bearing:" + location.getBearing() + ", Speed:"
-                                        + location.getSpeed(), CommonUtilities.LOG_MESSAGE_TYPE);
+                                        + location.getSpeed(), ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
                     } catch (Exception e) {
                         failsafeSendMessage(MessageType.DEVICE_LOCATION_NOT_POSSIBLE, messageParser.serialize(deviceLocationModel));
                     }
@@ -118,11 +118,11 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
             serializedResonseObject = serializedObject;
         } else if (messageType == MessageType.DISPLAY_LOGS) {
             prefs.edit().putBoolean(Constants.DISPLAY_LOGS_FLAG, true).commit();
-            commonUtilities.displayMessage(context, serializedObject, CommonUtilities.SHOW_LOGS_STATE_UPDATED);
+            commonUtilities.displayMessage(context, serializedObject, ActivityAndBroadcastUtils.SHOW_LOGS_STATE_UPDATED);
             return "success";
         } else if (messageType == MessageType.HIDE_LOGS) {
             prefs.edit().putBoolean(Constants.DISPLAY_LOGS_FLAG, false).commit();
-            commonUtilities.displayMessage(context, serializedObject, CommonUtilities.SHOW_LOGS_STATE_UPDATED);
+            commonUtilities.displayMessage(context, serializedObject, ActivityAndBroadcastUtils.SHOW_LOGS_STATE_UPDATED);
             return "success";
         } else if (messageType == MessageType.LOCK_DEVICE) {
             try {
@@ -134,13 +134,13 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
             }
         }else if (messageType == MessageType.TAKE_PICTURE) {
             try {
-                TakePictureModel lockDeviceScreenModel=messageParser.parse(messageType, serializedObject);
-                antiTheftService.takePicture(lockDeviceScreenModel);
+                TakePictureModel takePictureModel=messageParser.parse(messageType, serializedObject);
+                antiTheftService.takePicture(takePictureModel);
             }catch (DeviceHasNoCameraException e) {
                 //todo: process here
             }
         } else {
-            commonUtilities.displayMessage(context, serializedObject, CommonUtilities.LOG_MESSAGE_TYPE);
+            commonUtilities.displayMessage(context, serializedObject, ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
             // notifies user
             generateNotification(serializedObject);
         }
@@ -153,7 +153,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
         try {
             messageSender.processMessage(messageType, selializedObject, null);
         } catch (IOException e) {
-            commonUtilities.displayMessage(context, "Failed to send a message to server: " + messageType, CommonUtilities.LOG_MESSAGE_TYPE);
+            commonUtilities.displayMessage(context, "Failed to send a message to server: " + messageType, ActivityAndBroadcastUtils.LOG_MESSAGE_TYPE);
         }
     }
 

@@ -13,6 +13,8 @@ package com.artigile.checkmyphone.service;
 import android.content.Context;
 import android.content.Intent;
 import com.artigile.checkmyphone.R;
+import com.artigile.checkmyphone.TakePictureActivity;
+import com.artigile.howismyphonedoing.api.model.TakePictureModel;
 import roboguice.inject.InjectResource;
 
 import javax.inject.Singleton;
@@ -23,7 +25,7 @@ import javax.inject.Singleton;
  * Time: 9:39 AM
  */
 @Singleton
-public class CommonUtilities {
+public class ActivityAndBroadcastUtils {
     /**
      * Google API project id registered to use GCM.
      */
@@ -40,8 +42,7 @@ public class CommonUtilities {
     /**
      * Intent used to display a message in the screen.
      */
-    public static final String PICTURE_TAKEN_ACTION =
-            "com.google.android.gcm.demo.app.PICTURE_TAKEN";
+    public static final String TAKE_PICTURE_CONFIG = TakePictureModel.class.getName();
     /**
      * Intent's extra that contains the message to be displayed.
      */
@@ -52,6 +53,17 @@ public class CommonUtilities {
     public static final int SHOW_LOGS_STATE_UPDATED = 2;
     @InjectResource(R.string.remote_application_url)
     private String serverUrl;
+
+    /**
+     * Starts camera activity that take a picture and sends broadcast message that picture was taken.
+     * @param context context to start activity
+     * @param takePictureModel picture and camera configuration
+     */
+    public static void startCameraActivity(Context context, TakePictureModel takePictureModel) {
+        Intent i = new Intent(context, TakePictureActivity.class);
+        i.putExtra(TAKE_PICTURE_CONFIG, takePictureModel);
+        context.startActivity(i);
+    }
 
     /**
      * Notifies UI to display a message.
@@ -66,12 +78,6 @@ public class CommonUtilities {
         Intent intent = new Intent(DISPLAY_MESSAGE_ACTION);
         intent.putExtra(MESSAGE, message);
         intent.putExtra(MESSAGE_TYPE, messageType);
-        context.sendBroadcast(intent);
-    }
-
-    public void firePictureTakenEvent(Context context, byte[] data) {
-        Intent intent = new Intent(CommonUtilities.PICTURE_TAKEN_ACTION);
-        intent.putExtra(MESSAGE, data);
         context.sendBroadcast(intent);
     }
 
