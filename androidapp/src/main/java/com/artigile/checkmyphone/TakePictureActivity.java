@@ -4,7 +4,6 @@ import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -16,12 +15,7 @@ import roboguice.inject.InjectView;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 
 /**
@@ -43,27 +37,16 @@ public class TakePictureActivity extends RoboActivity implements SurfaceHolder.C
         mCall = new Camera.PictureCallback() {
 
             public void onPictureTaken(byte[] data, Camera camera) {
-                FileOutputStream outStream = null;
-                try {
-                    outStream = new FileOutputStream(getOutputMediaFile());
-                    outStream.write(data);
-                    outStream.close();
-                    stopPreviewAndFreeCamera();
-                    new AsyncTask<byte[], Void, Void>() {
+                stopPreviewAndFreeCamera();
+                new AsyncTask<byte[], Void, Void>() {
 
-                        @Override
-                        protected Void doInBackground(byte[]... params) {
-                            commonUtilities.firePictureTakenEvent(TakePictureActivity.this, params[0]);
-                            return null;
-                        }
-                    }.doInBackground(data);
-                    finish();
-                } catch (FileNotFoundException e) {
-                    Log.d("CAMERA", e.getMessage());
-                } catch (IOException e) {
-                    Log.d("CAMERA", e.getMessage());
-                }
-
+                    @Override
+                    protected Void doInBackground(byte[]... params) {
+                        commonUtilities.firePictureTakenEvent(TakePictureActivity.this, params[0]);
+                        return null;
+                    }
+                }.doInBackground(data);
+                finish();
             }
         };
     }
@@ -124,38 +107,6 @@ public class TakePictureActivity extends RoboActivity implements SurfaceHolder.C
     protected void onDestroy() {
         super.onDestroy();
         stopPreviewAndFreeCamera();
-    }
-
-    public File getOutputMediaFile() {
-        File mediaStorageDir = getMagicMazeVideosDir();
-        if (mediaStorageDir == null) return null;
-
-
-        // Create a media file name
-        File mediaFile;
-        String filePath = mediaStorageDir.getPath() + File.separator + "/" + new Date().getTime() + SimpleDateFormat.getDateTimeInstance().format(new Date()) + ".jpg";
-        filePath = filePath.replace(" ", "_").replace(",", "_").replace(":", "_");
-        mediaFile = new File(filePath);
-
-        return mediaFile;
-    }
-
-    public File getMagicMazeVideosDir() {
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "HowIsMyPhoneDoing");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d("MagicMaze", "failed to create directory");
-                return null;
-            }
-        }
-        return mediaStorageDir;
     }
 
     /**

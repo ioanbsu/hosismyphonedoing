@@ -59,7 +59,6 @@ public class WebAppMessageReceiver implements WebAppMessageProcessor<String> {
                 userEmail = userInfoService.unregisterDeviceByUuid(uuid);
             } else if (messageType == MessageType.PICTURE_READY) {
                 logger.info("Picture taken " + uuid);
-                userEmail = userInfoService.unregisterDeviceByUuid(uuid);
                 IPictureReadyModel pictureReadyModel=messageParser.parse(messageType, serializedObject);
                 String pictureUuid=picturesService.storePicture(pictureReadyModel,uuid);
                 pictureReadyModel.setPictureData(null);//setting picture byte data to null so it do not get sent to client
