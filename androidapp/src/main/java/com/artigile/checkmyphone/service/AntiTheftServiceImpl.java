@@ -33,22 +33,11 @@ public class AntiTheftServiceImpl implements AntiTheftService {
     private AndroidMessageSender messageSender;
     @Inject
     private MessageParser messageParser;
-    private EventBus eventBus;
     private boolean takePictureIsInProgress;
 
 
     @Inject
     public AntiTheftServiceImpl(EventBus eventBus) {
-        this.eventBus = eventBus;
-        /*mHandleMessageReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.i("AntiTheftServiceImpl", "Picture data received in Anti theft service broadcast.");
-                takePictureIsInProgress = false;
-                byte[] data = intent.getExtras().getByteArray(MESSAGE);
-                sendPictureReadyMessage(data);
-            }
-        };*/
         eventBus.register(new PictureReadyListener());
     }
 
@@ -85,7 +74,6 @@ public class AntiTheftServiceImpl implements AntiTheftService {
     @Override
     public void takePicture(TakePictureModel takePictureModel) throws DeviceHasNoCameraException {
         if (!takePictureIsInProgress) {
-//            context.registerReceiver(mHandleMessageReceiver, new IntentFilter(PICTURE_TAKEN_ACTION));
             cameraService.takePicture(takePictureModel);
             takePictureIsInProgress = true;
         } else {
@@ -106,6 +94,7 @@ public class AntiTheftServiceImpl implements AntiTheftService {
     private class PictureReadyListener {
         @Subscribe
         public void pictureReady(PictureReadyEvent event) {
+            takePictureIsInProgress=false;
             sendPictureReadyMessage(event.getPictureBytes());
         }
     }

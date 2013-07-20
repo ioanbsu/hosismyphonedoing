@@ -21,6 +21,10 @@
             width: auto;
         }
 
+        .pictureStyle {
+            width: 600px;
+        }
+
 
     </ui:style>
 
@@ -29,7 +33,7 @@
         <g:FlowPanel styleName="{style.mainPanelStyle}">
             <g:Button ui:field="closeWindow" text="{msg.message_window_default_ok_button}"/>
             <g:ScrollPanel styleName="{style.scrollableArea}">
-                <g:Image ui:field="imageToDisplay"/>
+                <g:Image ui:field="imageToDisplay" addStyleDependentNames="{style.pictureStyle}"/>
             </g:ScrollPanel>
         </g:FlowPanel>
     </g:DialogBox>
