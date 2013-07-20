@@ -14,6 +14,7 @@ import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcService;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.shared.FieldVerifier;
+import com.artigile.howismyphonedoing.shared.RpcConstants;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -58,7 +59,7 @@ public class GwtTestWebApp extends GWTTestCase {
         // Create the service that we will test.
         MessageRpcServiceAsync greetingService = GWT.create(MessageRpcService.class);
         ServiceDefTarget target = (ServiceDefTarget) greetingService;
-        target.setServiceEntryPoint(GWT.getModuleBaseURL() + "WebApp/greet");
+        target.setServiceEntryPoint(GWT.getModuleBaseURL() + RpcConstants.RPC_ENTRY_POINT + RpcConstants.USER_INFO_SERVICE);
 
         // Since RPC calls are asynchronous, we will need to wait for a response
         // after this test method returns. This line tells the test runner to wait

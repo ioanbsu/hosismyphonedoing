@@ -14,7 +14,7 @@ import com.artigile.howismyphonedoing.api.CommonConstants;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcService;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcService;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcService;
-import com.artigile.howismyphonedoing.server.servlet.PicturesResolverServlet;
+import com.artigile.howismyphonedoing.shared.RpcConstants;
 import com.artigile.howismyphonedoing.shared.WebAppAndClientConstants;
 import org.gwtwidgets.server.spring.GWTRPCServiceExporter;
 import org.springframework.context.annotation.Bean;
@@ -35,9 +35,9 @@ public class RpcConfig extends GenericWebApplicationContext {
     public SimpleUrlHandlerMapping simpleUrlHandlerMapping() {
         SimpleUrlHandlerMapping simpleUrlHandlerMapping = new SimpleUrlHandlerMapping();
         Properties mappings = new Properties();
-        mappings.put("/mainHowIsMyPhoneDoing", "mainHowIsMyPhoneDoingServiceExporter");
-        mappings.put("/authService", "authServiceExporter");
-        mappings.put("/userInfoService", "userInfoServiceExporter");
+        mappings.put(RpcConstants.MESSAGE_SERVICE, "mainHowIsMyPhoneDoingServiceExporter");
+        mappings.put(RpcConstants.AUTH_SERVICE, "authServiceExporter");
+        mappings.put(RpcConstants.USER_INFO_SERVICE, "userInfoServiceExporter");
         mappings.put(WebAppAndClientConstants.PICTURE_URL_PATH, "picturesResolverServlet");
         mappings.put(CommonConstants.MESSAGES_COMMUNICATION_URL, "messageCommunicationServlet");
         simpleUrlHandlerMapping.setMappings(mappings);

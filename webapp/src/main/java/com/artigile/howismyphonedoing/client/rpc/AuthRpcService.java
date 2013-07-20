@@ -11,6 +11,7 @@
 package com.artigile.howismyphonedoing.client.rpc;
 
 import com.artigile.howismyphonedoing.client.exception.UserNotLoggedInException;
+import com.artigile.howismyphonedoing.shared.RpcConstants;
 import com.artigile.howismyphonedoing.shared.entity.GooglePlusAuthenticatedUser;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -19,7 +20,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 /**
  * @author IoaN, 5/26/13 10:35 AM
  */
-@RemoteServiceRelativePath("../remoteService/authService")
+@RemoteServiceRelativePath(RpcConstants.RPC_ENTRY_POINT + RpcConstants.AUTH_SERVICE)
 public interface AuthRpcService extends RemoteService {
 
     StateAndChanelEntity getLoggedInUserAndCreateChannel() throws UserNotLoggedInException;
