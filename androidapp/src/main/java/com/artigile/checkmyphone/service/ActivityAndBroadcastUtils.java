@@ -60,9 +60,11 @@ public class ActivityAndBroadcastUtils {
      * @param takePictureModel picture and camera configuration
      */
     public static void startCameraActivity(Context context, TakePictureModel takePictureModel) {
-        Intent i = new Intent(context, TakePictureActivity.class);
-        i.putExtra(TAKE_PICTURE_CONFIG, takePictureModel);
-        context.startActivity(i);
+        Intent intent = new Intent(context, TakePictureActivity.class);
+        intent.putExtra(TAKE_PICTURE_CONFIG, takePictureModel);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        context.startActivity(intent);
     }
 
     /**

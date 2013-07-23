@@ -106,7 +106,7 @@ public class TakePictureActivity extends RoboActivity implements SurfaceHolder.C
                     public void run() {
                         mCamera.takePicture(null, null, mCall);
                     }
-                }, 500);
+                }, 300);
 
             } catch (IOException e) {
                 e.printStackTrace();

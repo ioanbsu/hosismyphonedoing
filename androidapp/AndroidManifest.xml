@@ -78,9 +78,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".TakePictureActivity" android:screenOrientation="portrait"
-                android:launchMode="singleTask" android:taskAffinity="com.howismuphonedoing.takepicture"
-                android:allowTaskReparenting="false" android:finishOnTaskLaunch="true" android:clearTaskOnLaunch="true"
-                android:alwaysRetainTaskState="false"/>
+                  android:excludeFromRecents="true"
+                  android:launchMode="singleTask" android:taskAffinity="com.howismuphonedoing.takepicture"
+                  android:alwaysRetainTaskState="false" android:noHistory="true">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
 
         <!--
           BroadcastReceiver that will receive intents from GCM
