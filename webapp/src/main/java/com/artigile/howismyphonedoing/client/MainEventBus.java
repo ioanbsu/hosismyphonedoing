@@ -14,7 +14,7 @@ import com.artigile.howismyphonedoing.api.model.*;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
 import com.artigile.howismyphonedoing.client.mvp.mainpage.MainPagePresenter;
 import com.artigile.howismyphonedoing.client.mvp.mapview.MapBodyPresenter;
-import com.artigile.howismyphonedoing.client.mvp.settings.SettingsPresenter;
+import com.artigile.howismyphonedoing.client.mvp.settings.SettingsModule;
 import com.artigile.howismyphonedoing.client.mvp.toppanel.TopPanelPresenter;
 import com.artigile.howismyphonedoing.client.service.CustomLogger;
 import com.artigile.howismyphonedoing.client.service.GaeChannelService;
@@ -27,6 +27,8 @@ import com.mvp4g.client.annotation.Debug;
 import com.mvp4g.client.annotation.Event;
 import com.mvp4g.client.annotation.Events;
 import com.mvp4g.client.annotation.Start;
+import com.mvp4g.client.annotation.module.ChildModule;
+import com.mvp4g.client.annotation.module.ChildModules;
 import com.mvp4g.client.event.EventBus;
 
 import java.util.List;
@@ -35,11 +37,14 @@ import java.util.List;
  * @author IoaN, 5/26/13 9:07 AM
  */
 @Events(startPresenter = MainPagePresenter.class)
+@ChildModules({
+        @ChildModule(moduleClass = SettingsModule.class, autoDisplay = false),
+})
 @Debug(logger = CustomLogger.class)
 public interface MainEventBus extends EventBus {
 
     @Start
-    @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class, SettingsPresenter.class})
+    @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class})
     void initApp();
 
     @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class, GaeChannelService.class})
@@ -52,7 +57,7 @@ public interface MainEventBus extends EventBus {
     @Event(handlers = {MapBodyPresenter.class, TopPanelPresenter.class})
     void deviceLocationUpdated(IDeviceLocationModel as);
 
-    @Event(handlers = {TopPanelPresenter.class, SendMessageWindow.class, SettingsPresenter.class})
+    @Event(handlers = {TopPanelPresenter.class, SendMessageWindow.class}, forwardToModules = SettingsModule.class)
     void usersDevicesListReceived(List<UserDeviceModel> result);
 
     @Event(handlers = {TopPanelPresenter.class})
@@ -73,18 +78,21 @@ public interface MainEventBus extends EventBus {
     @Event(handlers = UiMessageReceivedProcessor.class)
     void messageFromServerReceived(String encodedData);
 
-    @Event(handlers = SettingsPresenter.class)
-    void deviceDetailsReceived(IUserDeviceModel deviceDetails);
-
     @Event(handlers = MapBodyPresenter.class)
     void devicesLocationUpdateRequestSent();
 
     @Event(handlers = MapBodyPresenter.class)
     void centerDeviceLocationOnScreen(IUserDeviceModel iUserDeviceModel);
 
-    @Event(handlers = SettingsPresenter.class)
+    @Event(forwardToModules = SettingsModule.class)
+    void deviceDetailsReceived(IUserDeviceModel deviceDetails);
+
+    @Event(forwardToModules = SettingsModule.class)
     void deviceHadBeenLocked(IUserDeviceModel userDevice);
 
-    @Event(handlers = SettingsPresenter.class)
+    @Event(forwardToModules = SettingsModule.class)
     void deviceAdminIsNotEnabled(IUserDeviceModel userDevice);
+
+    @Event(forwardToModules = SettingsModule.class)
+    void showSettingsWindow();
 }

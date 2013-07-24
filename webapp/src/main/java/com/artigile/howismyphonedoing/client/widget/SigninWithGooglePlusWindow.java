@@ -101,7 +101,7 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
             googlePlusAuthenticatedUser.setState(applicationState.getStateKey());
             loadingIcon.setVisible(true);
             signInWithGoogleButtonPanel.setVisible(false);
-            authRpcService.validateGooglePlusCallback(googlePlusAuthenticatedUser, new AsyncCallbackImpl<StateAndChanelEntity>(eventBus, afterRpcResponceHandler) {
+            authRpcService.validateGooglePlusCallback(googlePlusAuthenticatedUser, new AsyncCallbackImpl<StateAndChanelEntity>( afterRpcResponceHandler) {
                 @Override
                 public void success(StateAndChanelEntity token) {
                     eventBus.userLoggedIn(token);
@@ -116,7 +116,7 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
     }
 
     private void updateStateTokenAndLogin(final GooglePlusAuthenticatedUser googlePlusAuthenticatedUser) {
-        authRpcService.refreshStateToken(new AsyncCallbackImpl<String>(eventBus) {
+        authRpcService.refreshStateToken(new AsyncCallbackImpl<String>() {
             @Override
             public void success(String result) {
                 applicationState.setStateKey(result);

@@ -11,6 +11,7 @@
 package com.artigile.howismyphonedoing.client.mvp.mainpage;
 
 import com.artigile.howismyphonedoing.client.MainEventBus;
+import com.artigile.howismyphonedoing.client.exception.UserNotLoggedInException;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.AuthRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.ApplicationState;
@@ -40,10 +41,17 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
 
     public void onInitApp() {
         signinWithGooglePlusWindow.show();
-        authRpcService.getLoggedInUserAndCreateChannel(new AsyncCallbackImpl<StateAndChanelEntity>(eventBus) {
+        authRpcService.getLoggedInUserAndCreateChannel(new AsyncCallbackImpl<StateAndChanelEntity>() {
             @Override
             public void success(StateAndChanelEntity token) {
                 eventBus.userLoggedIn(token);
+            }
+
+            @Override
+            public void failure(Throwable caught) {
+                if (caught instanceof UserNotLoggedInException) {
+                    eventBus.showLoginWindow(caught.getMessage());
+                }
             }
         });
         GWT.log("MainPagePresenter initiated.");
@@ -52,7 +60,7 @@ public class MainPagePresenter extends BasePresenter<MainPageView, MainEventBus>
     public void onUserLogout() {
         signinWithGooglePlusWindow.show();
         signinWithGooglePlusWindow.loadGooglePlusLoginScript();
-        authRpcService.logout(new AsyncCallbackImpl<Void>(eventBus) {
+        authRpcService.logout(new AsyncCallbackImpl<Void>() {
             @Override
             public void success(Void result) {
                 Window.Location.reload();

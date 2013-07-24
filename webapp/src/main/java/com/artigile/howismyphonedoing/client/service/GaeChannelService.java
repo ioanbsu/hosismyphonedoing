@@ -122,7 +122,7 @@ public class GaeChannelService extends BaseEventHandler<MainEventBus> {
     private void reconnectAfterTimeOut() {
         customLogger.log("Reconnecting after token timeout." + channelOpenAttempt, 5);
         socket.close();
-        authRpcServiceAsync.getLoggedInUserAndCreateChannel(new AsyncCallbackImpl<StateAndChanelEntity>(eventBus) {
+        authRpcServiceAsync.getLoggedInUserAndCreateChannel(new AsyncCallbackImpl<StateAndChanelEntity>() {
             @Override
             public void success(StateAndChanelEntity result) {
                 initGaeChannel(result.getChanelToken());

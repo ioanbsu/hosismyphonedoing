@@ -23,7 +23,6 @@ import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.ApplicationState;
-import com.artigile.howismyphonedoing.client.service.DebugUtil;
 import com.artigile.howismyphonedoing.client.service.HowIsMyPhoneDoingAutoBeansFactory;
 import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
@@ -43,6 +42,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * User: ioanbsu
@@ -69,10 +69,10 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     @Inject
     private MessageWindow messageWindow;
     @Inject
-    private SettingsPresenter settingsPresenter;
-    @Inject
     private HowIsMyPhoneDoingAutoBeansFactory howIsMyPhoneDoingAutoBeansFactory;
     private Timer locationDetectTimer;
+
+    private Logger logger = Logger.getLogger(TopPanelPresenter.class.getName());
 
     public void onInitApp() {
         GWT.log("TopPanelPresenter initiated.");
@@ -94,7 +94,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     }
 
     public void onUpdateDevicesList() {
-        userInfoRpcService.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>(eventBus) {
+        userInfoRpcService.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>() {
             @Override
             public void success(List<UserDeviceModel> result) {
                 eventBus.usersDevicesListReceived(result);
@@ -130,7 +130,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
         yesNoWindow.show(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                messageRpcServiceAsync.removeAllUserDevices(new AsyncCallbackImpl<String>(eventBus) {
+                messageRpcServiceAsync.removeAllUserDevices(new AsyncCallbackImpl<String>() {
                     @Override
                     public void success(String result) {
                         eventBus.usersDevicesListReceived(new ArrayList<UserDeviceModel>());
@@ -157,7 +157,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
             }
         };
         locationDetectTimer.schedule(MAX_LOCATION_RESPONSE_WAIT);
-        userInfoRpcService.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>(eventBus) {
+        userInfoRpcService.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>() {
             @Override
             public void success(List<UserDeviceModel> result) {
                 eventBus.devicesLocationUpdateRequestSent();
@@ -178,7 +178,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
         AutoBean<IDeviceModel> iDeviceModelAutoBean = howIsMyPhoneDoingAutoBeansFactory.create(IDeviceModel.class);
         String serializedMessage = AutoBeanCodex.encode(iDeviceModelAutoBean).getPayload();
         for (UserDeviceModel userDeviceModel : result) {
-            messageRpcServiceAsync.sendMessageToDevice(MessageType.GET_DEVICE_LOCATION, userDeviceModel.getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
+            messageRpcServiceAsync.sendMessageToDevice(MessageType.GET_DEVICE_LOCATION, userDeviceModel.getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>() {
             });
         }
     }
@@ -189,13 +189,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
         }
     }
 
-    private void showNoDevicesFoundMessage() {
-        if (!DebugUtil.isDebugMode()) {
-            messageWindow.show(messages.top_panel_user_has_no_devices());
-        }
-    }
-
     public void showDeviceSettings() {
-        settingsPresenter.show();
+        eventBus.showSettingsWindow();
     }
 }

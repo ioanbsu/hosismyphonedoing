@@ -147,7 +147,7 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
         messageQueuePanel.setVisible(true);
 
         String serializedMessage = AutoBeanCodex.encode(messageToTheDeviceAutoBean).getPayload();
-        messageRpcServiceAsync.sendMessageToDevice(MessageType.MESSAGE_TO_DEVICE, devicesValueListBox.getValue().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.MESSAGE_TO_DEVICE, devicesValueListBox.getValue().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>() {
             @Override
             public void success(String result) {
                 messagesAuditTrail.add(labelWithId);
@@ -161,22 +161,6 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
                 }
             }
         });
-
-     /*   messageRpcServiceAsync.sendMessageToDevice(messageToTheDevice, new AsyncCallbackImpl<String>(eventBus) {
-
-            @Override
-            public void success(String result) {
-                messagesAuditTrail.add(labelWithId);
-            }
-
-            @Override
-            public void failure(Throwable caught) {
-                if (caught instanceof DeviceWasRemovedException) {
-                    messageWindow.show(messages.send_message_window_device_no_longer_exist_label());
-                    eventBus.updateDevicesList();
-                }
-            }
-        });*/
     }
 
     @UiHandler("messageToSend")

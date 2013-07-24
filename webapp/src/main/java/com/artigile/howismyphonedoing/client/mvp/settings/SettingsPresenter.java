@@ -1,7 +1,6 @@
 package com.artigile.howismyphonedoing.client.mvp.settings;
 
 import com.artigile.howismyphonedoing.api.model.*;
-import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
@@ -10,7 +9,6 @@ import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.HowIsMyPhoneDoingAutoBeansFactory;
 import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.artigile.howismyphonedoing.client.widget.YesNoWindow;
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -36,7 +34,7 @@ import java.util.logging.Logger;
  */
 @Singleton
 @Presenter(view = SettingsView.class)
-public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus> {
+public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEventBus> {
 
     public static final Logger logger = Logger.getLogger(SettingsPresenter.class.getName());
     final private SingleSelectionModel<DeviceInfoWithLoadingInfo> selectionModel = new SingleSelectionModel<DeviceInfoWithLoadingInfo>();
@@ -54,9 +52,9 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
     @Inject
     private UserInfoRpcServiceAsync userInfoRpcServiceAsync;
 
-    public void onInitApp() {
-        GWT.log("Settings window initiated.");
 
+    public void onInitApp() {
+        logger.info("Settings window initiated.");
         devicesListDataProvider.addDataDisplay(getView().getDevicesListView());
         getView().getDevicesListView().setSelectionModel(selectionModel);
         selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
@@ -79,7 +77,8 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         getView().getDevicesListView().redraw();
     }
 
-    public void show() {
+    public void onShowSettingsWindow() {
+        logger.info("Showing view" + view + " " + getView());
         view.show();
     }
 
@@ -142,7 +141,7 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
     }
 
     public void requestRefreshDeviceInfo(IUserDeviceModel selectedObject) {
-        messageRpcServiceAsync.sendMessageToDevice(MessageType.DEVICE_DETAILS_INFO, selectedObject.getDeviceId(), "", new AsyncCallbackImpl<String>(eventBus) {
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.DEVICE_DETAILS_INFO, selectedObject.getDeviceId(), "", new AsyncCallbackImpl<String>() {
         });
     }
 
@@ -179,7 +178,7 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         AutoBean<IDeviceSettingsModel> iDeviceSettingsAutoBean = howIsMyPhoneDoingAutoBeansFactory.create(IDeviceSettingsModel.class, deviceSettingsModel);
         String serializedMessage = AutoBeanCodex.encode(iDeviceSettingsAutoBean).getPayload();
         messageRpcServiceAsync.sendMessageToDevice(MessageType.DEVICE_SETTINGS_UPDATE,
-                deviceInfoWithLoadingInfo.getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
+                deviceInfoWithLoadingInfo.getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>() {
             @Override
             public void success(String result) {
                 messageWindow.show(messages.device_settings_settings_updated());
@@ -198,12 +197,12 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
     }
 
     public void displayLogsOnSelectedDevice() {
-        messageRpcServiceAsync.sendMessageToDevice(MessageType.DISPLAY_LOGS, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), "", new AsyncCallbackImpl<String>(eventBus) {
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.DISPLAY_LOGS, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), "", new AsyncCallbackImpl<String>() {
         });
     }
 
     public void hideLogsOnSelectedDevice() {
-        messageRpcServiceAsync.sendMessageToDevice(MessageType.HIDE_LOGS, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), "", new AsyncCallbackImpl<String>(eventBus) {
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.HIDE_LOGS, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), "", new AsyncCallbackImpl<String>() {
         });
     }
 
@@ -213,7 +212,7 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         lockDeviceScreenModel.setNewPinCode(newPinCode);
         AutoBean<ILockDeviceScreenModel> iLockDeviceScreenModelAutoBean = howIsMyPhoneDoingAutoBeansFactory.create(ILockDeviceScreenModel.class, lockDeviceScreenModel);
         String serializedMessage = AutoBeanCodex.encode(iLockDeviceScreenModelAutoBean).getPayload();
-        messageRpcServiceAsync.sendMessageToDevice(MessageType.LOCK_DEVICE, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.LOCK_DEVICE, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>() {
         });
         getView().resetNewPinCodeTextBox();
         getView().showDeviceLockIsInProgress(true);
@@ -226,14 +225,14 @@ public class SettingsPresenter extends BasePresenter<SettingsView, MainEventBus>
         iTakePictureModelAutoBean.as().setCameraType(getView().getCameraType());
         iTakePictureModelAutoBean.as().setHighQuality(getView().isHighQuality());
         String serializedMessage = AutoBeanCodex.encode(iTakePictureModelAutoBean).getPayload();
-        logger.info("Picture model: "+serializedMessage);
-        messageRpcServiceAsync.sendMessageToDevice(MessageType.TAKE_PICTURE, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>(eventBus) {
+        logger.info("Picture model: " + serializedMessage);
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.TAKE_PICTURE, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>() {
         });
     }
 
     public void onRefreshDevicesListClicked() {
         getView().showDeviceListLoading(true);
-        userInfoRpcServiceAsync.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>(eventBus) {
+        userInfoRpcServiceAsync.getUsersDevicesList(new AsyncCallbackImpl<List<UserDeviceModel>>() {
             @Override
             public void success(List<UserDeviceModel> result) {
                 eventBus.usersDevicesListReceived(result);

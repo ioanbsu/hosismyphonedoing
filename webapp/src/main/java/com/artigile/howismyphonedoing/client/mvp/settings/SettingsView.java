@@ -22,6 +22,7 @@ import com.mvp4g.client.view.ReverseViewInterface;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.logging.Logger;
 
 /**
  * Date: 6/22/13
@@ -31,7 +32,6 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
-
 
     @UiField
     DialogBox mainDialogBox;
@@ -155,8 +155,8 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
     }
 
     @UiHandler("refreshDevicesList")
-    void onRefreshDevicesList(ClickEvent event){
-     presenter.onRefreshDevicesListClicked();
+    void onRefreshDevicesList(ClickEvent event) {
+        presenter.onRefreshDevicesListClicked();
     }
 
 
