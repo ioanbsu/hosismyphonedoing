@@ -1,10 +1,13 @@
 package com.artigile.howismyphonedoing.client.service;
 
 import com.artigile.howismyphonedoing.api.model.*;
+import com.artigile.howismyphonedoing.shared.RpcConstants;
 import com.artigile.howismyphonedoing.shared.WebAppMessageProcessor;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.widget.DisplayPictureWindow;
 import com.artigile.howismyphonedoing.shared.WebAppAndClientConstants;
+import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.user.client.Window;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.mvp4g.client.annotation.EventHandler;
@@ -29,6 +32,8 @@ public class UiMessageReceivedProcessor extends BaseEventHandler<MainEventBus> i
     private HowIsMyPhoneDoingAutoBeansFactory howIsMyPhoneDoingBeansFactory;
     @Inject
     private DisplayPictureWindow displayPictureWindow;
+    @Inject
+    private CommonUiUtil commonUiUtil;
 
     @Override
     public String processMessage(IUserDeviceModel userDevice, MessageType messageType, String serializedObject) {
@@ -63,7 +68,7 @@ public class UiMessageReceivedProcessor extends BaseEventHandler<MainEventBus> i
 
         } else if (messageType == MessageType.PICTURE_READY) {
             AutoBean<IPictureReadyModel> deviceDetails = AutoBeanCodex.decode(howIsMyPhoneDoingBeansFactory, IPictureReadyModel.class, serializedObject);
-            String pictureUrl = "/remoteService"+WebAppAndClientConstants.PICTURE_URL_PATH+"?" + WebAppAndClientConstants.PICTURE_UUID + "=" + deviceDetails.as().getPictureId();
+            String pictureUrl= commonUiUtil.getPictureUrl(deviceDetails.as().getPictureId(),false);
             logger.info("Picture received, url:" + pictureUrl);
             displayPictureWindow.show(pictureUrl);
 

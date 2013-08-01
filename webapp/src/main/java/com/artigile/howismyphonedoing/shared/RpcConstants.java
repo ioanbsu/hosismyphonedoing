@@ -9,7 +9,9 @@ package com.artigile.howismyphonedoing.shared;
 
 public class RpcConstants {
 
-    public static final String RPC_ENTRY_POINT = "../remoteService";
+    public static final String SERVLET_MAIN_ENTRANCE = "remoteService";
+
+    public static final String RPC_ENTRY_POINT = "../"+SERVLET_MAIN_ENTRANCE;
 
     public static final String MESSAGE_SERVICE = "/mainHowIsMyPhoneDoingMessageService";
 

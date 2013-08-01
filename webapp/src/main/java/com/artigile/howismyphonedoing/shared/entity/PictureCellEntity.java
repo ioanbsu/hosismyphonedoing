@@ -11,7 +11,7 @@ public class PictureCellEntity implements Serializable {
 
     private String pictureName;
 
-    private String pictureIconUrl;
+    private String pictureId;
 
     public String getPictureName() {
         return pictureName;
@@ -21,11 +21,11 @@ public class PictureCellEntity implements Serializable {
         this.pictureName = pictureName;
     }
 
-    public String getPictureIconUrl() {
-        return pictureIconUrl;
+    public String getPictureId() {
+        return pictureId;
     }
 
-    public void setPictureIconUrl(String pictureIconUrl) {
-        this.pictureIconUrl = pictureIconUrl;
+    public void setPictureId(String pictureId) {
+        this.pictureId = pictureId;
     }
 }

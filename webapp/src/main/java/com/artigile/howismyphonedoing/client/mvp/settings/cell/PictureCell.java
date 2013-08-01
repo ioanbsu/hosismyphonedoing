@@ -1,6 +1,7 @@
 package com.artigile.howismyphonedoing.client.mvp.settings.cell;
 
 import com.artigile.howismyphonedoing.client.resources.Images;
+import com.artigile.howismyphonedoing.client.service.CommonUiUtil;
 import com.artigile.howismyphonedoing.shared.entity.PictureCellEntity;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
@@ -24,6 +25,8 @@ public class PictureCell extends AbstractCell<PictureCellEntity> {
 
     @Inject
     private Images images;
+    @Inject
+    private CommonUiUtil commonUiUtil;
     private MyUiRenderer renderer = GWT.create(MyUiRenderer.class);
 
     public PictureCell() {
@@ -35,13 +38,14 @@ public class PictureCell extends AbstractCell<PictureCellEntity> {
         if (value == null) {
             return;
         }
-        SafeHtml imageSafeHtml = SafeHtmlUtils.EMPTY_SAFE_HTML;
-        renderer.render(sb, value.getPictureName(), imageSafeHtml);
+        String pictureUrl = commonUiUtil.getPictureUrl(value.getPictureId(), true);
+//        SafeHtml imageSafeUrl = SafeHtmlUtils.fromSafeConstant(pictureUrl);
+        renderer.render(sb, value.getPictureName(), pictureUrl);
     }
 
 
     interface MyUiRenderer extends UiRenderer {
-        void render(SafeHtmlBuilder sb, String pictureName, SafeHtml pictureIcon);
+        void render(SafeHtmlBuilder sb, String pictureName, String pictureIcon);
     }
 
 }

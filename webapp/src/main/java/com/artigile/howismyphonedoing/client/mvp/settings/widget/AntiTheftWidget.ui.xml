@@ -14,6 +14,10 @@
         font-size: 10px;
     }
 
+    .picturesList {
+        height: 100px;
+    }
+
     </ui:style>
 
     <g:HTMLPanel>
@@ -37,10 +41,8 @@
 
             </tr>
             <tr>
-                <td>
+                <td colspan="3">
                     <g:Button ui:field="takePicture" text="{msg.device_settings_anti_theft_take_picture_text}"/>
-                </td>
-                <td colspan="2">
                     <g:FlowPanel>
                         <g:RadioButton name="cameraType"
                                        text="{msg.device_settings_anti_theft_take_picture_camera_back}"
@@ -54,11 +56,13 @@
                 </td>
             </tr>
             <tr>
-                <td><g:Button text="Refresh Pictures list" ui:field="refreshPicturesList"/></td>
+                <td>
+                    <g:Button text="Refresh Pictures list" ui:field="refreshPicturesList"/>
+                </td>
             </tr>
             <tr>
                 <td colspan="3">
-                    <g:ScrollPanel >
+                    <g:ScrollPanel styleName="{style.picturesList}">
                         <cellview:CellList ui:field="picturesList" pageSize="50"/>
                     </g:ScrollPanel>
                 </td>

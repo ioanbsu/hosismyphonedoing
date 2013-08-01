@@ -55,7 +55,12 @@ public class UserInfoRpcServiceImpl extends AbstractRpcService implements UserIn
         List<PictureCellEntity> pictureCellEntities = new ArrayList<>();
         for (PicturesFromDevice picture : pictures) {
             PictureCellEntity pictureCellEntity = new PictureCellEntity();
-            pictureCellEntity.setPictureName(picture.getPictureName());
+            String pictureName = picture.getPictureName();
+            if (pictureName == null) {
+                pictureName = "no_name";
+            }
+            pictureCellEntity.setPictureName(pictureName);
+            pictureCellEntity.setPictureId(picture.getPictureUuid());
             pictureCellEntities.add(pictureCellEntity);
         }
         return pictureCellEntities;

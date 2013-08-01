@@ -1,7 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'>
     <ui:with field='pictureName' type='java.lang.String'/>
     <ui:with field='pictureUrl' type='java.lang.String'/>
-    <ui:with field="pictureIcon" type="com.google.gwt.safehtml.shared.SafeHtml"/>
+    <ui:with field="pictureIcon" type="java.lang.String"/>
 
     <ui:style>
         .deviceNameStyle {
@@ -20,9 +20,14 @@
             color: #fff;
         }
 
-        .imageStyle img{
+        .imageStyle img {
             vertical-align: middle;
             padding-top: 5px;
+        }
+
+        .pictureIcon {
+            float: right;
+            margin-top: -12px;
         }
     </ui:style>
 
@@ -30,8 +35,7 @@
     <span class="{style.deviceNameStyle}">
         <span class="{style.imageStyle}">
             <ui:text from='{pictureName}'/>
-            <ui:safehtml from='{pictureIcon}'/>
-
+            <img src="{pictureIcon}" class="{style.pictureIcon}"/>
         </span>
     </span>
 </ui:UiBinder>
