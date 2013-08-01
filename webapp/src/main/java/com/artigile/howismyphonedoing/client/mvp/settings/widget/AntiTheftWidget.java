@@ -147,11 +147,17 @@ public class AntiTheftWidget extends Composite {
     @UiHandler("deleteAllPictures")
     void onDeleteAllPictures(ClickEvent clickEvent) {
         if (selectedModel != null) {
-            userInfoRpcServiceAsync.removeAllPicturesFromDevice(selectedModel.getDeviceId(), new AsyncCallbackImpl<Void>() {
+            yesNoWindow.show(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    userInfoRpcServiceAsync.removeAllPicturesFromDevice(selectedModel.getDeviceId(), new AsyncCallbackImpl<Void>() {
 
-            });
-            picturesCellListDataProvider.getList().clear();
-            pictureSelectionModel.setSelected(null, true);
+                    });
+                    picturesCellListDataProvider.getList().clear();
+                    pictureSelectionModel.setSelected(null, true);
+                }
+            }, null, messages.device_settings_anti_theft_delete_all_pictures_yes_no_message());
+
         }
     }
 

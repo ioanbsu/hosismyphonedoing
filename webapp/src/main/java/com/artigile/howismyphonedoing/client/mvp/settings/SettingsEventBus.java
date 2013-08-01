@@ -45,5 +45,7 @@ public interface SettingsEventBus extends EventBus {
     @Event(handlers = {SettingsPresenter.class})
     void pictureFromThePhoneReceived(IPictureReadyModel as);
 
+    @Event(handlers = {SettingsPresenter.class})
+    void userLogout();
 
 }

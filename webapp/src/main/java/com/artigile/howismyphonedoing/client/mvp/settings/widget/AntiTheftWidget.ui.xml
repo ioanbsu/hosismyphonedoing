@@ -13,13 +13,13 @@
     }
 
     .lockDeviceButton {
-        font-size: 10px;
+        font-size: 9px;
         width: 12em;
         float: left;
     }
 
     .picturesList {
-        height: 15em;
+        height: 18em;
     }
 
     .buttonFloatLeftStyle {
@@ -76,20 +76,34 @@
         margin-left: 0.5em;
     }
 
-    .wipeDeviceStyle {
+    .wipeDeviceButtonStyle {
         float: left;
-        margin-top: 0.5em;
-        margin-left: 0.5em;
     }
 
     .smallLoadingIconForPinCodeChange {
         float: left;
+        margin-top: 9px;
     }
 
     .changePinCodePanelStyle {
         float: left;
         padding: 2px 5px;
+    }
+
+    .wipeDevicePanelStyle {
+        float: left;
+        border-left: 1px solid #999;
+        padding: 0.5em 0.1em;
+    }
+
+    .wipeAndChangePinCodeMainPanel {
         border: 1px solid #999;
+        float: left;
+        width: 100%;
+    }
+
+    .tableStyle {
+
     }
 
 
@@ -98,22 +112,26 @@
     <g:FlowPanel>
         <g:Label text="{msg.device_settings_select_device_label}" ui:field="selectDeviceMsg"/>
         <g:HTMLPanel ui:field="antiTheftPanel">
-            <table>
+            <table style="{style.tableStyle}">
                 <tr>
                     <td colspan="4">
-                        <g:FlowPanel styleName="{style.changePinCodePanelStyle}">
-                            <g:Button text="{msg.device_settings_anti_theft_lock_with_pin_text}"
-                                      ui:field="lockTheDevice" addStyleNames="{style.lockDeviceButton}"/>
-                            <g:PasswordTextBox ui:field="newPinCode" styleName="{style.pinCodeTestBoxStyle}"/>
-                            <g:Image resource="{images.question}"
-                                     title="{msg.device_settings_anti_theft_lock_with_pin_help_text}"
-                                     stylePrimaryName="{style.lockDevicePinImage}"/>
-                            <g:Image resource="{images.loadingSmallIcon}" visible="false"
-                                     ui:field="deviceLockingLoading"
-                                     stylePrimaryName="{style.smallLoadingIconForPinCodeChange}"/>
+                        <g:FlowPanel styleName="{style.wipeAndChangePinCodeMainPanel}">
+                            <g:FlowPanel styleName="{style.changePinCodePanelStyle}">
+                                <g:Button text="{msg.device_settings_anti_theft_lock_with_pin_text}"
+                                          ui:field="lockTheDevice" addStyleNames="{style.lockDeviceButton}"/>
+                                <g:PasswordTextBox ui:field="newPinCode" styleName="{style.pinCodeTestBoxStyle}"/>
+                                <g:Image resource="{images.question}"
+                                         title="{msg.device_settings_anti_theft_lock_with_pin_help_text}"
+                                         stylePrimaryName="{style.lockDevicePinImage}"/>
+                                <g:Image resource="{images.loadingSmallIcon}" visible="false"
+                                         ui:field="deviceLockingLoading"
+                                         stylePrimaryName="{style.smallLoadingIconForPinCodeChange}"/>
+                            </g:FlowPanel>
+                            <g:FlowPanel styleName="{style.wipeDevicePanelStyle}">
+                                <g:Button ui:field="wipeDevice" text="{msg.device_settings_anti_theft_wipe_device}"
+                                          styleName="{style.wipeDeviceButtonStyle}"/>
+                            </g:FlowPanel>
                         </g:FlowPanel>
-                        <g:Button ui:field="wipeDevice" text="{msg.device_settings_anti_theft_wipe_device}"
-                                  styleName="{style.wipeDeviceStyle}"/>
                     </td>
                 </tr>
                 <tr>

@@ -47,7 +47,8 @@ public interface MainEventBus extends EventBus {
     @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class})
     void initApp();
 
-    @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class, GaeChannelService.class})
+    @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class, GaeChannelService.class},
+    forwardToModules = {SettingsModule.class})
     void userLogout();
 
     @Event(handlers = {MainPagePresenter.class, TopPanelPresenter.class, MapBodyPresenter.class,

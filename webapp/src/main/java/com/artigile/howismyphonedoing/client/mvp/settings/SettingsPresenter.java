@@ -81,8 +81,13 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
         view.show();
     }
 
+    public void onUserLogout() {
+        getView().enable(false);
+        getView().setDeviceInfoModel(null);
+    }
+
     public void onPictureFromThePhoneReceived(IPictureReadyModel picture) {
-      getView().pictureFromDeviceReceived(picture);
+        getView().pictureFromDeviceReceived(picture);
     }
 
     public void onUsersDevicesListReceived(List<UserDeviceModel> result) {
