@@ -4,7 +4,7 @@ import com.artigile.howismyphonedoing.api.model.CameraType;
 import com.artigile.howismyphonedoing.api.model.IDeviceSettingsModel;
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoCell;
-import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
+import com.artigile.howismyphonedoing.shared.entity.DeviceInfoWithLoadingInfoEntity;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceListCell;
 import com.artigile.howismyphonedoing.client.mvp.settings.widget.AntiTheftWidget;
 import com.artigile.howismyphonedoing.client.mvp.settings.widget.DeviceSettingsWidget;
@@ -22,7 +22,6 @@ import com.mvp4g.client.view.ReverseViewInterface;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.logging.Logger;
 
 /**
  * Date: 6/22/13
@@ -38,7 +37,7 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
     @UiField
     Button closeSettings;
     @UiField(provided = true)
-    CellList<DeviceInfoWithLoadingInfo> addableDevicesList;
+    CellList<DeviceInfoWithLoadingInfoEntity> addableDevicesList;
     @UiField(provided = true)
     CellWidget<IUserDeviceModel> deviceInfo;
     @UiField
@@ -65,7 +64,7 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
         antiTheftWidget.setAntiTheftActionListener(initAntiTheftListener());
         deviceSettings.setSaveSettingsListener(initSaveSettingsListener());
         deviceInfo = new CellWidget<IUserDeviceModel>(deviceInfoCell);
-        addableDevicesList = new CellList<DeviceInfoWithLoadingInfo>(deviceListCell, getUserDeviceModelProvidesKey());
+        addableDevicesList = new CellList<DeviceInfoWithLoadingInfoEntity>(deviceListCell, getUserDeviceModelProvidesKey());
         addableDevicesList.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
         binder.createAndBindUi(this);
         if (!DebugUtil.isDebugMode()) {
@@ -87,7 +86,7 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
         };
     }
 
-    public CellList<DeviceInfoWithLoadingInfo> getDevicesListView() {
+    public CellList<DeviceInfoWithLoadingInfoEntity> getDevicesListView() {
         return addableDevicesList;
     }
 
@@ -97,6 +96,7 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
 
     public void setDeviceInfoModel(IUserDeviceModel model) {
         deviceInfo.setValue(model);
+        antiTheftWidget.deviceHadBeenSelected(model);
     }
 
     public IDeviceSettingsModel getDeviceSettingsModel() {
@@ -160,10 +160,10 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
     }
 
 
-    protected ProvidesKey<DeviceInfoWithLoadingInfo> getUserDeviceModelProvidesKey() {
-        return new ProvidesKey<DeviceInfoWithLoadingInfo>() {
+    protected ProvidesKey<DeviceInfoWithLoadingInfoEntity> getUserDeviceModelProvidesKey() {
+        return new ProvidesKey<DeviceInfoWithLoadingInfoEntity>() {
             @Override
-            public Object getKey(DeviceInfoWithLoadingInfo item) {
+            public Object getKey(DeviceInfoWithLoadingInfoEntity item) {
                 return item.getiUserDeviceModel().getDeviceId();
             }
         };

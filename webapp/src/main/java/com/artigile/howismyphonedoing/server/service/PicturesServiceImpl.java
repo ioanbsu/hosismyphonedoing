@@ -6,6 +6,10 @@ import com.artigile.howismyphonedoing.server.entity.PicturesFromDevice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 /**
  * User: ioanbsu
  * Date: 7/16/13
@@ -23,6 +27,7 @@ public class PicturesServiceImpl implements PicturesService {
         picturesFromDevice.setDeviceUuid(deviceUuid);
         String pictureUuid = deviceUuid + System.nanoTime();
         picturesFromDevice.setPictureUuid(pictureUuid);
+        picturesFromDevice.setPictureName(SimpleDateFormat.getDateTimeInstance().format(new Date()));
         picturesFromDeviceDao.savePicture(picturesFromDevice);
         return pictureUuid;
     }
@@ -30,5 +35,10 @@ public class PicturesServiceImpl implements PicturesService {
     @Override
     public PicturesFromDevice getPicture(String pictureUuid) {
         return picturesFromDeviceDao.getPictureByUuid(pictureUuid);
+    }
+
+    @Override
+    public List<PicturesFromDevice> getPicturesByDeviceUid(String deviceId) {
+         return picturesFromDeviceDao.getPicturesByDeviceUid(deviceId);
     }
 }

@@ -2,6 +2,8 @@ package com.artigile.howismyphonedoing.server.dao;
 
 import com.artigile.howismyphonedoing.server.entity.PicturesFromDevice;
 
+import java.util.List;
+
 /**
  * User: ioanbsu
  * Date: 7/16/13
@@ -13,4 +15,5 @@ public interface PicturesFromDeviceDao {
 
     PicturesFromDevice getPictureByUuid(String uuid);
 
+    List<PicturesFromDevice> getPicturesByDeviceUid(String deviceId);
 }

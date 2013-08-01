@@ -2,7 +2,7 @@ package com.artigile.howismyphonedoing.client.mvp.settings;
 
 import com.artigile.howismyphonedoing.api.model.*;
 import com.artigile.howismyphonedoing.client.Messages;
-import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoWithLoadingInfo;
+import com.artigile.howismyphonedoing.shared.entity.DeviceInfoWithLoadingInfoEntity;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
@@ -37,8 +37,8 @@ import java.util.logging.Logger;
 public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEventBus> {
 
     public static final Logger logger = Logger.getLogger(SettingsPresenter.class.getName());
-    final private SingleSelectionModel<DeviceInfoWithLoadingInfo> selectionModel = new SingleSelectionModel<DeviceInfoWithLoadingInfo>();
-    final private ListDataProvider<DeviceInfoWithLoadingInfo> devicesListDataProvider = new ListDataProvider<DeviceInfoWithLoadingInfo>();
+    final private SingleSelectionModel<DeviceInfoWithLoadingInfoEntity> selectionModel = new SingleSelectionModel<DeviceInfoWithLoadingInfoEntity>();
+    final private ListDataProvider<DeviceInfoWithLoadingInfoEntity> devicesListDataProvider = new ListDataProvider<DeviceInfoWithLoadingInfoEntity>();
     @Inject
     private MessageRpcServiceAsync messageRpcServiceAsync;
     @Inject
@@ -73,7 +73,7 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
 
     public void requestDeviceInfoUpdate() {
         requestRefreshDeviceInfo(selectionModel.getSelectedObject().getiUserDeviceModel());
-        selectionModel.getSelectedObject().setLoadingState(DeviceInfoWithLoadingInfo.LoadingState.LOADING);
+        selectionModel.getSelectedObject().setLoadingState(DeviceInfoWithLoadingInfoEntity.LoadingState.LOADING);
         getView().getDevicesListView().redraw();
     }
 
@@ -83,17 +83,17 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
     }
 
     public void onUsersDevicesListReceived(List<UserDeviceModel> result) {
-        DeviceInfoWithLoadingInfo selectedObject = selectionModel.getSelectedObject();
-        DeviceInfoWithLoadingInfo newSelected = null;
+        DeviceInfoWithLoadingInfoEntity selectedObject = selectionModel.getSelectedObject();
+        DeviceInfoWithLoadingInfoEntity newSelected = null;
 
-        List<DeviceInfoWithLoadingInfo> existentList = new ArrayList<DeviceInfoWithLoadingInfo>(devicesListDataProvider.getList());
+        List<DeviceInfoWithLoadingInfoEntity> existentList = new ArrayList<DeviceInfoWithLoadingInfoEntity>(devicesListDataProvider.getList());
         devicesListDataProvider.getList().clear();
-        List<DeviceInfoWithLoadingInfo> deviceInfoWithLoadingInfoList = new ArrayList<DeviceInfoWithLoadingInfo>();
+        List<DeviceInfoWithLoadingInfoEntity> deviceInfoWithLoadingInfoList = new ArrayList<DeviceInfoWithLoadingInfoEntity>();
         for (UserDeviceModel userDeviceModel : result) {
-            DeviceInfoWithLoadingInfo deviceInfoWithLoadingInfo = new DeviceInfoWithLoadingInfo();
+            DeviceInfoWithLoadingInfoEntity deviceInfoWithLoadingInfo = new DeviceInfoWithLoadingInfoEntity();
             deviceInfoWithLoadingInfo.setiUserDeviceModel(userDeviceModel);
-            deviceInfoWithLoadingInfo.setLoadingState(DeviceInfoWithLoadingInfo.LoadingState.UNKNOWN);
-            for (DeviceInfoWithLoadingInfo deviceInfoWithLoadingInfoInList : existentList) {
+            deviceInfoWithLoadingInfo.setLoadingState(DeviceInfoWithLoadingInfoEntity.LoadingState.UNKNOWN);
+            for (DeviceInfoWithLoadingInfoEntity deviceInfoWithLoadingInfoInList : existentList) {
                 if (deviceInfoWithLoadingInfoInList.getiUserDeviceModel().getDeviceId().equals(userDeviceModel.getDeviceId())) {
                     mergeDeviceInfo(deviceInfoWithLoadingInfoInList.getiUserDeviceModel(), userDeviceModel);
                     deviceInfoWithLoadingInfo.setLoadingState(deviceInfoWithLoadingInfoInList.getLoadingState());
@@ -117,10 +117,10 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
     }
 
     public void onDeviceDetailsReceived(IUserDeviceModel deviceDetails) {
-        for (DeviceInfoWithLoadingInfo userDeviceModel : devicesListDataProvider.getList()) {
+        for (DeviceInfoWithLoadingInfoEntity userDeviceModel : devicesListDataProvider.getList()) {
             if (userDeviceModel.getiUserDeviceModel().getDeviceId().equals(deviceDetails.getDeviceId())) {
                 mergeDeviceInfo(deviceDetails, userDeviceModel.getiUserDeviceModel());
-                userDeviceModel.setLoadingState(DeviceInfoWithLoadingInfo.LoadingState.LOADED);
+                userDeviceModel.setLoadingState(DeviceInfoWithLoadingInfoEntity.LoadingState.LOADED);
                 getView().getDevicesListView().redraw();
             }
         }
@@ -146,7 +146,7 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
     }
 
     public void onSaveDeviceConfigClicked() {
-        DeviceInfoWithLoadingInfo deviceInfoWithLoadingInfo = selectionModel.getSelectedObject();
+        DeviceInfoWithLoadingInfoEntity deviceInfoWithLoadingInfo = selectionModel.getSelectedObject();
         if (selectionModel.getSelectedObject() == null) {
             Window.alert("Please select device first");
             return;
@@ -173,7 +173,7 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
         }
     }
 
-    private void doSave(DeviceInfoWithLoadingInfo deviceInfoWithLoadingInfo) {
+    private void doSave(DeviceInfoWithLoadingInfoEntity deviceInfoWithLoadingInfo) {
         IDeviceSettingsModel deviceSettingsModel = getView().getDeviceSettingsModel();
         AutoBean<IDeviceSettingsModel> iDeviceSettingsAutoBean = howIsMyPhoneDoingAutoBeansFactory.create(IDeviceSettingsModel.class, deviceSettingsModel);
         String serializedMessage = AutoBeanCodex.encode(iDeviceSettingsAutoBean).getPayload();

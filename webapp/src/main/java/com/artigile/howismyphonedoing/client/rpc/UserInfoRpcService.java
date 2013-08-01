@@ -10,9 +10,11 @@
 
 package com.artigile.howismyphonedoing.client.rpc;
 
+import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.artigile.howismyphonedoing.client.exception.UserHasNoDevicesException;
 import com.artigile.howismyphonedoing.shared.RpcConstants;
+import com.artigile.howismyphonedoing.shared.entity.PictureCellEntity;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -28,4 +30,6 @@ public interface UserInfoRpcService extends RemoteService {
 
 
     List<UserDeviceModel> getUsersDevicesList() throws UserHasNoDevicesException;
+
+    List<PictureCellEntity> getPicturesFromDevice(String deviceId);
 }

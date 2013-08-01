@@ -19,6 +19,7 @@ public class PicturesFromDevice {
     private byte[] pictureData;
     @Persistent
     private String deviceUuid;
+    private String pictureName;
 
     public String getPictureUuid() {
         return pictureUuid;
@@ -42,5 +43,13 @@ public class PicturesFromDevice {
 
     public void setDeviceUuid(String deviceUuid) {
         this.deviceUuid = deviceUuid;
+    }
+
+    public String getPictureName() {
+        return pictureName;
+    }
+
+    public void setPictureName(String pictureName) {
+        this.pictureName = pictureName;
     }
 }

@@ -1,7 +1,7 @@
 package com.artigile.howismyphonedoing.client.mvp.settings.cell;
 
-import com.artigile.howismyphonedoing.client.resources.CellStyles;
 import com.artigile.howismyphonedoing.client.resources.Images;
+import com.artigile.howismyphonedoing.shared.entity.DeviceInfoWithLoadingInfoEntity;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BrowserEvents;
@@ -21,7 +21,7 @@ import javax.inject.Singleton;
  * @author ioanbsu
  */
 @Singleton
-public class DeviceListCell extends AbstractCell<DeviceInfoWithLoadingInfo> {
+public class DeviceListCell extends AbstractCell<DeviceInfoWithLoadingInfoEntity> {
 
     @Inject
     private Images images;
@@ -32,15 +32,15 @@ public class DeviceListCell extends AbstractCell<DeviceInfoWithLoadingInfo> {
     }
 
     @Override
-    public void render(Context context, DeviceInfoWithLoadingInfo value, SafeHtmlBuilder sb) {
+    public void render(Context context, DeviceInfoWithLoadingInfoEntity value, SafeHtmlBuilder sb) {
         if (value == null) {
             return;
         }
         ImageResourceRenderer imageRenderer = new ImageResourceRenderer();
         SafeHtml imageSafeHtml = SafeHtmlUtils.EMPTY_SAFE_HTML;
-        if (value.getLoadingState() == DeviceInfoWithLoadingInfo.LoadingState.LOADING) {
+        if (value.getLoadingState() == DeviceInfoWithLoadingInfoEntity.LoadingState.LOADING) {
             imageSafeHtml = imageRenderer.render(images.loadingSmallIcon());
-        } else if (value.getLoadingState() == DeviceInfoWithLoadingInfo.LoadingState.LOADED) {
+        } else if (value.getLoadingState() == DeviceInfoWithLoadingInfoEntity.LoadingState.LOADED) {
             imageSafeHtml = imageRenderer.render(images.checkOk());
         }
         renderer.render(sb, value.getiUserDeviceModel().getHumanReadableName(), imageSafeHtml);

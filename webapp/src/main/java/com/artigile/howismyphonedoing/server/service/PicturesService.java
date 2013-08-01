@@ -3,6 +3,8 @@ package com.artigile.howismyphonedoing.server.service;
 import com.artigile.howismyphonedoing.api.model.IPictureReadyModel;
 import com.artigile.howismyphonedoing.server.entity.PicturesFromDevice;
 
+import java.util.List;
+
 /**
  * User: ioanbsu
  * Date: 7/16/13
@@ -19,4 +21,6 @@ public interface PicturesService {
     String storePicture(IPictureReadyModel pictureReadyModel,String deviceUuid);
 
     PicturesFromDevice getPicture(String pictureUuid);
+
+    List<PicturesFromDevice> getPicturesByDeviceUid(String deviceId);
 }

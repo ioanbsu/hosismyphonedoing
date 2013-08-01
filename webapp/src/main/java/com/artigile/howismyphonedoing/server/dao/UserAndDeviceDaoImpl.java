@@ -87,7 +87,6 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
         } finally {
             pm.close();
         }
-
     }
 
     @Override

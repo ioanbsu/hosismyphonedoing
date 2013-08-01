@@ -1,0 +1,37 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'>
+    <ui:with field='pictureName' type='java.lang.String'/>
+    <ui:with field='pictureUrl' type='java.lang.String'/>
+    <ui:with field="pictureIcon" type="com.google.gwt.safehtml.shared.SafeHtml"/>
+
+    <ui:style>
+        .deviceNameStyle {
+            cursor: pointer;
+            padding: 10px;
+            display: block;
+            transition: box-shadow 0.3s, background-color 0.3s, color 0.3s;
+            -webkit-transition-property: box-shadow, background-color, color;
+            -webkit-transition-duration: 0.3s;
+            margin-top: 2px;
+        }
+
+        .deviceNameStyle:hover {
+            box-shadow: 1px 0px 2px #555;
+            background-color: #628cd5;
+            color: #fff;
+        }
+
+        .imageStyle img{
+            vertical-align: middle;
+            padding-top: 5px;
+        }
+    </ui:style>
+
+
+    <span class="{style.deviceNameStyle}">
+        <span class="{style.imageStyle}">
+            <ui:text from='{pictureName}'/>
+            <ui:safehtml from='{pictureIcon}'/>
+
+        </span>
+    </span>
+</ui:UiBinder>

@@ -1,4 +1,4 @@
-package com.artigile.howismyphonedoing.client.mvp.settings.cell;
+package com.artigile.howismyphonedoing.shared.entity;
 
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Date: 6/25/13
  * Time: 9:51 AM
  */
-public class DeviceInfoWithLoadingInfo implements Serializable{
+public class DeviceInfoWithLoadingInfoEntity implements Serializable{
 
     private IUserDeviceModel iUserDeviceModel;
 

@@ -20,12 +20,11 @@ import java.util.List;
 public interface SettingsEventBus extends EventBus {
 
     @Start
-    @Event(bind =  {SettingsPresenter.class})
+    @Event(handlers =  {SettingsPresenter.class})
     void initApp();
 
     @Event(forwardToParent = true)
     void centerDeviceLocationOnScreen(IUserDeviceModel iUserDeviceModel);
-
 
     @Event(handlers = {SettingsPresenter.class})
     void usersDevicesListReceived(List<UserDeviceModel> result);

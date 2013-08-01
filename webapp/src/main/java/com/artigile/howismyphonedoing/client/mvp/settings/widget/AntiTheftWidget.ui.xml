@@ -1,4 +1,5 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:cellview="urn:import:com.google.gwt.user.cellview.client"
         >
     <ui:with field="images" type="com.artigile.howismyphonedoing.client.resources.Images"/>
     <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
@@ -36,12 +37,31 @@
 
             </tr>
             <tr>
-                <td><g:Button ui:field="takePicture" text="{msg.device_settings_anti_theft_take_picture_text}"/></td>
-                <td><g:FlowPanel>
-                    <g:RadioButton name="cameraType" text="{msg.device_settings_anti_theft_take_picture_camera_back}" ui:field="backCamera"/>
-                    <g:RadioButton name="cameraType" text="{msg.device_settings_anti_theft_take_picture_camera_front}" ui:field="frontCamera"/>
-                </g:FlowPanel></td>
-                <td><g:CheckBox text="{msg.device_settings_anti_theft_take_picture_camera_hd}" ui:field="highQuality"/></td>
+                <td>
+                    <g:Button ui:field="takePicture" text="{msg.device_settings_anti_theft_take_picture_text}"/>
+                </td>
+                <td colspan="2">
+                    <g:FlowPanel>
+                        <g:RadioButton name="cameraType"
+                                       text="{msg.device_settings_anti_theft_take_picture_camera_back}"
+                                       ui:field="backCamera"/>
+                        <g:RadioButton name="cameraType"
+                                       text="{msg.device_settings_anti_theft_take_picture_camera_front}"
+                                       ui:field="frontCamera"/>
+                        <g:CheckBox text="{msg.device_settings_anti_theft_take_picture_camera_hd}"
+                                    ui:field="highQuality"/>
+                    </g:FlowPanel>
+                </td>
+            </tr>
+            <tr>
+                <td><g:Button text="Refresh Pictures list" ui:field="refreshPicturesList"/></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <g:ScrollPanel >
+                        <cellview:CellList ui:field="picturesList" pageSize="50"/>
+                    </g:ScrollPanel>
+                </td>
             </tr>
         </table>
     </g:HTMLPanel>
