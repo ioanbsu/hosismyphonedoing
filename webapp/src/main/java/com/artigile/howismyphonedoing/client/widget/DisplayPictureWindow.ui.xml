@@ -3,8 +3,10 @@
     <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
     <ui:style>
         .mainPanelStyle {
-            padding: 20px;
+            padding: 0px;
             width: 600px;
+            float: left;
+            min-height: 450px;
         }
 
         .messageStyle {
@@ -25,13 +27,18 @@
             width: 600px;
         }
 
+        .closeWindowButton {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
 
     </ui:style>
 
-    <g:DialogBox ui:field="messageWindow" glassEnabled="true" modal="true" animationEnabled="true" width="680px"
+    <g:DialogBox ui:field="messageWindow" glassEnabled="true" modal="true" animationEnabled="true" width="630px"
                  addStyleNames="{style.showPictureDialogBox}">
         <g:FlowPanel styleName="{style.mainPanelStyle}">
-            <g:Button ui:field="closeWindow" text="{msg.message_window_default_ok_button}"/>
+            <g:Button ui:field="closeWindow" text="{msg.message_window_default_ok_button}" styleName="{style.closeWindowButton}"/>
             <g:ScrollPanel styleName="{style.scrollableArea}">
                 <g:Image ui:field="imageToDisplay"  stylePrimaryName="{style.pictureStyle}"/>
             </g:ScrollPanel>

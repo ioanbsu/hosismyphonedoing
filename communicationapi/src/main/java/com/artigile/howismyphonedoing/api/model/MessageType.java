@@ -63,42 +63,56 @@ public enum MessageType {
         }
     },
     DISPLAY_LOGS {//displays logs on the device
+
         @Override
         public Class<? extends Serializable> getDeserializedClass() {
             return String.class;
         }
     },
     HIDE_LOGS {//hides logs on the device
+
         @Override
         public Class<? extends Serializable> getDeserializedClass() {
             return String.class;
         }
     },
-    LOCK_DEVICE {//hides logs on the device
+    LOCK_DEVICE {//locks the device and changes pin code(if new pin code is specified)
+
         @Override
         public Class<? extends Serializable> getDeserializedClass() {
             return String.class;
         }
     },
-    DEVICE_ADMIN_IS_NOT_ENABLED {//hides logs on the device
+    WIPE_DEVICE {//wipes the device. After that the device won't be available anymore.
+
         @Override
         public Class<? extends Serializable> getDeserializedClass() {
             return String.class;
         }
     },
-    TAKE_PICTURE {//hides logs on the device
+    DEVICE_ADMIN_IS_NOT_ENABLED {//message that notifies that logs are disabled.
+
+        @Override
+        public Class<? extends Serializable> getDeserializedClass() {
+            return String.class;
+        }
+    },
+    TAKE_PICTURE {//takes picture on the device
+
         @Override
         public Class<? extends Serializable> getDeserializedClass() {
             return TakePictureModel.class;
         }
     },
-    PICTURE_READY {//hides logs on the device
+    PICTURE_READY {//the message that contains picture byte data with it. Encoded in Json. Should be updated later to send pure bytes.
+
         @Override
         public Class<? extends Serializable> getDeserializedClass() {
             return PictureReadyModel.class;
         }
     },
-    MESSAGE_TYPE_IS_NOT_SUPPORTED {
+    MESSAGE_TYPE_IS_NOT_SUPPORTED {//message sent from the device when the device reports that message type that it got is not supported.
+
         @Override
         public Class<? extends Serializable> getDeserializedClass() {
             return MessageNotSupportedByDeviceResponseModel.class;
@@ -111,7 +125,6 @@ public enum MessageType {
         }
         return MessageType.valueOf(stringValue) == this;
     }
-
 
     public abstract Class<? extends Serializable> getDeserializedClass();
 }

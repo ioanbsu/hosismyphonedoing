@@ -7,15 +7,19 @@
 
 
     <ui:style>.lockDevicePinImage {
-
+        margin-top: 0.7em;
+        margin-left: 0.5em;
+        float: left;
     }
 
     .lockDeviceButton {
         font-size: 10px;
+        width: 12em;
+        float: left;
     }
 
     .picturesList {
-        height: 100px;
+        height: 15em;
     }
 
     .buttonFloatLeftStyle {
@@ -65,6 +69,29 @@
         float: left;
     }
 
+    .pinCodeTestBoxStyle {
+        width: 5em;
+        float: left;
+        margin-top: 0.5em;
+        margin-left: 0.5em;
+    }
+
+    .wipeDeviceStyle {
+        float: left;
+        margin-top: 0.5em;
+        margin-left: 0.5em;
+    }
+
+    .smallLoadingIconForPinCodeChange {
+        float: left;
+    }
+
+    .changePinCodePanelStyle {
+        float: left;
+        padding: 2px 5px;
+        border: 1px solid #999;
+    }
+
 
     </ui:style>
 
@@ -73,25 +100,24 @@
         <g:HTMLPanel ui:field="antiTheftPanel">
             <table>
                 <tr>
-                    <td>
-                        <g:Button text="{msg.device_settings_anti_theft_lock_with_pin_text}"
-                                  ui:field="lockTheDevice" addStyleNames="{style.lockDeviceButton}"/>
+                    <td colspan="4">
+                        <g:FlowPanel styleName="{style.changePinCodePanelStyle}">
+                            <g:Button text="{msg.device_settings_anti_theft_lock_with_pin_text}"
+                                      ui:field="lockTheDevice" addStyleNames="{style.lockDeviceButton}"/>
+                            <g:PasswordTextBox ui:field="newPinCode" styleName="{style.pinCodeTestBoxStyle}"/>
+                            <g:Image resource="{images.question}"
+                                     title="{msg.device_settings_anti_theft_lock_with_pin_help_text}"
+                                     stylePrimaryName="{style.lockDevicePinImage}"/>
+                            <g:Image resource="{images.loadingSmallIcon}" visible="false"
+                                     ui:field="deviceLockingLoading"
+                                     stylePrimaryName="{style.smallLoadingIconForPinCodeChange}"/>
+                        </g:FlowPanel>
+                        <g:Button ui:field="wipeDevice" text="{msg.device_settings_anti_theft_wipe_device}"
+                                  styleName="{style.wipeDeviceStyle}"/>
                     </td>
-                    <td>
-                        <g:PasswordTextBox ui:field="newPinCode"/>
-                    </td>
-                    <td>
-                        <g:Image resource="{images.question}"
-                                 title="{msg.device_settings_anti_theft_lock_with_pin_help_text}"
-                                 stylePrimaryName="{style.lockDevicePinImage}"/>
-                    </td>
-                    <td>
-                        <g:Image resource="{images.loadingSmallIcon}" visible="false" ui:field="deviceLockingLoading"/>
-                    </td>
-
                 </tr>
                 <tr>
-                    <td colspan="3">
+                    <td colspan="4">
                         <g:Image ui:field="takePicture" title="{msg.device_settings_anti_theft_take_picture_text}"
                                  resource="{images.camera}" styleName="{style.buttonFloatLeftStyle}"/>
                         <g:FlowPanel>
@@ -107,7 +133,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="3">
+                    <td colspan="4">
                         <g:FlowPanel styleName="{style.picturesControlPanel}">
                             <g:Image resource="{images.view}"
                                      title="{msg.device_settings_anti_theft_view_picture_full_size}"
@@ -125,7 +151,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="3">
+                    <td colspan="4">
                         <g:FlowPanel ui:field="pictureLoadingPanel" visible="false">
                             <g:Image resource="{images.loadingIcon}" ui:field="loadingPicture"
                                      stylePrimaryName="{style.pictureLoadingIcon}"/>
@@ -137,7 +163,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="3">
+                    <td colspan="4">
                         <g:ScrollPanel styleName="{style.picturesList}">
                             <cellview:CellList ui:field="picturesList" pageSize="50"/>
                         </g:ScrollPanel>

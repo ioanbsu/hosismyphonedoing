@@ -126,17 +126,24 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
             return "success";
         } else if (messageType == MessageType.LOCK_DEVICE) {
             try {
-                LockDeviceScreenModel lockDeviceScreenModel=messageParser.parse(messageType, serializedObject);
+                LockDeviceScreenModel lockDeviceScreenModel = messageParser.parse(messageType, serializedObject);
                 antiTheftService.lockDevice(lockDeviceScreenModel);
             } catch (DeviceAdminIsNotEnabledException e) {
                 failsafeSendMessage(MessageType.DEVICE_ADMIN_IS_NOT_ENABLED, "");
                 return "failed to lock the device. not supported.";
             }
-        }else if (messageType == MessageType.TAKE_PICTURE) {
+        } else if (messageType == MessageType.WIPE_DEVICE) {
             try {
-                TakePictureModel takePictureModel=messageParser.parse(messageType, serializedObject);
+                antiTheftService.wipeDevice();
+            } catch (DeviceAdminIsNotEnabledException e) {
+                failsafeSendMessage(MessageType.DEVICE_ADMIN_IS_NOT_ENABLED, "");
+                return "failed to lock the device. not supported.";
+            }
+        } else if (messageType == MessageType.TAKE_PICTURE) {
+            try {
+                TakePictureModel takePictureModel = messageParser.parse(messageType, serializedObject);
                 antiTheftService.takePicture(takePictureModel);
-            }catch (DeviceHasNoCameraException e) {
+            } catch (DeviceHasNoCameraException e) {
                 //todo: process here
             }
         } else {

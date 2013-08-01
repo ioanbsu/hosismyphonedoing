@@ -48,7 +48,7 @@
 
     <g:DialogBox ui:field="mainDialogBox" modal="false" glassEnabled="false" animationEnabled="true" width="500px"
                  text="{msg.device_settings_title}" addStyleNames="{style.settingsDialogBox}">
-        <g:DockLayoutPanel unit='EM' height="20em" width="500px">
+        <g:DockLayoutPanel unit='EM' height="30em" width="500px">
             <g:west size='10'>
                 <g:FlowPanel>
                     <g:Image resource="{images.loadingSmallIcon}" ui:field="deviceListLoading" visible="false"/>

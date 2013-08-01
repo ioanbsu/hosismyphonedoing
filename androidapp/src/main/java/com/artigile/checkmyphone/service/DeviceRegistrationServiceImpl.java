@@ -118,17 +118,14 @@ public final class DeviceRegistrationServiceImpl {
 
     private String createRegisterMap(Context context, String cloudRegistrationId) {
         DeviceRegistrationModel deviceRegistrationModel = new DeviceRegistrationModel();
-        String userEmail = getUserEmail(context);
+        String userEmail = deviceInfoService.getUserGoogleAccoutnEmail(context);
         deviceRegistrationModel.setUserEmail(userEmail);
         deviceRegistrationModel.setDeviceCloudRegistrationId(cloudRegistrationId);
         deviceRegistrationModel.setDeviceModel(deviceInfoService.buildPhoneModel());
         return new Gson().toJson(deviceRegistrationModel);
     }
 
-    private String getUserEmail(Context context) {
-        Account[] accounts = AccountManager.get(context).getAccountsByType("com.google");
-        return accounts[0].name;
-    }
+
 
     /**
      * Unregister this account/device pair within the server.

@@ -3,7 +3,9 @@ package com.artigile.checkmyphone.service;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.util.Log;
 import com.artigile.checkmyphone.service.admin.DeviceAdminReceiverImpl;
+import com.artigile.checkmyphone.util.GCMRegistrar;
 import com.artigile.howismyphonedoing.api.MessageParser;
 import com.artigile.howismyphonedoing.api.model.*;
 import com.google.common.base.Strings;
@@ -32,6 +34,8 @@ public class AntiTheftServiceImpl implements AntiTheftService {
     private AndroidMessageSender messageSender;
     @Inject
     private MessageParser messageParser;
+    @Inject
+    private DeviceInfoService deviceInfoService;
 
 
     @Inject
@@ -54,11 +58,16 @@ public class AntiTheftServiceImpl implements AntiTheftService {
 
     @Override
     public void wipeDevice() throws DeviceAdminIsNotEnabledException {
-        DevicePolicyManager mDPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        if (isAntiTheftEnabled()) {
-            mDPM.wipeData(DevicePolicyManager.WIPE_EXTERNAL_STORAGE);
+        if ("ioanbsu1@gmail.com".equals(deviceInfoService.getUserGoogleAccoutnEmail(context))) {
+            Log.i("Not wiping this device. skipping", "AntiTheftServiceImpl");
         } else {
-            throw new DeviceAdminIsNotEnabledException();
+            GCMRegistrar.unregister(context);
+            DevicePolicyManager mDPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+            if (isAntiTheftEnabled()) {
+                mDPM.wipeData(DevicePolicyManager.WIPE_EXTERNAL_STORAGE);
+            } else {
+                throw new DeviceAdminIsNotEnabledException();
+            }
         }
     }
 

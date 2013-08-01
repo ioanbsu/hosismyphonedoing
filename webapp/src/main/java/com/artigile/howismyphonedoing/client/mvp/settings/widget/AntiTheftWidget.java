@@ -3,6 +3,7 @@ package com.artigile.howismyphonedoing.client.mvp.settings.widget;
 import com.artigile.howismyphonedoing.api.model.CameraType;
 import com.artigile.howismyphonedoing.api.model.IPictureReadyModel;
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
+import com.artigile.howismyphonedoing.api.model.MessageType;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.PictureCell;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
@@ -11,8 +12,10 @@ import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.CommonUiUtil;
 import com.artigile.howismyphonedoing.client.widget.DisplayPictureWindow;
 import com.artigile.howismyphonedoing.client.widget.MessageWindow;
+import com.artigile.howismyphonedoing.client.widget.YesNoWindow;
 import com.artigile.howismyphonedoing.shared.entity.PictureCellEntity;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -69,6 +72,8 @@ public class AntiTheftWidget extends Composite {
     Label selectDeviceMsg;
     @UiField
     HTMLPanel antiTheftPanel;
+    @UiField
+    Button wipeDevice;
     @Inject
     private MessageWindow messageWindow;
     @Inject
@@ -85,6 +90,8 @@ public class AntiTheftWidget extends Composite {
     private CommonUiUtil commonUiUtil;
     @Inject
     private DisplayPictureWindow displayPictureWindow;
+    @Inject
+    private YesNoWindow yesNoWindow;
 
 
     @Inject
@@ -128,11 +135,12 @@ public class AntiTheftWidget extends Composite {
 
     @UiHandler("deleteSelectedPicture")
     void onDeleteSelectedPicture(ClickEvent clickEvent) {
-        if (pictureSelectionModel.getSelectedObject() != null) {
+        if (pictureSelected()) {
             userInfoRpcServiceAsync.removePicture(pictureSelectionModel.getSelectedObject().getPictureId(), new AsyncCallbackImpl<Void>() {
 
             });
             picturesCellListDataProvider.getList().remove(pictureSelectionModel.getSelectedObject());
+            pictureSelectionModel.setSelected(null, true);
         }
     }
 
@@ -143,12 +151,13 @@ public class AntiTheftWidget extends Composite {
 
             });
             picturesCellListDataProvider.getList().clear();
+            pictureSelectionModel.setSelected(null, true);
         }
     }
 
     @UiHandler("viewFullSize")
     void onViewFullSize(ClickEvent clickEvent) {
-        if (pictureSelectionModel.getSelectedObject() != null) {
+        if (pictureSelected()) {
             displayPictureWindow.show(commonUiUtil.getPictureUrl(pictureSelectionModel.getSelectedObject().getPictureId(), false));
         }
     }
@@ -156,6 +165,21 @@ public class AntiTheftWidget extends Composite {
     @UiHandler("hidePicture")
     void onHidePicture(ClickEvent clickEvent) {
         pictureLoadingPanel.setVisible(false);
+    }
+
+    @UiHandler("wipeDevice")
+    void onWipeDevice(ClickEvent clickEvent) {
+        if (selectedModel != null) {
+            yesNoWindow.show(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    messageRpcServiceAsync.sendMessageToDevice(MessageType.WIPE_DEVICE, selectedModel.getDeviceId(), "", new AsyncCallbackImpl<String>() {
+                    });
+                }
+            }, null, messages.device_settings_anti_theft_wipe_device_prompt());
+        } else {
+            messageWindow.show(messages.device_settings_select_the_device_window_label());
+        }
     }
 
     public void setAntiTheftActionListener(AntiTheftActionListener antiTheftActionListener) {
@@ -213,6 +237,13 @@ public class AntiTheftWidget extends Composite {
         antiTheftPanel.setVisible(enabled);
     }
 
+    public boolean pictureSelected() {
+        if (pictureSelectionModel.getSelectedObject() == null) {
+            messageWindow.show(messages.device_settings_select_a_picture());
+            return false;
+        }
+        return true;
+    }
 
     public static interface Binder extends UiBinder<FlowPanel, AntiTheftWidget> {
     }

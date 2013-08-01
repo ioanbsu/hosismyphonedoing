@@ -135,10 +135,6 @@ public class AndroidMessageSender implements AndroidMessageProcessor<String> {
         return "message sent asynchronously";
     }
 
-    private String getUserEmail(Context context) {
-        Account[] accounts = AccountManager.get(context).getAccountsByType("com.google");
-        return accounts[0].name;
-    }
 
 
 }

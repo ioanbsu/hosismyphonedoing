@@ -1,5 +1,8 @@
 package com.artigile.checkmyphone.service;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.Context;
 import android.os.Build;
 import com.artigile.howismyphonedoing.api.model.DeviceModel;
 import com.artigile.howismyphonedoing.api.model.IDeviceModel;
@@ -41,4 +44,10 @@ public class DeviceInfoService {
         deviceModel.setRadioVersion(Build.getRadioVersion());
         return deviceModel;
     }
+
+    public String getUserGoogleAccoutnEmail(Context context){
+        Account[] accounts = AccountManager.get(context).getAccountsByType("com.google");
+               return accounts[0].name;
+    }
 }
+
