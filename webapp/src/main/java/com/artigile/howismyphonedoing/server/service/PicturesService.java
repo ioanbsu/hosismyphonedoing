@@ -23,4 +23,8 @@ public interface PicturesService {
     PicturesFromDevice getPicture(String pictureUuid);
 
     List<PicturesFromDevice> getPicturesByDeviceUid(String deviceId);
+
+    void removePicture(String pictureId);
+
+    void removePicturesFromTheDevice(String deviceId);
 }

@@ -2,13 +2,13 @@ package com.artigile.howismyphonedoing.client.mvp.settings;
 
 import com.artigile.howismyphonedoing.api.model.*;
 import com.artigile.howismyphonedoing.client.Messages;
-import com.artigile.howismyphonedoing.shared.entity.DeviceInfoWithLoadingInfoEntity;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.HowIsMyPhoneDoingAutoBeansFactory;
 import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.artigile.howismyphonedoing.client.widget.YesNoWindow;
+import com.artigile.howismyphonedoing.shared.entity.DeviceInfoWithLoadingInfoEntity;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEventBus> {
 
     public static final Logger logger = Logger.getLogger(SettingsPresenter.class.getName());
-    final private SingleSelectionModel<DeviceInfoWithLoadingInfoEntity> selectionModel = new SingleSelectionModel<DeviceInfoWithLoadingInfoEntity>();
+    final private SingleSelectionModel<DeviceInfoWithLoadingInfoEntity> deviceSelectionModel = new SingleSelectionModel<DeviceInfoWithLoadingInfoEntity>();
     final private ListDataProvider<DeviceInfoWithLoadingInfoEntity> devicesListDataProvider = new ListDataProvider<DeviceInfoWithLoadingInfoEntity>();
     @Inject
     private MessageRpcServiceAsync messageRpcServiceAsync;
@@ -52,28 +52,27 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
     @Inject
     private UserInfoRpcServiceAsync userInfoRpcServiceAsync;
 
-
     public void onInitApp() {
         logger.info("Settings window initiated.");
         devicesListDataProvider.addDataDisplay(getView().getDevicesListView());
-        getView().getDevicesListView().setSelectionModel(selectionModel);
-        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+        getView().getDevicesListView().setSelectionModel(deviceSelectionModel);
+        deviceSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent event) {
-                getView().setDeviceInfoModel(selectionModel.getSelectedObject().getiUserDeviceModel());
-                getView().setDeviceSettingsModel(selectionModel.getSelectedObject().getiUserDeviceModel().getiDeviceSettingsModel());
-                getView().getSettingsView().enable(true);
-                if (selectionModel.getSelectedObject().getiUserDeviceModel().getBatteryLevel() == null) {
+                getView().setDeviceInfoModel(deviceSelectionModel.getSelectedObject().getiUserDeviceModel());
+                getView().setDeviceSettingsModel(deviceSelectionModel.getSelectedObject().getiUserDeviceModel().getiDeviceSettingsModel());
+                getView().enable(true);
+                if (deviceSelectionModel.getSelectedObject().getiUserDeviceModel().getBatteryLevel() == null) {
                     requestDeviceInfoUpdate();
                 }
-                eventBus.centerDeviceLocationOnScreen(selectionModel.getSelectedObject().getiUserDeviceModel());
+                eventBus.centerDeviceLocationOnScreen(deviceSelectionModel.getSelectedObject().getiUserDeviceModel());
             }
         });
     }
 
     public void requestDeviceInfoUpdate() {
-        requestRefreshDeviceInfo(selectionModel.getSelectedObject().getiUserDeviceModel());
-        selectionModel.getSelectedObject().setLoadingState(DeviceInfoWithLoadingInfoEntity.LoadingState.LOADING);
+        requestRefreshDeviceInfo(deviceSelectionModel.getSelectedObject().getiUserDeviceModel());
+        deviceSelectionModel.getSelectedObject().setLoadingState(DeviceInfoWithLoadingInfoEntity.LoadingState.LOADING);
         getView().getDevicesListView().redraw();
     }
 
@@ -82,8 +81,12 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
         view.show();
     }
 
+    public void onPictureFromThePhoneReceived(IPictureReadyModel picture) {
+      getView().pictureFromDeviceReceived(picture);
+    }
+
     public void onUsersDevicesListReceived(List<UserDeviceModel> result) {
-        DeviceInfoWithLoadingInfoEntity selectedObject = selectionModel.getSelectedObject();
+        DeviceInfoWithLoadingInfoEntity selectedObject = deviceSelectionModel.getSelectedObject();
         DeviceInfoWithLoadingInfoEntity newSelected = null;
 
         List<DeviceInfoWithLoadingInfoEntity> existentList = new ArrayList<DeviceInfoWithLoadingInfoEntity>(devicesListDataProvider.getList());
@@ -107,11 +110,12 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
         }
         devicesListDataProvider.getList().addAll(deviceInfoWithLoadingInfoList);
         if (newSelected != null) {
-            selectionModel.setSelected(newSelected, true);
+            deviceSelectionModel.setSelected(newSelected, true);
             getView().setDeviceSettingsModel(newSelected.getiUserDeviceModel().getiDeviceSettingsModel());
-            getView().getSettingsView().enable(true);
+            getView().enable(true);
         } else {
-            getView().getSettingsView().enable(false);
+            getView().enable(false);
+            getView().setDeviceInfoModel(null);
         }
         getView().displayNoDevicesFoundLabel(devicesListDataProvider.getList().isEmpty());
     }
@@ -146,8 +150,8 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
     }
 
     public void onSaveDeviceConfigClicked() {
-        DeviceInfoWithLoadingInfoEntity deviceInfoWithLoadingInfo = selectionModel.getSelectedObject();
-        if (selectionModel.getSelectedObject() == null) {
+        DeviceInfoWithLoadingInfoEntity deviceInfoWithLoadingInfo = deviceSelectionModel.getSelectedObject();
+        if (deviceSelectionModel.getSelectedObject() == null) {
             Window.alert("Please select device first");
             return;
         }
@@ -156,7 +160,7 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
             yesNoWindow.show(new ClickHandler() {
                                  @Override
                                  public void onClick(ClickEvent event) {
-                                     doSave(selectionModel.getSelectedObject());
+                                     doSave(deviceSelectionModel.getSelectedObject());
                                  }
                              }, new ClickHandler() {
                                  @Override
@@ -197,12 +201,12 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
     }
 
     public void displayLogsOnSelectedDevice() {
-        messageRpcServiceAsync.sendMessageToDevice(MessageType.DISPLAY_LOGS, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), "", new AsyncCallbackImpl<String>() {
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.DISPLAY_LOGS, deviceSelectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), "", new AsyncCallbackImpl<String>() {
         });
     }
 
     public void hideLogsOnSelectedDevice() {
-        messageRpcServiceAsync.sendMessageToDevice(MessageType.HIDE_LOGS, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), "", new AsyncCallbackImpl<String>() {
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.HIDE_LOGS, deviceSelectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), "", new AsyncCallbackImpl<String>() {
         });
     }
 
@@ -212,7 +216,7 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
         lockDeviceScreenModel.setNewPinCode(newPinCode);
         AutoBean<ILockDeviceScreenModel> iLockDeviceScreenModelAutoBean = howIsMyPhoneDoingAutoBeansFactory.create(ILockDeviceScreenModel.class, lockDeviceScreenModel);
         String serializedMessage = AutoBeanCodex.encode(iLockDeviceScreenModelAutoBean).getPayload();
-        messageRpcServiceAsync.sendMessageToDevice(MessageType.LOCK_DEVICE, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>() {
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.LOCK_DEVICE, deviceSelectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>() {
         });
         getView().resetNewPinCodeTextBox();
         getView().showDeviceLockIsInProgress(true);
@@ -226,7 +230,7 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsEvent
         iTakePictureModelAutoBean.as().setHighQuality(getView().isHighQuality());
         String serializedMessage = AutoBeanCodex.encode(iTakePictureModelAutoBean).getPayload();
         logger.info("Picture model: " + serializedMessage);
-        messageRpcServiceAsync.sendMessageToDevice(MessageType.TAKE_PICTURE, selectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>() {
+        messageRpcServiceAsync.sendMessageToDevice(MessageType.TAKE_PICTURE, deviceSelectionModel.getSelectedObject().getiUserDeviceModel().getDeviceId(), serializedMessage, new AsyncCallbackImpl<String>() {
         });
     }
 

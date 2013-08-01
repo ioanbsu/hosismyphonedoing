@@ -16,4 +16,8 @@ public interface PicturesFromDeviceDao {
     PicturesFromDevice getPictureByUuid(String uuid);
 
     List<PicturesFromDevice> getPicturesByDeviceUid(String deviceId);
+
+    void removePicture(String pictureId);
+
+    void removePicturesFromTheDevice(String deviceId);
 }

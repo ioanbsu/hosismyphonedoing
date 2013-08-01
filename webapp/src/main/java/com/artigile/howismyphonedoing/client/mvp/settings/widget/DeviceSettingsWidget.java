@@ -133,7 +133,7 @@ public class DeviceSettingsWidget extends Composite implements TakesValue<IDevic
         loadingIcon.setVisible(isLoading);
     }
 
-    public void enable(boolean enabled) {
+    public void enableControlls(boolean enabled) {
         selectDeviceMsg.setVisible(!enabled);
         settingsPanel.setVisible(enabled);
     }

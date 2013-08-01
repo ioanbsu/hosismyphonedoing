@@ -95,4 +95,7 @@ public interface MainEventBus extends EventBus {
 
     @Event(forwardToModules = SettingsModule.class)
     void showSettingsWindow();
+
+    @Event(forwardToModules = SettingsModule.class)
+    void pictureFromThePhoneReceived(IPictureReadyModel as);
 }

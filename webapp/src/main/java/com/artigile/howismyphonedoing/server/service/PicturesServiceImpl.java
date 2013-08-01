@@ -41,4 +41,14 @@ public class PicturesServiceImpl implements PicturesService {
     public List<PicturesFromDevice> getPicturesByDeviceUid(String deviceId) {
          return picturesFromDeviceDao.getPicturesByDeviceUid(deviceId);
     }
+
+    @Override
+    public void removePicture(String pictureId) {
+        picturesFromDeviceDao.removePicture(pictureId);
+    }
+
+    @Override
+    public void removePicturesFromTheDevice(String deviceId) {
+        picturesFromDeviceDao.removePicturesFromTheDevice(deviceId);
+    }
 }

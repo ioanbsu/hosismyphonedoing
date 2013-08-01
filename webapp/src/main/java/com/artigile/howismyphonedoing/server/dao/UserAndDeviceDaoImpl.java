@@ -128,7 +128,6 @@ public class UserAndDeviceDaoImpl implements UserAndDeviceDao {
         }
     }
 
-
     private UserDevice getUserDeviceByGcmId(String gcmId, PersistenceManager pm) {
         Query query = pm.newQuery(UserDevice.class, "deviceCloudRegistrationId == deviceCloudRegistrationIdParam");
         query.declareParameters("String deviceCloudRegistrationIdParam");

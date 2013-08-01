@@ -45,6 +45,8 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
     HTMLPanel signInWithGoogleButtonPanel;
     @UiField
     FlowPanel loadingIcon;
+    @UiField
+    Label waitForGoogleButtonPrompt;
     @Inject
     private ApplicationState applicationState;
     @Inject
@@ -100,6 +102,7 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
         }   else{
             googlePlusAuthenticatedUser.setState(applicationState.getStateKey());
             loadingIcon.setVisible(true);
+            waitForGoogleButtonPrompt.setVisible(false);
             signInWithGoogleButtonPanel.setVisible(false);
             authRpcService.validateGooglePlusCallback(googlePlusAuthenticatedUser, new AsyncCallbackImpl<StateAndChanelEntity>( afterRpcResponceHandler) {
                 @Override
@@ -141,6 +144,7 @@ public class SigninWithGooglePlusWindow extends BaseEventHandler<MainEventBus> {
             @Override
             public void afterResponse() {
                 loadingIcon.setVisible(false);
+                waitForGoogleButtonPrompt.setVisible(true);
                 signInWithGoogleButtonPanel.setVisible(true);
             }
         };

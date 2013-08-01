@@ -68,10 +68,7 @@ public class UiMessageReceivedProcessor extends BaseEventHandler<MainEventBus> i
 
         } else if (messageType == MessageType.PICTURE_READY) {
             AutoBean<IPictureReadyModel> deviceDetails = AutoBeanCodex.decode(howIsMyPhoneDoingBeansFactory, IPictureReadyModel.class, serializedObject);
-            String pictureUrl= commonUiUtil.getPictureUrl(deviceDetails.as().getPictureId(),false);
-            logger.info("Picture received, url:" + pictureUrl);
-            displayPictureWindow.show(pictureUrl);
-
+            eventBus.pictureFromThePhoneReceived(deviceDetails.as());
         }
         return "succeeded";
     }

@@ -1,5 +1,6 @@
 package com.artigile.howismyphonedoing.client.mvp.settings;
 
+import com.artigile.howismyphonedoing.api.model.IPictureReadyModel;
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
 import com.mvp4g.client.annotation.Event;
@@ -40,5 +41,9 @@ public interface SettingsEventBus extends EventBus {
 
     @Event(handlers = {SettingsPresenter.class})
     void showSettingsWindow();
+
+    @Event(handlers = {SettingsPresenter.class})
+    void pictureFromThePhoneReceived(IPictureReadyModel as);
+
 
 }

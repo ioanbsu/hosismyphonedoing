@@ -18,55 +18,132 @@
         height: 100px;
     }
 
+    .buttonFloatLeftStyle {
+        float: left;
+        cursor: pointer;
+        margin: 1px 10px;
+        padding: 0px;
+        text-align: center;
+    }
+
+    .buttonFloatLeftStyle:hover {
+        box-shadow: 0px 0px 3px #444;
+    }
+
+    .pictureLoadingIcon {
+        float: left;
+    }
+
+    .hidePictureLoadingLabel {
+        color: #00F;
+        text-decoration: underline;
+        cursor: pointer;
+        font-size: 11px;
+        margin-top: 9px;
+        float: left;
+        margin-left: 9px;
+    }
+
+    .takingPictureWaitLabel {
+        font-size: 11px;
+        margin-top: 9px;
+        float: left;
+        margin-left: 9px;
+        color: #555;
+    }
+
+    .picturesControlPanel {
+        width: 100%;
+        border-top: 1px solid #999;
+        border-bottom: 1px solid #999;
+        float: left;
+        padding: 3px 0;
+    }
+
+    .radioAndCheckBoxStyles {
+        margin-top: 2px;
+        float: left;
+    }
+
+
     </ui:style>
 
-    <g:HTMLPanel>
-        <table>
-            <tr>
-                <td>
-                    <g:Button text="{msg.device_settings_anti_theft_lock_with_pin_text}"
-                              ui:field="lockTheDevice" addStyleNames="{style.lockDeviceButton}"/>
-                </td>
-                <td>
-                    <g:PasswordTextBox ui:field="newPinCode"/>
-                </td>
-                <td>
-                    <g:Image resource="{images.question}"
-                             title="{msg.device_settings_anti_theft_lock_with_pin_help_text}"
-                             stylePrimaryName="{style.lockDevicePinImage}"/>
-                </td>
-                <td>
-                    <g:Image resource="{images.loadingSmallIcon}" visible="false" ui:field="deviceLockingLoading"/>
-                </td>
+    <g:FlowPanel>
+        <g:Label text="{msg.device_settings_select_device_label}" ui:field="selectDeviceMsg"/>
+        <g:HTMLPanel ui:field="antiTheftPanel">
+            <table>
+                <tr>
+                    <td>
+                        <g:Button text="{msg.device_settings_anti_theft_lock_with_pin_text}"
+                                  ui:field="lockTheDevice" addStyleNames="{style.lockDeviceButton}"/>
+                    </td>
+                    <td>
+                        <g:PasswordTextBox ui:field="newPinCode"/>
+                    </td>
+                    <td>
+                        <g:Image resource="{images.question}"
+                                 title="{msg.device_settings_anti_theft_lock_with_pin_help_text}"
+                                 stylePrimaryName="{style.lockDevicePinImage}"/>
+                    </td>
+                    <td>
+                        <g:Image resource="{images.loadingSmallIcon}" visible="false" ui:field="deviceLockingLoading"/>
+                    </td>
 
-            </tr>
-            <tr>
-                <td colspan="3">
-                    <g:Button ui:field="takePicture" text="{msg.device_settings_anti_theft_take_picture_text}"/>
-                    <g:FlowPanel>
-                        <g:RadioButton name="cameraType"
-                                       text="{msg.device_settings_anti_theft_take_picture_camera_back}"
-                                       ui:field="backCamera"/>
-                        <g:RadioButton name="cameraType"
-                                       text="{msg.device_settings_anti_theft_take_picture_camera_front}"
-                                       ui:field="frontCamera"/>
-                        <g:CheckBox text="{msg.device_settings_anti_theft_take_picture_camera_hd}"
-                                    ui:field="highQuality"/>
-                    </g:FlowPanel>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <g:Button text="Refresh Pictures list" ui:field="refreshPicturesList"/>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="3">
-                    <g:ScrollPanel styleName="{style.picturesList}">
-                        <cellview:CellList ui:field="picturesList" pageSize="50"/>
-                    </g:ScrollPanel>
-                </td>
-            </tr>
-        </table>
-    </g:HTMLPanel>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <g:Image ui:field="takePicture" title="{msg.device_settings_anti_theft_take_picture_text}"
+                                 resource="{images.camera}" styleName="{style.buttonFloatLeftStyle}"/>
+                        <g:FlowPanel>
+                            <g:RadioButton name="cameraType"
+                                           text="{msg.device_settings_anti_theft_take_picture_camera_back}"
+                                           ui:field="backCamera" styleName="{style.radioAndCheckBoxStyles}"/>
+                            <g:RadioButton name="cameraType" styleName="{style.radioAndCheckBoxStyles}"
+                                           text="{msg.device_settings_anti_theft_take_picture_camera_front}"
+                                           ui:field="frontCamera"/>
+                            <g:CheckBox text="{msg.device_settings_anti_theft_take_picture_camera_hd}"
+                                        ui:field="highQuality" styleName="{style.radioAndCheckBoxStyles}"/>
+                        </g:FlowPanel>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <g:FlowPanel styleName="{style.picturesControlPanel}">
+                            <g:Image resource="{images.view}"
+                                     title="{msg.device_settings_anti_theft_view_picture_full_size}"
+                                     ui:field="viewFullSize" styleName="{style.buttonFloatLeftStyle}"/>
+                            <g:Image resource="{images.refreshSmall}"
+                                     title="{msg.device_settings_anti_theft_refresh_pictures_list}"
+                                     ui:field="refreshPicturesList" styleName="{style.buttonFloatLeftStyle}"/>
+                            <g:Image resource="{images.delete}"
+                                     title="{msg.device_settings_anti_theft_view_delete_selected_picture}"
+                                     ui:field="deleteSelectedPicture" styleName="{style.buttonFloatLeftStyle}"/>
+                            <g:Image resource="{images.deleteAll}"
+                                     title="{msg.device_settings_anti_theft_view_delete_all_pictures}"
+                                     ui:field="deleteAllPictures" styleName="{style.buttonFloatLeftStyle}"/>
+                        </g:FlowPanel>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <g:FlowPanel ui:field="pictureLoadingPanel" visible="false">
+                            <g:Image resource="{images.loadingIcon}" ui:field="loadingPicture"
+                                     stylePrimaryName="{style.pictureLoadingIcon}"/>
+                            <g:Label text="{msg.device_settings_anti_theft_take_picture_from_device_wait}"
+                                     styleName="{style.takingPictureWaitLabel}"/>
+                            <g:Label text="{msg.device_settings_anti_theft_hide_picture_loading}" ui:field="hidePicture"
+                                     styleName="{style.hidePictureLoadingLabel}"/>
+                        </g:FlowPanel>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <g:ScrollPanel styleName="{style.picturesList}">
+                            <cellview:CellList ui:field="picturesList" pageSize="50"/>
+                        </g:ScrollPanel>
+                    </td>
+                </tr>
+            </table>
+        </g:HTMLPanel>
+    </g:FlowPanel>
 </ui:UiBinder>

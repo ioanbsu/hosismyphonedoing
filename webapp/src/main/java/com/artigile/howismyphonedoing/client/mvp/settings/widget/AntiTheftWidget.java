@@ -1,12 +1,15 @@
 package com.artigile.howismyphonedoing.client.mvp.settings.widget;
 
 import com.artigile.howismyphonedoing.api.model.CameraType;
+import com.artigile.howismyphonedoing.api.model.IPictureReadyModel;
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.PictureCell;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
+import com.artigile.howismyphonedoing.client.service.CommonUiUtil;
+import com.artigile.howismyphonedoing.client.widget.DisplayPictureWindow;
 import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.artigile.howismyphonedoing.shared.entity.PictureCellEntity;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -16,6 +19,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,6 +36,7 @@ import java.util.List;
 public class AntiTheftWidget extends Composite {
 
     final private ListDataProvider<PictureCellEntity> picturesCellListDataProvider = new ListDataProvider<PictureCellEntity>();
+    final private SingleSelectionModel<PictureCellEntity> pictureSelectionModel = new SingleSelectionModel<PictureCellEntity>();
     @UiField
     Button lockTheDevice;
     @UiField
@@ -38,7 +44,7 @@ public class AntiTheftWidget extends Composite {
     @UiField
     Image deviceLockingLoading;
     @UiField
-    Button takePicture;
+    Image takePicture;
     @UiField
     CheckBox highQuality;
     @UiField
@@ -48,7 +54,21 @@ public class AntiTheftWidget extends Composite {
     @UiField(provided = true)
     CellList<PictureCellEntity> picturesList;
     @UiField
-    Button refreshPicturesList;
+    Image refreshPicturesList;
+    @UiField
+    Image deleteSelectedPicture;
+    @UiField
+    Image deleteAllPictures;
+    @UiField
+    Image viewFullSize;
+    @UiField
+    FlowPanel pictureLoadingPanel;
+    @UiField
+    Label hidePicture;
+    @UiField
+    Label selectDeviceMsg;
+    @UiField
+    HTMLPanel antiTheftPanel;
     @Inject
     private MessageWindow messageWindow;
     @Inject
@@ -61,13 +81,29 @@ public class AntiTheftWidget extends Composite {
     @Inject
     private UserInfoRpcServiceAsync userInfoRpcServiceAsync;
     private IUserDeviceModel selectedModel;
+    @Inject
+    private CommonUiUtil commonUiUtil;
+    @Inject
+    private DisplayPictureWindow displayPictureWindow;
+
 
     @Inject
     public AntiTheftWidget(Binder binder, PictureCell pictureCell) {
         picturesList = new CellList<PictureCellEntity>(pictureCell);
         initWidget(binder.createAndBindUi(this));
         frontCamera.setValue(true);
+        picturesList.setSelectionModel(pictureSelectionModel);
         picturesCellListDataProvider.addDataDisplay(picturesList);
+        initHandlers();
+    }
+
+    private void initHandlers() {
+        pictureSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+            @Override
+            public void onSelectionChange(SelectionChangeEvent event) {
+
+            }
+        });
     }
 
     @UiHandler("lockTheDevice")
@@ -80,8 +116,46 @@ public class AntiTheftWidget extends Composite {
     @UiHandler("takePicture")
     void onTakePictureClicked(ClickEvent clickEvent) {
         if (antiTheftActionListener != null) {
+            pictureLoadingPanel.setVisible(true);
             antiTheftActionListener.onTakePictureClicked();
         }
+    }
+
+    @UiHandler("refreshPicturesList")
+    void onRefreshPicturesListClickedHandler(ClickEvent clickEvent) {
+        refreshPicturesList();
+    }
+
+    @UiHandler("deleteSelectedPicture")
+    void onDeleteSelectedPicture(ClickEvent clickEvent) {
+        if (pictureSelectionModel.getSelectedObject() != null) {
+            userInfoRpcServiceAsync.removePicture(pictureSelectionModel.getSelectedObject().getPictureId(), new AsyncCallbackImpl<Void>() {
+
+            });
+            picturesCellListDataProvider.getList().remove(pictureSelectionModel.getSelectedObject());
+        }
+    }
+
+    @UiHandler("deleteAllPictures")
+    void onDeleteAllPictures(ClickEvent clickEvent) {
+        if (selectedModel != null) {
+            userInfoRpcServiceAsync.removeAllPicturesFromDevice(selectedModel.getDeviceId(), new AsyncCallbackImpl<Void>() {
+
+            });
+            picturesCellListDataProvider.getList().clear();
+        }
+    }
+
+    @UiHandler("viewFullSize")
+    void onViewFullSize(ClickEvent clickEvent) {
+        if (pictureSelectionModel.getSelectedObject() != null) {
+            displayPictureWindow.show(commonUiUtil.getPictureUrl(pictureSelectionModel.getSelectedObject().getPictureId(), false));
+        }
+    }
+
+    @UiHandler("hidePicture")
+    void onHidePicture(ClickEvent clickEvent) {
+        pictureLoadingPanel.setVisible(false);
     }
 
     public void setAntiTheftActionListener(AntiTheftActionListener antiTheftActionListener) {
@@ -115,10 +189,10 @@ public class AntiTheftWidget extends Composite {
 
     public void deviceHadBeenSelected(IUserDeviceModel model) {
         this.selectedModel = model;
-        refreshDevicesList();
+        refreshPicturesList();
     }
 
-    private void refreshDevicesList() {
+    private void refreshPicturesList() {
         if (selectedModel != null) {
             userInfoRpcServiceAsync.getPicturesFromDevice(selectedModel.getDeviceId(), new AsyncCallbackImpl<List<PictureCellEntity>>() {
                 @Override
@@ -129,12 +203,18 @@ public class AntiTheftWidget extends Composite {
         }
     }
 
-    @UiHandler("refreshPicturesList")
-    void onRefreshPicturesListClickedHandler(ClickEvent clickEvent) {
-        refreshDevicesList();
+    public void pictureFromThDeviceReceived(IPictureReadyModel picture) {
+        pictureLoadingPanel.setVisible(false);
+        refreshPicturesList();
     }
 
-    public static interface Binder extends UiBinder<HTMLPanel, AntiTheftWidget> {
+    public void enableControls(boolean enabled) {
+        selectDeviceMsg.setVisible(!enabled);
+        antiTheftPanel.setVisible(enabled);
+    }
+
+
+    public static interface Binder extends UiBinder<FlowPanel, AntiTheftWidget> {
     }
 
     public static interface AntiTheftActionListener {

@@ -1,7 +1,6 @@
 package com.artigile.howismyphonedoing.server.dao;
 
 import com.artigile.howismyphonedoing.server.entity.PicturesFromDevice;
-import com.artigile.howismyphonedoing.server.entity.UserDevice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -52,8 +51,32 @@ public class PicturesFromDeviceDaoImpl implements PicturesFromDeviceDao {
         try {
             Query query = pm.newQuery(PicturesFromDevice.class, "deviceUuid == deviceUuidParam");
             query.declareParameters("String deviceUuidParam");
-            List<PicturesFromDevice> userDevices = (List<PicturesFromDevice>) query.execute(deviceId);
-            return userDevices;
+            return (List<PicturesFromDevice>) query.execute(deviceId);
+        } finally {
+            pm.close();
+        }
+    }
+
+    @Override
+    public void removePicture(String pictureId) {
+        PersistenceManager pm = pmfTransationAware.getPersistenceManager();
+        try {
+            PicturesFromDevice picturesFromDevice = pm.getObjectById(PicturesFromDevice.class, pictureId);
+            if (picturesFromDevice != null) {
+                pm.deletePersistent(picturesFromDevice);
+            }
+        } finally {
+            pm.close();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void removePicturesFromTheDevice(String deviceId) {
+        List<PicturesFromDevice> picturesFromDevice = getPicturesByDeviceUid(deviceId);
+        PersistenceManager pm = pmfTransationAware.getPersistenceManager();
+        try {
+            pm.deletePersistentAll(picturesFromDevice);
         } finally {
             pm.close();
         }

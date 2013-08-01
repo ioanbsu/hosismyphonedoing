@@ -66,5 +66,19 @@ public class UserInfoRpcServiceImpl extends AbstractRpcService implements UserIn
         return pictureCellEntities;
     }
 
+    @Override
+    public void removePicture(String pictureId) {
+        picturesService.removePicture(pictureId);
+    }
+
+    @Override
+    public void removeAllPicturesFromDevice(String deviceId) {
+        //todo: resole it so the pictures can be deleted in a batch
+        List<PicturesFromDevice> pictures = picturesService.getPicturesByDeviceUid(deviceId);
+        for (PicturesFromDevice picture : pictures) {
+            removePicture(picture.getPictureUuid());
+        }
+    }
+
 
 }

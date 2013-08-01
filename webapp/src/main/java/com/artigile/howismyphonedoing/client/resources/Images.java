@@ -41,5 +41,20 @@ public interface Images extends ClientBundle {
     @Source("com/artigile/howismyphonedoing/public/images/refresh.png")
     ImageResource refresh();
 
+    @Source("com/artigile/howismyphonedoing/public/images/refreshSmall.png")
+    ImageResource refreshSmall();
+
+    @Source("com/artigile/howismyphonedoing/public/images/delete.png")
+    ImageResource delete();
+
+    @Source("com/artigile/howismyphonedoing/public/images/deleteAll.png")
+    ImageResource deleteAll();
+
+    @Source("com/artigile/howismyphonedoing/public/images/view.png")
+    ImageResource view();
+
+    @Source("com/artigile/howismyphonedoing/public/images/camera.png")
+    ImageResource camera();
+
 
 }

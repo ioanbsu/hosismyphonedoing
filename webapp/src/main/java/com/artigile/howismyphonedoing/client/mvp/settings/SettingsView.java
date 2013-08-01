@@ -2,13 +2,13 @@ package com.artigile.howismyphonedoing.client.mvp.settings;
 
 import com.artigile.howismyphonedoing.api.model.CameraType;
 import com.artigile.howismyphonedoing.api.model.IDeviceSettingsModel;
+import com.artigile.howismyphonedoing.api.model.IPictureReadyModel;
 import com.artigile.howismyphonedoing.api.model.IUserDeviceModel;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceInfoCell;
-import com.artigile.howismyphonedoing.shared.entity.DeviceInfoWithLoadingInfoEntity;
 import com.artigile.howismyphonedoing.client.mvp.settings.cell.DeviceListCell;
 import com.artigile.howismyphonedoing.client.mvp.settings.widget.AntiTheftWidget;
 import com.artigile.howismyphonedoing.client.mvp.settings.widget.DeviceSettingsWidget;
-import com.artigile.howismyphonedoing.client.service.DebugUtil;
+import com.artigile.howismyphonedoing.shared.entity.DeviceInfoWithLoadingInfoEntity;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -67,9 +67,6 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
         addableDevicesList = new CellList<DeviceInfoWithLoadingInfoEntity>(deviceListCell, getUserDeviceModelProvidesKey());
         addableDevicesList.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
         binder.createAndBindUi(this);
-        if (!DebugUtil.isDebugMode()) {
-            tabLayuotPanel.getTabWidget(2).getParent().setVisible(false);
-        }
     }
 
     private AntiTheftWidget.AntiTheftActionListener initAntiTheftListener() {
@@ -159,7 +156,6 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
         presenter.onRefreshDevicesListClicked();
     }
 
-
     protected ProvidesKey<DeviceInfoWithLoadingInfoEntity> getUserDeviceModelProvidesKey() {
         return new ProvidesKey<DeviceInfoWithLoadingInfoEntity>() {
             @Override
@@ -203,6 +199,15 @@ public class SettingsView implements ReverseViewInterface<SettingsPresenter> {
 
     public boolean isHighQuality() {
         return antiTheftWidget.isHighQuality();
+    }
+
+    public void pictureFromDeviceReceived(IPictureReadyModel picture) {
+        antiTheftWidget.pictureFromThDeviceReceived(picture);
+    }
+
+    public void enable(boolean isEnabled) {
+        deviceSettings.enableControlls(isEnabled);
+        antiTheftWidget.enableControls(isEnabled);
     }
 
 

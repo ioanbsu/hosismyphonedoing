@@ -3,7 +3,6 @@ package com.artigile.checkmyphone.service;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.util.Log;
 import com.artigile.checkmyphone.service.admin.DeviceAdminReceiverImpl;
 import com.artigile.howismyphonedoing.api.MessageParser;
 import com.artigile.howismyphonedoing.api.model.*;
@@ -33,7 +32,6 @@ public class AntiTheftServiceImpl implements AntiTheftService {
     private AndroidMessageSender messageSender;
     @Inject
     private MessageParser messageParser;
-    private boolean takePictureIsInProgress;
 
 
     @Inject
@@ -73,12 +71,7 @@ public class AntiTheftServiceImpl implements AntiTheftService {
 
     @Override
     public void takePicture(TakePictureModel takePictureModel) throws DeviceHasNoCameraException {
-        if (!takePictureIsInProgress) {
-            cameraService.takePicture(takePictureModel);
-            takePictureIsInProgress = true;
-        } else {
-            Log.i("AntiTheftServiceImpl", "Skipping picture shot since picture taking is in progress...");
-        }
+        cameraService.takePicture(takePictureModel);
     }
 
     private void sendPictureReadyMessage(byte[] data) {
@@ -94,10 +87,7 @@ public class AntiTheftServiceImpl implements AntiTheftService {
     private class PictureReadyListener {
         @Subscribe
         public void pictureReady(PictureReadyEvent event) {
-            takePictureIsInProgress=false;
             sendPictureReadyMessage(event.getPictureBytes());
         }
     }
-
-
 }

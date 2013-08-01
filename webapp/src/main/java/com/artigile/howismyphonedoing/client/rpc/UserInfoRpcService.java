@@ -32,4 +32,8 @@ public interface UserInfoRpcService extends RemoteService {
     List<UserDeviceModel> getUsersDevicesList() throws UserHasNoDevicesException;
 
     List<PictureCellEntity> getPicturesFromDevice(String deviceId);
+
+    void removePicture(String pictureId);
+
+    void removeAllPicturesFromDevice(String deviceId);
 }
