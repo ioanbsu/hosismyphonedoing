@@ -107,6 +107,7 @@ public class MainActivity extends RoboActivity {
         super.onStart();
         checkIfUserHasGoogleAccount();
         checkLogsShouldBeDisplayed();
+        GCMRegistrar.register(this, SENDER_ID);
     }
 
     @Override
