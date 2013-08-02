@@ -57,7 +57,7 @@ public class LocationServiceImpl implements LocationService {
             locationRequestsAreInProgress = true;
             init();
             connectToLocationClient();
-            stopLocationRequestsTimer=new Timer();
+            stopLocationRequestsTimer = new Timer();
             stopLocationRequestsTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -120,7 +120,9 @@ public class LocationServiceImpl implements LocationService {
 
     private void stopRequestingLocationUpdates() {
         Log.v(TAG, "Accuracy is very precise");
-        stopLocationRequestsTimer.cancel();
+        if (stopLocationRequestsTimer != null) {
+            stopLocationRequestsTimer.cancel();
+        }
         locationClient.disconnect();
         locationRequestsAreInProgress = false;
     }
