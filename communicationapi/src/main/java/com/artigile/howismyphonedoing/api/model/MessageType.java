@@ -103,6 +103,12 @@ public enum MessageType {
         public Class<? extends Serializable> getDeserializedClass() {
             return TakePictureModel.class;
         }
+    }, PICTURE_CAN_NOT_BE_TAKEN {//this event returns when the picture can not be taken by device for some reason.
+
+        @Override
+        public Class<? extends Serializable> getDeserializedClass() {
+            return String.class;
+        }
     },
     PICTURE_READY {//the message that contains picture byte data with it. Encoded in Json. Should be updated later to send pure bytes.
 

@@ -81,7 +81,7 @@ public class TakePictureActivity extends RoboActivity implements SurfaceHolder.C
 
     private void initCameraAndTakePicture() {
         Log.i(CameraService.class.getName(), "Surface Created");
-        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             mCamera = getCamera();
             mCamera.setDisplayOrientation(90);
             try {
@@ -95,7 +95,7 @@ public class TakePictureActivity extends RoboActivity implements SurfaceHolder.C
                         parameters.setPictureSize(size.width, size.height);
                         parameters.setJpegQuality(50);
                     }
-                }else{
+                } else {
                     parameters.setJpegQuality(1);
                 }
                 //set camera parameters
@@ -111,11 +111,14 @@ public class TakePictureActivity extends RoboActivity implements SurfaceHolder.C
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            eventBus.post(new PictureReadyEvent(null));
+            finish();
         }
     }
 
     private Camera getCamera() {
-        if (takePictureModel != null) {
+        if (takePictureModel != null && Camera.getNumberOfCameras() > 1) {
             Camera.CameraInfo info = new Camera.CameraInfo();
             int facing = -1;
             if (takePictureModel.getCameraType() == CameraType.BACK) {
@@ -130,7 +133,8 @@ public class TakePictureActivity extends RoboActivity implements SurfaceHolder.C
                     return Camera.open(i);
                 }
             }
-
+        } else if (Camera.getNumberOfCameras() == 1) {
+            return Camera.open(0);
         }
         return Camera.open();
     }

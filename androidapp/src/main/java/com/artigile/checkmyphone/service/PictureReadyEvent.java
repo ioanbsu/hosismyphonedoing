@@ -7,7 +7,6 @@ package com.artigile.checkmyphone.service;
  */
 public class PictureReadyEvent {
 
-
     private byte[] pictureBytes;
 
     public PictureReadyEvent(byte[] pictureBytes) {

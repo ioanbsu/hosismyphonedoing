@@ -84,10 +84,14 @@ public class AntiTheftServiceImpl implements AntiTheftService {
     }
 
     private void sendPictureReadyMessage(byte[] data) {
-        IPictureReadyModel pictureReadyModel = new PictureReadyModel();
-        pictureReadyModel.setPictureData(data);
         try {
-            messageSender.processMessage(MessageType.PICTURE_READY, messageParser.serialize(pictureReadyModel), null);
+            if (data == null) {
+                messageSender.processMessage(MessageType.PICTURE_CAN_NOT_BE_TAKEN, "Picture data is empty", null);
+            } else {
+                IPictureReadyModel pictureReadyModel = new PictureReadyModel();
+                pictureReadyModel.setPictureData(data);
+                messageSender.processMessage(MessageType.PICTURE_READY, messageParser.serialize(pictureReadyModel), null);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
