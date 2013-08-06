@@ -45,7 +45,7 @@ public class PicturesResolverServlet extends AbstractServlet {
         UserDevice userDevice = userService.findUserDeviceByUuid(picturesFromDevice.getDeviceUuid());
         if (!"ioanbsu1@gmail.com".equals(loggedInUserEmail) && !userDevice.getUserEmail().equals(loggedInUserEmail)) {
             logger.warning("The user with email " + loggedInUserEmail + " tried to get access to pictures of user with email:  " + userDevice.getUserEmail());
-            response.getWriter().append("You are not authorized to view this picture. Please check that you're logged in to [How Is My Phone Doing?] Web App.");
+            response.getWriter().append("You are not authorized to view this picture. Please check that you're logged in to [How Is My Phone Doing?] Web App and you have permissions to view this picture.");
         } else {
             writeImageInResponse(picturesFromDevice.getPictureData(), response, resizeToIcon);
         }
