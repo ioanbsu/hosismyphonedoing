@@ -54,6 +54,6 @@
     <string name="remote_application_url">http://howismyphonedoing.appspot.com/remoteService</string>
     <!--<string name="remote_application_url">http://169.229.196.12:8080/remoteService</string>-->
     <string name="enableAntiTheft">Enable AntiTheft</string>
-    <string name="device_registered_info_text">You can open now https://howismyphonedoing.appspot.com on your computer to control your device online.</string>
+    <string name="device_registered_info_text">You can open now https://ioanbsu.com on your computer to control your device online.</string>
 
 </resources>
