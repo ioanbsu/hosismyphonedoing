@@ -73,7 +73,6 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
             serializedResonseObject = messageParser.serialize(deviceModel);
         } else if (messageType == MessageType.MESSAGE_TO_DEVICE) {
             MessageToDeviceModel messageToTheDevice = messageParser.parse(messageType, serializedObject);
-            generateNotification(messageToTheDevice.getMessage());
             Locale locale = parseLocale(messageToTheDevice.getLocale());
             textToSpeechService.say(locale, messageToTheDevice.getMessage());
             serializedResonseObject = serializedObject;
