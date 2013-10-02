@@ -34,7 +34,7 @@ public class LocationServiceImpl implements LocationService {
 
     public static final String TAG = "LocationServiceImpl";
     public static final int MAX_RECONNECT_ATTEMPS = 5;
-    private static final int THREE_MINUTES = 1000 * 60 * 3;
+    private static final int THREE_MINUTES = 1000 * 60;
     private static final int TWENTY_SECONDS_INTERVAL = 1000 * 10;
     private static final int FIVE_SECONDS = 1000 * 5;
     @Inject
@@ -46,12 +46,14 @@ public class LocationServiceImpl implements LocationService {
     private boolean locationRequestsAreInProgress = false;
     private int reconnectAttempt = 0;
     private Location currentBestLocation;
-
     private Timer stopLocationRequestsTimer;
 
     @Override
     public void getLocation(LocationListener locationListener) {
         this.locationListener = locationListener;
+        if (currentBestLocation != null) {
+            locationListener.onLocationChanged(currentBestLocation);
+        }
         if (!locationRequestsAreInProgress) {
             reconnectAttempt = 0;
             locationRequestsAreInProgress = true;
@@ -64,8 +66,6 @@ public class LocationServiceImpl implements LocationService {
                     stopRequestingLocationUpdates();
                 }
             }, THREE_MINUTES);
-        } else if (currentBestLocation != null) {
-            locationListener.onLocationChanged(currentBestLocation);
         }
     }
 
