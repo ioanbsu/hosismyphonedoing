@@ -33,27 +33,43 @@
     <string name="test">Test Button</string>
 
     <string name="your_device_has_no_linked_google_account_title">Ops!</string>
-    <string name="your_device_has_no_linked_google_account_message">It looks like your device does not has linked Google account. Please register your device with Google in order to use \"How Is My Phone Doing App\". The application will automatically exist when you tap OK</string>
+    <string name="your_device_has_no_linked_google_account_message">It looks like your device does not has linked Google
+        account. Please register your device with Google in order to use \"How Is My Phone Doing App\". The application
+        will automatically exist when you tap OK
+    </string>
     <string name="cleanLogs">Clean Logs</string>
     <string name="testButton">Test</string>
     <string name="device_registered">Device is Registered in Google cloud</string>
     <string name="device_not_registered">Device is not Registered in Google cloud</string>
 
     <string name="device_admin_label">How Is My Phone Doing Admin</string>
-    <string name="device_admin_description">Device administration for better performance and better phone battery.</string>
-    <string name="device_admin_explanation">By enabling anti-theft feature you\'re can control security sensitive data of you device remotely such as change device password, or erase all the data or lock the device and etc.</string>
+    <string name="device_admin_description">Device administration for better performance and better phone battery.
+    </string>
+    <string name="device_admin_explanation">By enabling anti-theft feature you\'re can control security sensitive data
+        of you device remotely such as change device password, or erase all the data or lock the device and etc.
+    </string>
 
     <string name="admin_receiver_status">Status: %1$s</string>
     <string name="admin_receiver_status_enabled">anti theft enabled</string>
-    <string name="admin_receiver_status_disable_warning">By disabling this you won\'t be able to perform AntiTheft features of How Is my Phone Doing App remotely from a web site. You can always enable it back from the app.</string>
+    <string name="admin_receiver_status_disable_warning">By disabling this you won\'t be able to perform AntiTheft
+        features of How Is my Phone Doing App remotely from a web site. You can always enable it back from the app.
+    </string>
     <string name="admin_receiver_status_disabled">anti theft disabled</string>
     <string name="admin_receiver_status_pw_changed">pwd changed</string>
-
 
 
     <string name="remote_application_url">http://howismyphonedoing.appspot.com/remoteService</string>
     <!--<string name="remote_application_url">http://169.229.196.12:8080/remoteService</string>-->
     <string name="enableAntiTheft">Enable AntiTheft</string>
-    <string name="device_registered_info_text">You can open now https://ioanbsu.com on your computer to control your device online.</string>
+    <string name="antitheft_enabled_text">You had enabled AntiTheft feature on you device. That means you will be able
+        to wipe out you phone\\tablet remotely(when it stolen) or lock the screen with new pin code that you enter on
+        ioanbsu.com. Also Beware, that by enabling AntiTheft feature you marked [How Is My Phone Doing?] application as
+        administrative application for you device. That means that you won\'t be able to remove [How Is My Phone Doing?]
+        application from your device unless you remove administrative rights from [How Is My Phone Doing?] app. You can
+        do so in your device\'s settings.
+    </string>
+    <string name="device_registered_info_text">You can open now https://ioanbsu.com on your computer\'s favorite browser
+        to control your device online. Log in using the same Google account name that you use on this device: %1$s
+    </string>
 
 </resources>

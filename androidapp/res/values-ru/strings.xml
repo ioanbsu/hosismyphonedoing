@@ -16,8 +16,12 @@
     <string name="already_registered">Устройство успешно зарегистрировано в реесте Гугла</string>
     <string name="server_registering">регистрируем ваше устройство</string>
     <string name="connecting_to_howismyphonedoing_server">подключаемся к [How Is My Phone Doing?] серверу</string>
-    <string name="failed_to_register_device">Мы не смогли зарегистрировать ваше устройство, пожалуйста попробуйте перезапустить приложение.</string>
-    <string name="failed_to_unregister_device">Мы не смогли отрегистрировать ваше устройство, пожалуйста попробуйте перезапустить приложение.</string>
+    <string name="failed_to_register_device">Мы не смогли зарегистрировать ваше устройство, пожалуйста попробуйте
+        перезапустить приложение.
+    </string>
+    <string name="failed_to_unregister_device">Мы не смогли отрегистрировать ваше устройство, пожалуйста попробуйте
+        перезапустить приложение.
+    </string>
     <string name="server_registered">Сервер зарегистрирован</string>
     <string name="server_register_error">Ошибка регистрации сервера</string>
     <string name="server_unregistered">Сервер отрегистрирован</string>
@@ -33,23 +37,46 @@
     <string name="test">Тест</string>
 
     <string name="your_device_has_no_linked_google_account_title">Упс!</string>
-    <string name="your_device_has_no_linked_google_account_message">Похоже, что ваше устройство не содержит ни одного зарегистрированного в гугл аккаунта. Пожалуйста перейдите в настройки вашего телефона и убедитесь что ваш телефон зарегистрирован с исспользованием гугл аккаунта(например test@gmail.com или test@google.com)</string>
+    <string name="your_device_has_no_linked_google_account_message">Похоже, что ваше устройство не содержит ни одного
+        зарегистрированного в гугл аккаунта. Пожалуйста перейдите в настройки вашего телефона и убедитесь что ваш
+        телефон зарегистрирован с исспользованием гугл аккаунта(например test@gmail.com или test@google.com)
+    </string>
     <string name="cleanLogs">Очистить логи</string>
     <string name="testButton">Тест</string>
     <string name="device_registered">Девайст зарегистрирован в гугл</string>
     <string name="device_not_registered">Девайс не зарегистрирован в гугл</string>
 
     <string name="device_admin_label">How Is My Phone Doing Admin</string>
-    <string name="device_admin_description">Аднимистрирование устройства для лучшей производительности и быстродействия.</string>
-    <string name="device_admin_explanation">Влючив anti-theft настройку, вы смолжете удаленно менять ПИН код вашего устройства с веб сайта [ioanbsu.com], а также сбрасывать ваше устройство на фабричные настройки, удаляя всю персональную информацию с устройства, в случае если вы потеряли ваш телефон(планшет) или он был украден. Если вы захотите удалить приложение [How Is My Phone Doing?] с включенной anti-theft настройкой, вам потребуется сначала выключить эту настройку. В противном случае опрационная система андройд не разрешит вам удалит это приложение.</string>
+    <string name="device_admin_description">Аднимистрирование устройства для лучшей производительности и
+        быстродействия.
+    </string>
+    <string name="device_admin_explanation">Влючив anti-theft настройку, вы смолжете удаленно менять ПИН код вашего
+        устройства с веб сайта [ioanbsu.com], а также сбрасывать ваше устройство на фабричные настройки, удаляя всю
+        персональную информацию с устройства, в случае если вы потеряли ваш телефон(планшет) или он был украден. Если вы
+        захотите удалить приложение [How Is My Phone Doing?] с включенной anti-theft настройкой, вам потребуется сначала
+        выключить эту настройку. В противном случае опрационная система андройд не разрешит вам удалит это приложение.
+    </string>
 
     <string name="admin_receiver_status">Статус: %1$s</string>
     <string name="admin_receiver_status_enabled">anti theft включено</string>
-    <string name="admin_receiver_status_disable_warning">Выключив anti-theft настройку вы не сможете менять ПИН код вашего устройства удаленно или сбасывать ваш девайс до фабричный настроек. Однако, вы всегда можете включить anti-theft настройку непосредственно заядя в [How Is My Phone Doing?] приложение на вашем телефоне(планшете)</string>
+    <string name="admin_receiver_status_disable_warning">Выключив anti-theft настройку вы не сможете менять ПИН код
+        вашего устройства удаленно или сбасывать ваш девайс до фабричный настроек. Однако, вы всегда можете включить
+        anti-theft настройку непосредственно заядя в [How Is My Phone Doing?] приложение на вашем телефоне(планшете)
+    </string>
     <string name="admin_receiver_status_disabled">anti theft выключено</string>
     <string name="admin_receiver_status_pw_changed">пароль изменен</string>
 
     <string name="enableAntiTheft">Включить AntiTheft</string>
-    <string name="device_registered_info_text">Теперь вы можете открыть страничку https://ioanbsu.com на вашем компьютере, для того, чтобы управлять вашим устройством!</string>
+    <string name="antitheft_enabled_text">Вы включили функцию AntiTheft. Это означает что вы можете удалить всю
+        информацию с вашего телефона\\планшета удаленно с веб сайта ioanbsu.com. Так же вы можете поменять пин код на
+        вашем устройстве удаленно. ВНИМАНИЕ: при включении функции AntiTheft вы наделяете программу [How Is My Phone
+        Doing?] администраторскими правами. Это означает что вы не сможете удалить прилажение с вашего телефона пока вы
+        не лишите программу [How Is My Phone Doing?] администраторских прав. Вы это можете сделать В настройках вашего
+        телефона/планшета.
+    </string>
+    <string name="device_registered_info_text">Теперь вы можете открыть страничку https://ioanbsu.com на вашем
+        компьютере, для того, чтобы управлять вашим устройством! Пожалуйста используйте такой же Google логин, какой вы
+        исспользуете на вашем мобильном устройстве: %1$s
+    </string>
 
 </resources>

@@ -13,12 +13,13 @@ package com.artigile.checkmyphone;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -69,6 +70,8 @@ public class MainActivity extends RoboActivity {
     ScrollView logsScrollView;
     @InjectView(R.id.enableAntiTheftButton)
     Button enableAntiTheftButton;
+    @InjectView(R.id.antiTheftEnabled)
+    TextView antiTheftEnabled;
     AsyncTask<Void, Void, Void> mRegisterTask;
     @Inject
     private DeviceRegistrationServiceImpl deviceRegistrationService;
@@ -86,7 +89,8 @@ public class MainActivity extends RoboActivity {
     private AntiTheftService antiTheftService;
     @Inject
     private CameraService cameraService;
-    private Dialog errorDialog;
+    @Inject
+    private DeviceInfoService deviceInfoService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -216,6 +220,7 @@ public class MainActivity extends RoboActivity {
             deviceNotRegisteredLabel.setVisibility(View.GONE);
             deviceRegisteredLabel.setVisibility(View.VISIBLE);
             infoLabel.setVisibility(View.VISIBLE);
+            infoLabel.setText(getString(R.string.device_registered_info_text, deviceInfoService.getUserGoogleAccoutnEmail(this)));
         } else if (getString(R.string.device_not_registered).equals(message)) {
             deviceNotRegisteredLabel.setVisibility(View.VISIBLE);
             deviceRegisteredLabel.setVisibility(View.GONE);
@@ -257,12 +262,13 @@ public class MainActivity extends RoboActivity {
         }
     }
 
-
     private void checkAntiTheft() {
         if (antiTheftService.isAntiTheftEnabled()) {
             enableAntiTheftButton.setVisibility(View.GONE);
+            antiTheftEnabled.setVisibility(View.VISIBLE);
         } else {
             enableAntiTheftButton.setVisibility(View.VISIBLE);
+            antiTheftEnabled.setVisibility(View.GONE);
         }
     }
 }

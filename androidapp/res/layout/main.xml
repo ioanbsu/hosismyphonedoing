@@ -37,9 +37,16 @@
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
               android:id="@+id/infoLabel"
-              android:inputType="textMultiLine"
-              style="@style/Main.registeredLabel.isRegistered"
-              android:text="@string/device_registered_info_text"/>
+              android:inputType="textMultiLine|textNoSuggestions"
+              style="@style/Main.registeredLabel.isRegistered"/>
+    <TextView
+            android:gravity="top"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/antiTheftEnabled"
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:text="@string/antitheft_enabled_text"
+            style="@style/Main.registeredLabel.antiTheftEnabled"/>
     <View
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:background="@android:color/holo_blue_dark"
