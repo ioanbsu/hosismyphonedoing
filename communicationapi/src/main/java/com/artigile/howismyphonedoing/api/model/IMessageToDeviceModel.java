@@ -23,4 +23,8 @@ public interface IMessageToDeviceModel extends Serializable {
     String getMessageId();
 
     void setMessageId(String messageId);
+
+    MessageToDeviceType getMessageToDeviceType();
+
+    void setMessageToDeviceType(MessageToDeviceType messageToDeviceType);
 }

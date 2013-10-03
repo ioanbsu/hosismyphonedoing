@@ -1,7 +1,5 @@
 package com.artigile.howismyphonedoing.api.model;
 
-import java.io.Serializable;
-
 /**
  * User: ioanbsu
  * Date: 6/13/13
@@ -13,6 +11,7 @@ public class MessageToDeviceModel implements IMessageToDeviceModel {
     private String deviceId;
     private GwtLocale locale;
     private String messageId;
+    private MessageToDeviceType messageToDeviceType;
 
     @Override
     public String getMessage() {
@@ -53,4 +52,16 @@ public class MessageToDeviceModel implements IMessageToDeviceModel {
     public void setMessageId(String messageId) {
         this.messageId = messageId;
     }
+
+    @Override
+    public MessageToDeviceType getMessageToDeviceType() {
+        return messageToDeviceType;
+    }
+
+    @Override
+    public void setMessageToDeviceType(MessageToDeviceType messageToDeviceType) {
+        this.messageToDeviceType = messageToDeviceType;
+    }
+
+
 }

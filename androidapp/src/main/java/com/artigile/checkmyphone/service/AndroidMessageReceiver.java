@@ -19,8 +19,8 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.util.Log;
 import com.artigile.checkmyphone.MainActivity;
+import com.artigile.checkmyphone.MessageToDeviceService;
 import com.artigile.checkmyphone.R;
-import com.artigile.checkmyphone.TextToSpeechService;
 import com.artigile.howismyphonedoing.api.AndroidMessageProcessor;
 import com.artigile.howismyphonedoing.api.AndroidMessageResultListener;
 import com.artigile.howismyphonedoing.api.MessageParser;
@@ -45,7 +45,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
     @Inject
     private Context context;
     @Inject
-    private TextToSpeechService textToSpeechService;
+    private MessageToDeviceService messageToDeviceService;
     @Inject
     private LocationService locationService;
     @Inject
@@ -74,7 +74,7 @@ public class AndroidMessageReceiver implements AndroidMessageProcessor<String> {
         } else if (messageType == MessageType.MESSAGE_TO_DEVICE) {
             MessageToDeviceModel messageToTheDevice = messageParser.parse(messageType, serializedObject);
             Locale locale = parseLocale(messageToTheDevice.getLocale());
-            textToSpeechService.say(locale, messageToTheDevice.getMessage());
+            messageToDeviceService.onMessageToDeviceReceived(locale, messageToTheDevice);
             serializedResonseObject = serializedObject;
         } else if (messageType == MessageType.GET_DEVICE_LOCATION) {
             Log.v(TAG, "got request to return phone location.");

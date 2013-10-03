@@ -12,8 +12,10 @@ package com.artigile.checkmyphone.service;
 
 import android.content.Context;
 import android.content.Intent;
+import com.artigile.checkmyphone.DialogActivity;
 import com.artigile.checkmyphone.R;
 import com.artigile.checkmyphone.TakePictureActivity;
+import com.artigile.howismyphonedoing.api.model.MessageToDeviceModel;
 import com.artigile.howismyphonedoing.api.model.TakePictureModel;
 import roboguice.inject.InjectResource;
 
@@ -44,6 +46,10 @@ public class ActivityAndBroadcastUtils {
      */
     public static final String TAKE_PICTURE_CONFIG = TakePictureModel.class.getName();
     /**
+     * MessageObject
+     */
+    public static final String MESSAGE_OBJECT = MessageToDeviceModel.class.getName();
+    /**
      * Intent's extra that contains the message to be displayed.
      */
     public static final String MESSAGE = "message";
@@ -56,12 +62,27 @@ public class ActivityAndBroadcastUtils {
 
     /**
      * Starts camera activity that take a picture and sends broadcast message that picture was taken.
-     * @param context context to start activity
+     *
+     * @param context          context to start activity
      * @param takePictureModel picture and camera configuration
      */
     public static void startCameraActivity(Context context, TakePictureModel takePictureModel) {
         Intent intent = new Intent(context, TakePictureActivity.class);
         intent.putExtra(TAKE_PICTURE_CONFIG, takePictureModel);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        context.startActivity(intent);
+    }
+
+    /**
+     * Starts dialog activity that displays message on the screen.
+     *
+     * @param context              context to start activity
+     * @param messageToDeviceModel message to device object
+     */
+    public static void startDialogActivity(Context context, MessageToDeviceModel messageToDeviceModel) {
+        Intent intent = new Intent(context, DialogActivity.class);
+        intent.putExtra(MESSAGE_OBJECT, messageToDeviceModel);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         context.startActivity(intent);

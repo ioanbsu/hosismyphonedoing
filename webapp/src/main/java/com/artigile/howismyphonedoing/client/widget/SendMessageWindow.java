@@ -1,15 +1,13 @@
 package com.artigile.howismyphonedoing.client.widget;
 
-import com.artigile.howismyphonedoing.api.model.GwtLocale;
-import com.artigile.howismyphonedoing.api.model.IMessageToDeviceModel;
-import com.artigile.howismyphonedoing.api.model.MessageType;
-import com.artigile.howismyphonedoing.api.model.UserDeviceModel;
+import com.artigile.howismyphonedoing.api.model.*;
 import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.exception.DeviceWasRemovedException;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.service.HowIsMyPhoneDoingAutoBeansFactory;
+import com.google.appengine.repackaged.com.google.common.base.Strings;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -57,6 +55,8 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
     FlowPanel messageQueuePanel;
     @UiField
     Label clearPendingMsg;
+    @UiField
+    ListBox messageType;
     @Inject
     private MessageRpcServiceAsync messageRpcServiceAsync;
     @Inject
@@ -91,6 +91,9 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
         binder.createAndBindUi(this);
         for (GwtLocale gwtLocale : GwtLocale.values()) {
             languagesList.addItem(gwtLocale.getLanguageName());
+        }
+        for (MessageToDeviceType messageToDeviceType : MessageToDeviceType.values()) {
+            messageType.addItem(getMessageTypeStr(messageToDeviceType));
         }
     }
 
@@ -139,6 +142,7 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
         messageToTheDeviceAutoBean.as().setDeviceId(devicesValueListBox.getValue().getDeviceId());
         messageToTheDeviceAutoBean.as().setMessage(messageToSend.getText());
         messageToTheDeviceAutoBean.as().setLocale(GwtLocale.parse(languagesList.getItemText(languagesList.getSelectedIndex())));
+        messageToTheDeviceAutoBean.as().setMessageToDeviceType(getMessageTypeByStr(messageType.getItemText(messageType.getSelectedIndex())));
         messageToTheDeviceAutoBean.as().setMessageId(messageToSend.getText() + "_" + new Date().getTime());
 
         messageToSend.setText("");
@@ -173,6 +177,26 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
     @UiHandler("closeWindow")
     void onCloseWindowClicked(ClickEvent clickEvent) {
         dialogBox.hide();
+    }
+    private String getMessageTypeStr(MessageToDeviceType messageToDeviceType) {
+        if (messageToDeviceType == MessageToDeviceType.SAY_IT_OUT_LOUD) {
+            return messages.send_message_window_message_type_say_out_loud();
+        } else if (messageToDeviceType == MessageToDeviceType.DISPLAY_ALERT) {
+            return messages.send_message_window_message_type_display_alert();
+        }
+        return "";
+    }
+
+    private MessageToDeviceType getMessageTypeByStr(String message) {
+        if (Strings.isNullOrEmpty(message)) {
+            return null;
+        }
+        if (message.equals(messages.send_message_window_message_type_say_out_loud())) {
+            return MessageToDeviceType.SAY_IT_OUT_LOUD;
+        } else if (message.equals(messages.send_message_window_message_type_display_alert())) {
+            return MessageToDeviceType.DISPLAY_ALERT;
+        }
+        return null;
     }
 
     interface Binder extends UiBinder<DialogBox, SendMessageWindow> {

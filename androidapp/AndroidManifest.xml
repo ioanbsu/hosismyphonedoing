@@ -79,8 +79,21 @@
         </activity>
         <activity android:name=".TakePictureActivity" android:screenOrientation="portrait"
                   android:excludeFromRecents="true"
-                  android:launchMode="singleTask" android:taskAffinity="com.howismuphonedoing.takepicture"
+                  android:launchMode="singleTask"
+                  android:taskAffinity="com.howismuphonedoing.takepicture"
                   android:alwaysRetainTaskState="false" android:noHistory="true">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".DialogActivity"
+                  android:theme="@android:style/Theme.Dialog"
+                  android:screenOrientation="portrait"
+                  android:excludeFromRecents="true"
+                  android:launchMode="singleTask"
+                  android:taskAffinity="com.howismuphonedoing.dialogactivity"
+                  android:alwaysRetainTaskState="false"
+                  android:noHistory="true">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>

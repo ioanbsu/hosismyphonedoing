@@ -14,6 +14,8 @@ import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
+import com.artigile.checkmyphone.service.ActivityAndBroadcastUtils;
+import com.artigile.howismyphonedoing.api.model.MessageToDeviceModel;
 import com.google.common.base.Strings;
 
 import javax.inject.Inject;
@@ -27,7 +29,7 @@ import java.util.Locale;
  * Time: 7:14 PM
  */
 @Singleton
-public class TextToSpeechService implements TextToSpeech.OnInitListener {
+public class MessageToDeviceService implements TextToSpeech.OnInitListener {
     private static final String TAG = "TTS";
     private static boolean messageSaid = false;
     @Inject
@@ -38,7 +40,17 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
     private UtteranceProgressListener utteranceProgressListener = getUtteranceProgressListener();
     private int MAX_WAIT_ATTEMPTS = 15;
 
-    public String say(final Locale locale, final String message) {
+    public void onMessageToDeviceReceived(Locale locale, MessageToDeviceModel messageToDeviceModel) {
+        if (messageToDeviceModel.getMessageToDeviceType() == MessageToDeviceModel.MessageToDeviceType.SAY_IT_OUT_LOUD) {
+            say(locale, messageToDeviceModel.getMessage());
+        } else if (messageToDeviceModel.getMessageToDeviceType() == MessageToDeviceModel.MessageToDeviceType.DISPLAY_ALERT) {
+            ActivityAndBroadcastUtils.startDialogActivity(context, messageToDeviceModel);
+        } else { // by default saying the message out loud
+            say(locale, messageToDeviceModel.getMessage());
+        }
+    }
+
+    private String say(final Locale locale, final String message) {
         messageSaid = false;
         if (Strings.isNullOrEmpty(message)) {
             return "nothing to say - message empty";

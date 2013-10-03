@@ -76,7 +76,7 @@ public class MainActivity extends RoboActivity {
     @Inject
     private DeviceRegistrationServiceImpl deviceRegistrationService;
     @Inject
-    private TextToSpeechService textToSpeechService;
+    private MessageToDeviceService messageToDeviceService;
     @Inject
     private LocationService locationService;
     @Inject

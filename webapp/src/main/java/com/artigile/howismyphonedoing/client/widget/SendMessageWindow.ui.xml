@@ -66,6 +66,14 @@
                             <g:ValueListBox ui:field="devicesValueListBox"/>
                         </td>
                     </tr>
+             <!--       <tr>
+                        <td>
+                            <g:Label text="{msg.send_message_window_select_message_type}"/>
+                        </td>
+                        <td>
+                            <g:ListBox ui:field="messageType"/>
+                        </td>
+                    </tr>-->
                     <tr>
                         <td>
                             <g:Label text="{msg.send_message_window_select_language}"/>
