@@ -10,6 +10,7 @@
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:canvas="urn:import:com.artigile.howismyphonedoing.client.canvas"
         >
     <ui:with field="msg" type="com.artigile.howismyphonedoing.client.Messages"/>
     <ui:with field="images" type="com.artigile.howismyphonedoing.client.resources.Images"/>
@@ -17,10 +18,14 @@
         .mainPanelStyle {
             padding: 40px;
             text-align: center;
+            width: 295px;
+            height: 157px;
         }
 
         .dialogZIndexStyle {
-
+            z-index: 9999999;
+            width: 400px;
+            height: 300px;
         }
 
         .buttonHiddenStyle {
@@ -36,6 +41,9 @@
             font-size: 10px;
             padding: 11px 5px;
             text-align: center;
+            position: absolute;
+            top: 132px;
+            left: 5px;
         }
 
         .whyUseMyGoogleAccount {
@@ -43,11 +51,35 @@
         }
 
         .welomeLabel {
-            font-size: 45px;
+            font-size: 81px;
             width: 100%;
             float: left;
             color: #505050;
             text-align: center;
+            margin-left: -30px;
+            margin-top: -33px;
+        }
+
+        .canvasAnimation {
+            position: absolute;
+            top: 25px;
+            left: 10px;
+        }
+
+        .signInButtonStyle {
+            position: absolute;
+            top: 175px;
+            left: 82px;
+        }
+
+        .logginInLabel {
+            float: left;
+            font-size: 10px;
+            padding: 11px 5px;
+            text-align: center;
+            position: absolute;
+            top: 200px;
+            left: 90px;
         }
 
 
@@ -56,14 +88,15 @@
     <g:DialogBox ui:field="showSignInWithGoogle" glassEnabled="true" modal="true"
                  addStyleNames="{style.dialogZIndexStyle}" text="{msg.application_title}">
         <g:FlowPanel styleName="{style.mainPanelStyle}">
+            <canvas:CanvasAnimation styleName="{style.canvasAnimation}"/>
             <g:Label text="{msg.login_window_log_in_with_google_text}" styleName="{style.welomeLabel}"/>
             <g:Label text="{msg.login_window_log_in_with_google_text_prompt}" styleName="{style.loadingLabel}"
                      ui:field="waitForGoogleButtonPrompt"/>
             <g:FlowPanel ui:field="loadingIcon">
                 <g:Image resource="{images.loadingIcon}" stylePrimaryName="{style.loadingIcon}"/>
-                <g:Label text="{msg.login_window_logging_in_progress}" styleName="{style.loadingLabel}"/>
+                <g:Label text="{msg.login_window_logging_in_progress}" styleName="{style.logginInLabel}"/>
             </g:FlowPanel>
-            <g:HTMLPanel ui:field="signInWithGoogleButtonPanel">
+            <g:HTMLPanel ui:field="signInWithGoogleButtonPanel" styleName="{style.signInButtonStyle}">
                 <div id="signinButton">
                     <span class="g-signin"
                           data-scope="https://www.googleapis.com/auth/userinfo.email"

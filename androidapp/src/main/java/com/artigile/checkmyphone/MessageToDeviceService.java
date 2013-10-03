@@ -21,7 +21,9 @@ import com.google.common.base.Strings;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -35,6 +37,8 @@ public class MessageToDeviceService implements TextToSpeech.OnInitListener {
     private static boolean messageSaid = false;
     @Inject
     private Context context;
+    private static final List<String> messageList = new ArrayList<>();
+
     private TextToSpeech tts;
     private Locale locale;
     private String lastMessage;
@@ -45,7 +49,8 @@ public class MessageToDeviceService implements TextToSpeech.OnInitListener {
         if (messageToDeviceModel.getMessageToDeviceType() == MessageToDeviceType.SAY_IT_OUT_LOUD) {
             say(locale, messageToDeviceModel.getMessage());
         } else if (messageToDeviceModel.getMessageToDeviceType() == MessageToDeviceType.DISPLAY_ALERT) {
-            ActivityAndBroadcastUtils.startDialogActivity(context, messageToDeviceModel);
+            messageList.add(messageToDeviceModel.getMessage());
+            ActivityAndBroadcastUtils.startDialogActivity(context);
         } else { // by default saying the message out loud
             say(locale, messageToDeviceModel.getMessage());
         }
@@ -96,6 +101,10 @@ public class MessageToDeviceService implements TextToSpeech.OnInitListener {
         } else {
             Log.e("TTS", "Initilization Failed!");
         }
+    }
+
+    public static List<String> getMessageList() {
+        return messageList;
     }
 
     private UtteranceProgressListener getUtteranceProgressListener() {

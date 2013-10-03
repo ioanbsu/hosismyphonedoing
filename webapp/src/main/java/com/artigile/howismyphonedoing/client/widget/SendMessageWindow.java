@@ -61,7 +61,6 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
     private MessageRpcServiceAsync messageRpcServiceAsync;
     @Inject
     private MessageWindow messageWindow;
-    @Inject
     private Messages messages;
     @Inject
     private HowIsMyPhoneDoingAutoBeansFactory howIsMyPhoneDoingBeansFactory;
@@ -69,7 +68,8 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
 
 
     @Inject
-    public SendMessageWindow(Binder binder) {
+    public SendMessageWindow(Binder binder, Messages messages) {
+        this.messages = messages;
         devicesValueListBox = new ValueListBox<UserDeviceModel>(new AbstractRenderer<UserDeviceModel>() {
             @Override
             public String render(UserDeviceModel object) {
@@ -178,6 +178,7 @@ public class SendMessageWindow extends BaseEventHandler<MainEventBus> {
     void onCloseWindowClicked(ClickEvent clickEvent) {
         dialogBox.hide();
     }
+
     private String getMessageTypeStr(MessageToDeviceType messageToDeviceType) {
         if (messageToDeviceType == MessageToDeviceType.SAY_IT_OUT_LOUD) {
             return messages.send_message_window_message_type_say_out_loud();

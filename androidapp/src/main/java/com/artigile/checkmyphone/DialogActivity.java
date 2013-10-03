@@ -3,8 +3,6 @@ package com.artigile.checkmyphone;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import com.artigile.checkmyphone.service.ActivityAndBroadcastUtils;
-import com.artigile.howismyphonedoing.api.model.MessageToDeviceModel;
 import roboguice.activity.RoboActivity;
 
 import javax.inject.Singleton;
@@ -28,18 +26,32 @@ public class DialogActivity extends RoboActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        MessageToDeviceModel messageToDeviceModel = (MessageToDeviceModel) this.getIntent().getExtras().get(ActivityAndBroadcastUtils.MESSAGE_OBJECT);
-        // Use the Builder class for convenient dialog construction
-        builder.setMessage(messageToDeviceModel.getMessage())
+        displayNextMessage(MessageToDeviceService.getMessageList().get(0));
+    }
+
+    public void addMessageToQueue(String message) {
+        MessageToDeviceService.getMessageList().add(message);
+    }
+
+    private void displayNextMessage(String message) {
+        builder.setMessage(message)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        DialogActivity.this.finish();
                     }
                 }).setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                DialogActivity.this.finish();
+                checkNextMessage();
             }
         }).show();
+    }
+
+    private void checkNextMessage() {
+        MessageToDeviceService.getMessageList().remove(0);
+        if (MessageToDeviceService.getMessageList().isEmpty()) {
+            this.finish();
+        } else {
+            displayNextMessage(MessageToDeviceService.getMessageList().get(0));
+        }
     }
 }

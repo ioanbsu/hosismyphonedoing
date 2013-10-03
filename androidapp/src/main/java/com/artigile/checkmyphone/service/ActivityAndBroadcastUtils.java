@@ -45,11 +45,7 @@ public class ActivityAndBroadcastUtils {
      * Intent used to display a message in the screen.
      */
     public static final String TAKE_PICTURE_CONFIG = TakePictureModel.class.getName();
-    /**
-     * MessageObject
-     */
-    public static final String MESSAGE_OBJECT = MessageToDeviceModel.class.getName();
-    /**
+      /**
      * Intent's extra that contains the message to be displayed.
      */
     public static final String MESSAGE = "message";
@@ -78,14 +74,13 @@ public class ActivityAndBroadcastUtils {
      * Starts dialog activity that displays message on the screen.
      *
      * @param context              context to start activity
-     * @param messageToDeviceModel message to device object
      */
-    public static void startDialogActivity(Context context, MessageToDeviceModel messageToDeviceModel) {
+    public static void startDialogActivity(Context context) {
         Intent intent = new Intent(context, DialogActivity.class);
-        intent.putExtra(MESSAGE_OBJECT, messageToDeviceModel);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         context.startActivity(intent);
+
     }
 
     /**

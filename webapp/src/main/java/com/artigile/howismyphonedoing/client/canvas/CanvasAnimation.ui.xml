@@ -1,0 +1,15 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+    <ui:style>.coordStyle {
+        position: fixed;
+        top: 0;
+        left: 0;
+        font-size: 10px;
+        z-index: 999999999999999;
+    }
+    </ui:style>
+    <g:FlowPanel ui:field="mainPanel">
+        <!--<g:FlowPanel ui:field="coord" addStyleNames="{style.coordStyle}"/>-->
+    </g:FlowPanel>
+</ui:UiBinder>

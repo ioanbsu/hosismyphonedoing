@@ -78,6 +78,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".TakePictureActivity" android:screenOrientation="portrait"
+                  android:label="Please wait..."
                   android:excludeFromRecents="true"
                   android:launchMode="singleTask"
                   android:taskAffinity="com.howismuphonedoing.takepicture"
@@ -87,6 +88,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".DialogActivity"
+                  android:label=""
                   android:theme="@android:style/Theme.Dialog"
                   android:screenOrientation="portrait"
                   android:excludeFromRecents="true"
