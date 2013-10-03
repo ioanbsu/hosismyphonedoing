@@ -16,6 +16,7 @@ import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import com.artigile.checkmyphone.service.ActivityAndBroadcastUtils;
 import com.artigile.howismyphonedoing.api.model.MessageToDeviceModel;
+import com.artigile.howismyphonedoing.api.model.MessageToDeviceType;
 import com.google.common.base.Strings;
 
 import javax.inject.Inject;
@@ -41,9 +42,9 @@ public class MessageToDeviceService implements TextToSpeech.OnInitListener {
     private int MAX_WAIT_ATTEMPTS = 15;
 
     public void onMessageToDeviceReceived(Locale locale, MessageToDeviceModel messageToDeviceModel) {
-        if (messageToDeviceModel.getMessageToDeviceType() == MessageToDeviceModel.MessageToDeviceType.SAY_IT_OUT_LOUD) {
+        if (messageToDeviceModel.getMessageToDeviceType() == MessageToDeviceType.SAY_IT_OUT_LOUD) {
             say(locale, messageToDeviceModel.getMessage());
-        } else if (messageToDeviceModel.getMessageToDeviceType() == MessageToDeviceModel.MessageToDeviceType.DISPLAY_ALERT) {
+        } else if (messageToDeviceModel.getMessageToDeviceType() == MessageToDeviceType.DISPLAY_ALERT) {
             ActivityAndBroadcastUtils.startDialogActivity(context, messageToDeviceModel);
         } else { // by default saying the message out loud
             say(locale, messageToDeviceModel.getMessage());
