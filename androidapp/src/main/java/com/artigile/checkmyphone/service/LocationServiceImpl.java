@@ -34,9 +34,9 @@ public class LocationServiceImpl implements LocationService {
 
     public static final String TAG = "LocationServiceImpl";
     public static final int MAX_RECONNECT_ATTEMPS = 5;
-    private static final int THREE_MINUTES = 1000 * 60;
-    private static final int TWENTY_SECONDS_INTERVAL = 1000 * 10;
-    private static final int FIVE_SECONDS = 1000 * 5;
+    private static final int TIME_TO_STOP_LOCATION_UPDATES = 1000 * 60;
+    private static final int INTERVAL_BETWEEN_LOCATION_UPDATES = 1000 * 5;
+    private static final int MINIMUM_INTERVAL_BETWEEN_NEW_UPDATES = 1000 * 5;
     @Inject
     private Context context;
     private LocationClientCallbacksListener locationClientCallbacksListener = new LocationClientCallbacksListener();
@@ -51,9 +51,6 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public void getLocation(LocationListener locationListener) {
         this.locationListener = locationListener;
-        if (currentBestLocation != null) {
-            locationListener.onLocationChanged(currentBestLocation);
-        }
         if (!locationRequestsAreInProgress) {
             reconnectAttempt = 0;
             locationRequestsAreInProgress = true;
@@ -65,7 +62,7 @@ public class LocationServiceImpl implements LocationService {
                 public void run() {
                     stopRequestingLocationUpdates();
                 }
-            }, THREE_MINUTES);
+            }, TIME_TO_STOP_LOCATION_UPDATES);
         }
     }
 
@@ -94,8 +91,8 @@ public class LocationServiceImpl implements LocationService {
     private void requestLocationUpdates() {
         // Request for location updates
         LocationRequest request = LocationRequest.create()
-                .setInterval(TWENTY_SECONDS_INTERVAL)
-                .setExpirationDuration(THREE_MINUTES)
+                .setInterval(INTERVAL_BETWEEN_LOCATION_UPDATES)
+                .setExpirationDuration(TIME_TO_STOP_LOCATION_UPDATES)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationClient.requestLocationUpdates(request, internalLocationListener);
     }
@@ -111,7 +108,7 @@ public class LocationServiceImpl implements LocationService {
                     currentBestLocation = location;
                     locationListener.onLocationChanged(location);
                 }
-                if (currentBestLocation.getAccuracy() < 30) {
+                if (currentBestLocation.getAccuracy() < 30 ) {
                     stopRequestingLocationUpdates();
                 }
             }
@@ -141,8 +138,8 @@ public class LocationServiceImpl implements LocationService {
 
         // Check whether the new location fix is newer or older
         long timeDelta = location.getTime() - currentBestLocation.getTime();
-        boolean isSignificantlyNewer = timeDelta > FIVE_SECONDS;
-        boolean isSignificantlyOlder = timeDelta < -FIVE_SECONDS;
+        boolean isSignificantlyNewer = timeDelta > MINIMUM_INTERVAL_BETWEEN_NEW_UPDATES;
+        boolean isSignificantlyOlder = timeDelta < -MINIMUM_INTERVAL_BETWEEN_NEW_UPDATES;
         boolean isNewer = timeDelta > 0;
 
         // If it's been more than two minutes since the current location, use the new location
@@ -194,7 +191,7 @@ public class LocationServiceImpl implements LocationService {
                 // Display last location
                 Location location = locationClient.getLastLocation();
                 if (location != null) {
-                    internalLocationListener.onLocationChanged(location);
+                    locationListener.onLocationChanged(location);
                 }
                 if (locationClient.isConnected()) {
                     requestLocationUpdates();
