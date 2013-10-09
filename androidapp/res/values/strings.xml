@@ -11,6 +11,7 @@
 
 <resources>
     <string name="app_name">How is my phone doing?(Beta)</string>
+    <string name="show_tutorial">Help</string>
     <string name="unregister">Unregister</string>
     <string name="sample_menu_item">clickMe</string>
     <string name="already_registered">Device has been already registered in GCM</string>
@@ -49,13 +50,103 @@
         of you device remotely such as change device password, or erase all the data or lock the device and etc.
     </string>
 
-    <string name="admin_receiver_status">Status: %1$s</string>
+    <string name="admin_receiver_status">Status: %1$ss</string>
     <string name="admin_receiver_status_enabled">anti theft enabled</string>
     <string name="admin_receiver_status_disable_warning">By disabling this you won\'t be able to perform AntiTheft
         features of How Is my Phone Doing App remotely from a web site. You can always enable it back from the app.
     </string>
     <string name="admin_receiver_status_disabled">anti theft disabled</string>
     <string name="admin_receiver_status_pw_changed">pwd changed</string>
+    <string name="application_website_url">http://ioanbsu.com</string>
+    <string name="application_start_message_title">WARNING</string>
+    <string name="application_start_message" formatted="false">
+        <![CDATA[
+<div style="font-weight:bold;font-size:20px;">PLEASE READ THIS FIRST!!!</div>
+
+        <b>How to delete the application?</b>
+        Below instructions about how to delete this application.
+        <ul>
+            <li>If you decided to enable AntiTheft feature and set this application [How Is My Phone Doing?]
+                as Active Device Administrator, then before deleting it you should first remove [How Is My Phone Doing?]
+                app from the list of device administrators: Settings-> Security -> Device Administrators -> Uncheck
+                checkbox next to [How Is My Phone Doing?] app
+                <br/>
+                After that you can remove application regular way you do it on your device
+            </li>
+            <li>
+                If you did not enable AntiTheft feature you can remove the application the same way as you remove any
+                other application on your device
+            </li>
+        </ul>
+    <b>How to use this application?</b>
+    <ul>
+        <li>After launching this application go to %1$s</li>
+        <li>Log in on web site your google plus account</li>
+        <li>Make sure that you use the same account to log in on %1$s and on your android device</li>
+        <li>Right after logging in to %1$s the application automatically will start search for your devices. The
+            location detection is
+            slow process and sometimes may take long time. If you realize that your device(s) can not be found for long
+            period of time, click
+            <i>Update Devices Location</i> button to force location detection to be executed again
+        </li>
+        <li><b>To send message</b> click on <i>Send message</i> button, fill in all the required fields and click <i>Send
+            message</i> button inside appeared window
+        </li>
+        <li><b>To see device status information and update device settings, or use AntiTheft feature</b> click <i>My
+            Devices(*)</i> button and select device you want to check in left list panel
+        </li>
+    </ul>
+    <b>Why I can not see any devices on %1$s?</b>
+        There are several reasons why you may not see your device on %1$s website.
+        If you don\'t see any devices on %1$s, please try doing following:
+        <ul>
+            <li>
+                Make sure that you android device has access to the internet
+            </li>
+            <li>Make sure that after closing whit window you see green label at the top of the screen saying that <i
+                    style="color:green;font-weight: bold;">%2$s</i></li>
+            If you see <i style="color:red;font-weight: bold;">%3$s</i> that means
+            there is a problem registering device into Google Cloud Messaging system. To fix this please try to restart
+            the application. If restarting the application does not help, please send the problem description to
+            ioanbsu@gmail.com
+            <li>Check that google account name that you\'ve logged in with to %1$s (displayed at the top right
+                corner in %1$s) the same as
+                your google account name that you use ont you android device. To check the google account name that is
+                used on your device, please close this window and
+                read the text in green at the top of you device\'s screen. it will have information about what account is
+                used by [How Is My Phone Doing?] app
+            </li>
+            <li>Try to refresh %1$s website</li>
+            <li>If nothing described above helped, please contact the application owner with detailed problem
+                description
+                at ioanbsu@gmail.com
+            </li>
+        </ul>
+
+    <b>Why am I always seeing this message when I start the application?</b>
+        <ul>
+            <li>
+                People tend to think that this application
+                is a virus because after enabling AntiTheft feature they can not delete the application. Well this is
+                not true,
+                the reason why this application can not be removed once the AntiTheft feature is enabled is because of
+                Android OS
+                policies. Once the AntiTheft feature enabled the [How Is My Phone Doing?] app marked as device
+                administering app.
+                According to Android OS policies it is impossible to remove device administering applications from
+                Android OS.
+                So to remove this app it should we first unchecked as device administering app. After that it can be
+                easily removed.
+            </li>
+            <li> Main purpose of this application is to provide control of your phone/tablet from the web site %1$s
+            The [How is My Phone Doing?] application should be started only once to register itself in Google Cloud Messaging
+            system. And after that there is no sense of starting and stopping this application - it is already registered
+                in cloud and can be controlled from the website %1$s . The only reason to open this application
+                would be to see instructions that are displayed in this popup.</li>
+        </ul>
+
+        ]]>
+    </string>
 
 
     <string name="remote_application_url">http://howismyphonedoing.appspot.com/remoteService</string>
@@ -69,7 +160,8 @@
         do so in your device\'s settings.
     </string>
     <string name="device_registered_info_text">You can open now https://ioanbsu.com on your computer\'s favorite browser
-        to control your device online. Log in using the same Google account name that you use on this device: %1$s
+        to control your device online. Log in using the same Google account name that you use on this device: %1$ss
     </string>
+
 
 </resources>

@@ -15,11 +15,14 @@ import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.*;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -91,6 +94,7 @@ public class MainActivity extends RoboActivity {
     private CameraService cameraService;
     @Inject
     private DeviceInfoService deviceInfoService;
+    private AlertDialog dialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,6 +115,7 @@ public class MainActivity extends RoboActivity {
         super.onStart();
         checkIfUserHasGoogleAccount();
         checkLogsShouldBeDisplayed();
+        showHelpDialogIfNotDisplayed();
         GCMRegistrar.register(this, SENDER_ID);
     }
 
@@ -124,7 +129,20 @@ public class MainActivity extends RoboActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.app_menu, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.searchAll: {
+                showHelpDialogIfNotDisplayed();
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -270,5 +288,36 @@ public class MainActivity extends RoboActivity {
             enableAntiTheftButton.setVisibility(View.VISIBLE);
             antiTheftEnabled.setVisibility(View.GONE);
         }
+    }
+
+    private void showHelpDialogIfNotDisplayed() {
+        if (dialog == null) {
+            dialog = buildModalStartWarningWindow();
+        }
+        if (!dialog.isShowing()) {
+            dialog.show();
+        }
+    }
+
+    private AlertDialog buildModalStartWarningWindow() {
+        String string = getString(R.string.application_start_message,
+                getString(R.string.application_website_url),
+                getString(R.string.device_registered),
+                getString(R.string.device_not_registered));
+        WebView wv = new WebView(getBaseContext());
+        wv.getSettings().setDefaultTextEncodingName("utf-8");
+        wv.loadDataWithBaseURL("", string, "text/html", "utf-8", null);
+        wv.setBackgroundColor(Color.WHITE);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(wv)
+                .setTitle(R.string.application_start_message_title)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        // Create the AlertDialog object and return it
+        return builder.create();
     }
 }
