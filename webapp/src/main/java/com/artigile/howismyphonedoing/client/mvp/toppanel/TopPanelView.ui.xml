@@ -104,6 +104,8 @@
                   styleName="{style.topMenuButtonStyle}"/>
         <toppanel:TopPanelButton ui:field="devicesSettings"
                                  styleName="{style.topMenuButtonStyle}" />
+        <toppanel:TopPanelButton ui:field="whyNoDevicesFound" text="{msg.top_panel_no_devices_found}"
+                                 styleName="{style.topMenuButtonStyle}" />
         <toppanel:TopPanelButton text="{msg.top_panel_log_out}" ui:field="logoutButton"
                   styleName="{style.topMenuButtonStyle} {style.logOutFloatRight}"/>
 

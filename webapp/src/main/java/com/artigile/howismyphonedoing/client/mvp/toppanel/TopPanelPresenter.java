@@ -18,7 +18,6 @@ import com.artigile.howismyphonedoing.client.MainEventBus;
 import com.artigile.howismyphonedoing.client.Messages;
 import com.artigile.howismyphonedoing.client.channel.ChannelStateType;
 import com.artigile.howismyphonedoing.client.exception.UserHasNoDevicesException;
-import com.artigile.howismyphonedoing.client.mvp.settings.SettingsPresenter;
 import com.artigile.howismyphonedoing.client.rpc.AsyncCallbackImpl;
 import com.artigile.howismyphonedoing.client.rpc.MessageRpcServiceAsync;
 import com.artigile.howismyphonedoing.client.rpc.UserInfoRpcServiceAsync;
@@ -26,6 +25,7 @@ import com.artigile.howismyphonedoing.client.service.ApplicationState;
 import com.artigile.howismyphonedoing.client.service.HowIsMyPhoneDoingAutoBeansFactory;
 import com.artigile.howismyphonedoing.client.widget.MessageWindow;
 import com.artigile.howismyphonedoing.client.widget.SendMessageWindow;
+import com.artigile.howismyphonedoing.client.widget.UserHasNoDevicesInfoPopup;
 import com.artigile.howismyphonedoing.client.widget.YesNoWindow;
 import com.artigile.howismyphonedoing.shared.entity.StateAndChanelEntity;
 import com.google.gwt.core.shared.GWT;
@@ -70,12 +70,14 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     private MessageWindow messageWindow;
     @Inject
     private HowIsMyPhoneDoingAutoBeansFactory howIsMyPhoneDoingAutoBeansFactory;
+    @Inject
+    private UserHasNoDevicesInfoPopup userHasNoDevicesInfoPopup;
     private Timer locationDetectTimer;
-
     private Logger logger = Logger.getLogger(TopPanelPresenter.class.getName());
 
     public void onInitApp() {
         GWT.log("TopPanelPresenter initiated.");
+        view.setNoDevicesVisibleButton(true);
         view.setMyDevicesCount(0);
     }
 
@@ -110,6 +112,7 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
     }
 
     public void onUsersDevicesListReceived(List<UserDeviceModel> result) {
+        view.setNoDevicesVisibleButton(result.size() == 0);
         view.setMyDevicesCount(result.size());
     }
 
@@ -191,5 +194,9 @@ public class TopPanelPresenter extends BasePresenter<TopPanelView, MainEventBus>
 
     public void showDeviceSettings() {
         eventBus.showSettingsWindow();
+    }
+
+    public void showNoDevicesVoufnPopup() {
+        userHasNoDevicesInfoPopup.show();
     }
 }

@@ -56,5 +56,8 @@ public interface Images extends ClientBundle {
     @Source("com/artigile/howismyphonedoing/public/images/camera.png")
     ImageResource camera();
 
+    @Source("com/artigile/howismyphonedoing/public/images/NoDevicesFound.png")
+    ImageResource noDevicesFound();
+
 
 }

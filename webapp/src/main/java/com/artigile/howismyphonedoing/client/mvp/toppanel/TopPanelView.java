@@ -50,6 +50,8 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     Image reloadPage;
     @UiField
     TopPanelButton devicesSettings;
+    @UiField
+    TopPanelButton whyNoDevicesFound;
     private TopPanelPresenter presenter;
     @Inject
     private Messages messages;
@@ -92,7 +94,6 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
         presenter.removeAllDevices();
     }
 
-
     @UiHandler("reloadPage")
     void onReloadPageClick(ClickEvent event) {
         Window.Location.reload();
@@ -101,6 +102,15 @@ public class TopPanelView extends Composite implements ReverseViewInterface<TopP
     @UiHandler("devicesSettings")
     void onDeviceSettingsClick(ClickEvent event) {
         presenter.showDeviceSettings();
+    }
+
+    @UiHandler("whyNoDevicesFound")
+    void noDevicesFoundPopup(ClickEvent event){
+        presenter.showNoDevicesVoufnPopup();
+    }
+
+    public void setNoDevicesVisibleButton(boolean isNoDeviceVisibleButton) {
+        whyNoDevicesFound.setVisible(isNoDeviceVisibleButton);
     }
 
     public void setLoggedInUserData(String email) {
